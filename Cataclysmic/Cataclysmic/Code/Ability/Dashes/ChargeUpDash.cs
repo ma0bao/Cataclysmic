@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using System;
@@ -32,10 +32,8 @@ namespace Cataclysmic
         {
             charge = Game1.self.sound_ChargeUp.CreateInstance();
             charge.Volume = 1f;
-            charge.Play();
-            sizeChange = 0;
+            charge.Play();        
             done = false;
-            chargeFactor = 0;
             shakeOffset = Vector2.Zero;
             slowDownMultiplier = 0.7f;
             originalSpeedModifier = moveData.speedModifiers;
@@ -76,8 +74,7 @@ namespace Cataclysmic
                 done = true;
                 moveData.speedModifiers = originalSpeedModifier;
                 renderData.Position += direction * distance * chargeFactor;
-                renderData.SetWidth(oldWidth);
-                renderData.SetHeight(oldHeight);
+                
             }
         }
 
@@ -87,3 +84,4 @@ namespace Cataclysmic
         }
     }
 }
+
