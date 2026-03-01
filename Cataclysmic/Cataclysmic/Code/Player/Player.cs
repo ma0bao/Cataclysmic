@@ -33,7 +33,7 @@ namespace Cataclysmic
         public Player(Rectangle _destRect)
         {
             LoadContent();
-            renderData = new RenderComponent(Game1.self.texture_player, _destRect);
+            renderData = new RenderComponent(Game1.texture_player, _destRect);
             moveData = new MoveComponent();
             
             dashCooldown = new EventTimer(.5f);
@@ -197,8 +197,8 @@ namespace Cataclysmic
 
         public void LoadContent()
         {
-            hitBoxTexture = Game1.self.texture_hitBox;
-            Square = Game1.self.texture_square;
+            hitBoxTexture = Game1.texture_hitBox;
+            Square = Game1.texture_square;
         }
 
         public void UpdatePosition(int ticks)

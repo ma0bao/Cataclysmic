@@ -56,18 +56,18 @@ namespace Cataclysmic
 
         // Textures
         #region
-        Texture2D texture_title;
-        Texture2D texture_blank;
-        Texture2D texture_credits;
-        Texture2D texture_grid;
-        Texture2D texture_demoPlayer;
-        Texture2D texture_enochianChain_1;
-        Texture2D texture_enochianChain_2;
-        Texture2D texture_menuSpriteSheet;
+        public static Texture2D texture_title;
+        public static Texture2D texture_blank;
+        public static Texture2D texture_credits;
+        public static Texture2D texture_grid;
+        public static Texture2D texture_demoPlayer;
+        public static Texture2D texture_enochianChain_1;
+        public static Texture2D texture_enochianChain_2;
+        public static Texture2D texture_menuSpriteSheet;
         public static Texture2D texture_spinningBlade;
-        public Texture2D texture_player;
-        public Texture2D texture_hitBox;
-        public Texture2D texture_square;
+        public static Texture2D texture_player;
+        public static Texture2D texture_hitBox;
+        public static Texture2D texture_square;
 
         //Dash Textures
         #region

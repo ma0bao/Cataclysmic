@@ -40,7 +40,7 @@ namespace Cataclysmic
         public Speedster(Rectangle _destRect, Player _player)
         {
             player = _player;
-            renderData = new RenderComponent(Game1.self.texture_player, _destRect);
+            renderData = new RenderComponent(Game1.texture_player, _destRect);
             moveData = new MoveComponent(_maxSpeed: 500, _acceleration: 1200);
             turnSpeed = 600;
             targetPos = GetRandomPoint();
