@@ -28,6 +28,8 @@ namespace Cataclysmic
                 this.angle = angle + (float)Math.PI * 0.5f;
                 Hitbox = new Rectangle((int)Position.X - WIDTH / 2, (int)Position.Y - WIDTH / 2, WIDTH, WIDTH);
                 this.Position = Position;
+
+                
             }
 
             public void Update()
@@ -59,6 +61,7 @@ namespace Cataclysmic
         public const float MANA_COST = 60;
 
         Rectangle Hitbox;
+        public Color color;
         Vector2 Position;
         float Angle;
         long timer;
@@ -70,6 +73,9 @@ namespace Cataclysmic
             Angle = angle - ((float)Math.PI * 0.5f);
             timer = 0;
             Hitbox = new Rectangle((int)Position.X - HITBOX_WIDTH / 2, (int)Position.Y - HITBOX_WIDTH / 2, HITBOX_WIDTH, HITBOX_WIDTH);
+            color = Color.White;
+
+            Game1.sfx_weapon_singleshot2.Play(Game1.volume, 1, 0);
         }
 
 
@@ -88,8 +94,10 @@ namespace Cataclysmic
                 int n = 10;
                 for (int i = 0; i < n; i++)
                 {
-                    crackles.AddFirst(new Crackle(Position, (float)Math.PI * 2 * ((float)i / n)));
+                    crackles.AddFirst(new Crackle(new Vector2(Position.X - HITBOX_WIDTH / 2, Position.Y - HITBOX_WIDTH / 2), (float)Math.PI * 2 * ((float)i / n)));
                 }
+                
+                Game1.sfx_explosion_short1.Play(Game1.volume, 1, 0);
 
             }
             else
@@ -109,12 +117,12 @@ namespace Cataclysmic
 
             if (timer <= FRAMES_TO_BURST)
             {
-                Game1.self.spriteBatch.Draw(Game1.texture_bullets3C, Hitbox, new Rectangle(frameX, 288, 24, 24), Color.White, Angle, new Vector2(12, 12), SpriteEffects.None, 1);
+                Game1.self.spriteBatch.Draw(Game1.texture_bullets3C, Hitbox, new Rectangle(frameX, 288, 24, 24), this.color, Angle, new Vector2(12, 12), SpriteEffects.None, 1);
             }
             else
             {
                 foreach (Crackle crack in crackles)
-                    Game1.self.spriteBatch.Draw(Game1.texture_bullets5C, crack.Hitbox, new Rectangle(frameX, 240, 24, 24), Color.White);
+                    Game1.self.spriteBatch.Draw(Game1.texture_bullets5C, crack.Hitbox, new Rectangle(frameX, 240, 24, 24), this.color);
             }
         }
 

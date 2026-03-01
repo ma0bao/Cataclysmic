@@ -93,7 +93,7 @@ namespace Cataclysmic
 
             if (Game1.MS.LeftButton == ButtonState.Pressed && Game1.oldMS.LeftButton == ButtonState.Released)
             {
-                abilities.AddFirst(new CrackleBurst(renderData.Position, angle));
+                abilities.AddFirst(new CrackleBurst(new Vector2(renderData.Position.X + renderData.hitBox.Width / 2, renderData.Position.Y + renderData.hitBox.Height / 2), angle));
             }
 
             if (dashCooldown.Done)

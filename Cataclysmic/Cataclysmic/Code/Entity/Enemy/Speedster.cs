@@ -178,7 +178,9 @@ namespace Cataclysmic
         public void Snipe()
         {
             //Shoot a thingy at player
-            abilities.AddFirst(new CrackleBurst(renderData.Position, renderData.GetRotationToTarget(player.renderData.Position)));
+            CrackleBurst temp = new CrackleBurst(renderData.Position, renderData.GetRotationToTarget(player.renderData.Position));
+            temp.color = Color.Red;
+            abilities.AddFirst(temp);
         }
         public void IncreaseVelocity()
         {

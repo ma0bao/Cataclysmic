@@ -34,6 +34,7 @@ namespace Cataclysmic
         public static MouseState MS;
         long timer;
         long score;
+        public static float volume;
         public Cursor[] cursors;
         Player[] players;
 
@@ -85,20 +86,27 @@ namespace Cataclysmic
 
         #endregion
 
-        //SoundEffects
+        // SoundEffects
         #region
 
-        //Dash Sounds
+        //  Dash Sounds
         #region
         public SoundEffect sound_Teleport;
         public SoundEffect sound_ChargeUp;
         public SoundEffect sound_whooshDash;
         #endregion
 
-        //UI Sounds
+        //  UI Sounds
         #region
         SoundEffect sound_HeavyClick;
         SoundEffect sound_HeavyStart;
+        #endregion
+
+        //  Abilities
+        #region
+        public static SoundEffect sfx_explosion_short1;
+
+        public static SoundEffect sfx_weapon_singleshot2;
         #endregion
 
         #endregion
@@ -141,6 +149,7 @@ namespace Cataclysmic
             oldKB = Keyboard.GetState();
             timer = 0;
             index = 0;
+            volume = 1.0f;
 
             players = new Player[4];
             cursors = new Cursor[4];
@@ -189,6 +198,9 @@ namespace Cataclysmic
             texture_bullets8C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 8C Free");
             texture_bullets9C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 9C Free");
             texture_bullets10C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 10C Free");
+
+            sfx_explosion_short1 = Content.Load<SoundEffect>("Sounds/Abilities/Explosions/sfx_exp_short_soft1");
+            sfx_weapon_singleshot2 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/sfx_weapon_singleshot2");
             #endregion
 
             //Sounds
@@ -397,12 +409,15 @@ namespace Cataclysmic
                 spriteBatch.Begin();
                 spriteBatch.Draw(texture_grid, rect_screen, Color.White);
 
+                // Put all draw methods that are not exclusive from shaders here.
+
 
                 players[0].Draw(1.0f);
                 speedster.Draw(1.0f);
 
-                spriteBatch.End();
 
+                // End of shader section
+                spriteBatch.End();
                 GraphicsDevice.SetRenderTarget(null);
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, lightEffect);
@@ -412,12 +427,10 @@ namespace Cataclysmic
                 // Overlays
                 spriteBatch.Begin();
                 players[0].DrawEx(1.0f);
-                speedster.Draw(1.0f);
+                
+
+
                 spriteBatch.End();
-
-
-
-
             }
             else if (gameState.Equals(GameState.End))
             {
