@@ -33,6 +33,7 @@ namespace Cataclysmic
             charge = Game1.self.sound_ChargeUp.CreateInstance();
             charge.Volume = 1f;
             charge.Play();
+            sizeChange = 0;
             done = false;
             chargeFactor = 0;
             shakeOffset = Vector2.Zero;
@@ -75,6 +76,8 @@ namespace Cataclysmic
                 done = true;
                 moveData.speedModifiers = originalSpeedModifier;
                 renderData.Position += direction * distance * chargeFactor;
+                renderData.SetWidth(oldWidth);
+                renderData.SetHeight(oldHeight);
             }
         }
 
