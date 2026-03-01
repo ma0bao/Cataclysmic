@@ -8,10 +8,23 @@ using System.Text;
 
 namespace Cataclysmic
 {
+    public enum AnimState { Idle, Walk, Die }
+
     public class RenderComponent
     {
+        public AnimState currentState;
         public Texture2D texture;
-        
+
+        // Animation fields
+        public int currentFrame;
+        public int totalFrames;
+        public int frameWidth;
+        public int frameHeight;
+        public float frameTime;
+        public float elapsedTime;
+        public bool isAnimating;
+        public bool loop;
+
         public Rectangle DestRect
         {
             get { return _destRect; }
@@ -52,11 +65,23 @@ namespace Cataclysmic
             layerDepth = 0f;
             color = Color.White;
             effects = SpriteEffects.None;
+
+            // Animation defaults
+            currentState = AnimState.Idle;
+            currentFrame = 0;
+            totalFrames = 1;
+            frameWidth = texture.Width;
+            frameHeight = texture.Height;
+            frameTime = 0.1f;
+            elapsedTime = 0f;
+            isAnimating = false;
+            loop = true;
+
             ResetHitBox();
         }
 
-        public RenderComponent(Texture2D t, Rectangle destRect, Rectangle source, Vector2 _origin, 
-            Color c, SpriteEffects s, float _rotation = 0f, float _depth = 0f) 
+        public RenderComponent(Texture2D t, Rectangle destRect, Rectangle source, Vector2 _origin,
+            Color c, SpriteEffects s, float _rotation = 0f, float _depth = 0f)
         {
             texture = t;
             DestRect = destRect;
@@ -67,6 +92,18 @@ namespace Cataclysmic
             layerDepth = _depth;
             color = c;
             effects = s;
+
+            // Animation defaults
+            currentState = AnimState.Idle;
+            currentFrame = 0;
+            totalFrames = 1;
+            frameWidth = source.Width;
+            frameHeight = source.Height;
+            frameTime = 0.1f;
+            elapsedTime = 0f;
+            isAnimating = false;
+            loop = true;
+
             ResetHitBox();
         }
 
@@ -117,6 +154,97 @@ namespace Cataclysmic
         public void DefualtDraw()
         {
             Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, rotation, origin, effects, layerDepth);
+        }
+
+        public void SetupAnimation(int width, int height, int frames, float secondsPerFrame = 0.1f) // 0.1 is 10 fps animation, could be changed
+        {
+            frameWidth = width;
+            frameHeight = height;
+            totalFrames = frames;
+            frameTime = secondsPerFrame;
+            currentFrame = 0;
+            elapsedTime = 0f;
+            origin = new Vector2(width / 2f, height / 2f);
+            UpdateSourceRect();
+        }
+
+        public void UpdateAnimation(GameTime gameTime)
+        {
+            if (!isAnimating)
+                return;
+
+            elapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (elapsedTime >= frameTime)
+            {
+                elapsedTime -= frameTime;
+                currentFrame++;
+
+                if (currentFrame >= totalFrames)
+                {
+                    if (loop)
+                        currentFrame = 0;
+                    else
+                    {
+                        currentFrame = totalFrames - 1;
+                        isAnimating = false;
+                    }
+                }
+
+                UpdateSourceRect();
+            }
+        }
+
+        private void UpdateSourceRect()
+        {
+            sourceRect = new Rectangle(currentFrame * frameWidth, 0, frameWidth, frameHeight);
+        }
+
+        public void Play()
+        {
+            isAnimating = true;
+        }
+
+        public void Stop()
+        {
+            isAnimating = false;
+        }
+
+        public void Reset()
+        {
+            currentFrame = 0;
+            elapsedTime = 0f;
+            UpdateSourceRect();
+        }
+
+        public void SetFrame(int frame)
+        {
+            currentFrame = Math.Max(0, Math.Min(frame, totalFrames - 1));
+            UpdateSourceRect();
+        }
+
+        public void SetTexture(Texture2D newTexture, int frames, int width, int height)
+        {
+            texture = newTexture;
+            totalFrames = frames;
+            frameWidth = width;
+            frameHeight = height;
+            origin = new Vector2(width / 2f, height / 2f);
+            currentFrame = 0;
+            elapsedTime = 0f;
+            UpdateSourceRect();
+        }
+
+        // Switch animation only if state is different. Returns true if state changed.
+        public bool SetState(AnimState newState, Texture2D newTexture, int frames, int width, int height)
+        {
+            if (currentState == newState)
+                return false;
+
+            currentState = newState;
+            SetTexture(newTexture, frames, width, height);
+            Play();
+            return true;
         }
 
     }
