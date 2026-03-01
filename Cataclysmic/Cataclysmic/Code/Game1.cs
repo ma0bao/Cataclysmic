@@ -64,7 +64,16 @@ namespace Cataclysmic
         public static Texture2D texture_enochianChain_1;
         public static Texture2D texture_enochianChain_2;
         public static Texture2D texture_menuSpriteSheet;
-        public static Texture2D texture_spinningBlade;
+        public static Texture2D texture_bullets1C;
+        public static Texture2D texture_bullets2C;
+        public static Texture2D texture_bullets3C;
+        public static Texture2D texture_bullets4C;
+        public static Texture2D texture_bullets5C;
+        public static Texture2D texture_bullets6C;
+        public static Texture2D texture_bullets7C;
+        public static Texture2D texture_bullets8C;
+        public static Texture2D texture_bullets9C;
+        public static Texture2D texture_bullets10C;
         public static Texture2D texture_player;
         public static Texture2D texture_hitBox;
         public static Texture2D texture_square;
@@ -169,7 +178,17 @@ namespace Cataclysmic
             texture_enochianChain_1 = Content.Load<Texture2D>("Sprites/GUI/Enochian Chain 1");
             texture_enochianChain_2 = Content.Load<Texture2D>("Sprites/GUI/Enochian Chain 2");
             texture_grid = Content.Load<Texture2D>("Sprites/Environment/GridBackground");
-            texture_spinningBlade = Content.Load<Texture2D>("Sprites/Abilities/Bullet 24x24 Part 5C Free");
+            texture_bullets1C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 1A");
+            texture_bullets2C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 2C");
+            texture_bullets3C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 3C");
+            texture_bullets4C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 4C");
+            texture_bullets5C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 4C");
+            texture_bullets5C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 5C Free");
+            texture_bullets6C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 6C Free");
+            texture_bullets7C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 7C Free");
+            texture_bullets8C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 8C Free");
+            texture_bullets9C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 9C Free");
+            texture_bullets10C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 10C Free");
             #endregion
 
             //Sounds
@@ -345,7 +364,9 @@ namespace Cataclysmic
                 spriteBatch.Begin();
 
                 spriteBatch.Draw(texture_credits, new Vector2(WIDTH / 2 - texture_credits.Width / 2, 10), Color.White);
-                spriteBatch.DrawString(font_credits, "Developers >>> Evan Tupper, Zackariya Aggour, & Thomas Liew\n\nCursor Sprites >>> Ivan Voirol", new Vector2(10, 300), Color.White);
+                spriteBatch.DrawString(font_credits, "Developers >>> Evan Tupper, Zackariya Aggour, & Thomas Liew" +
+                    "\n\nCursor Sprites >>> Ivan Voirol" +
+                    "\nBullet 24x24 >>> BDragon1727", new Vector2(10, 300), Color.White);
                 spriteBatch.DrawString(font_credits, "Press Back to return...", new Vector2(WIDTH / 2 - 120, HEIGHT - 50), Color.White);
 
                 spriteBatch.End();

@@ -58,12 +58,10 @@ namespace Cataclysmic
         public const float FRAMES_TO_BURST = 60;
         public const float MANA_COST = 60;
 
-        Texture2D spriteSheet;
         Rectangle Hitbox;
         Vector2 Position;
         float Angle;
         long timer;
-        bool isCrackled;
         LinkedList<Crackle> crackles;
 
         public CrackleBurst(Vector2 position, float angle)
@@ -72,9 +70,6 @@ namespace Cataclysmic
             Angle = angle - ((float)Math.PI * 0.5f);
             timer = 0;
             Hitbox = new Rectangle((int)Position.X - HITBOX_WIDTH / 2, (int)Position.Y - HITBOX_WIDTH / 2, HITBOX_WIDTH, HITBOX_WIDTH);
-            isCrackled = false;
-
-            this.spriteSheet = Game1.texture_spinningBlade;
         }
 
 
@@ -89,7 +84,6 @@ namespace Cataclysmic
             }
             else if (timer == FRAMES_TO_BURST)
             {
-                isCrackled = true;
                 crackles = new LinkedList<Crackle>();
                 int n = 10;
                 for (int i = 0; i < n; i++)
@@ -112,24 +106,22 @@ namespace Cataclysmic
         public override void Draw(float opacity)
         {
             int frameX = (int)((timer / 10) % 8 * 24);
+
             if (timer <= FRAMES_TO_BURST)
             {
-                Game1.self.spriteBatch.Draw(spriteSheet, Hitbox, new Rectangle(frameX, 312, 24, 24), Color.White);
+                Game1.self.spriteBatch.Draw(Game1.texture_bullets3C, Hitbox, new Rectangle(frameX, 288, 24, 24), Color.White, Angle, new Vector2(12, 12), SpriteEffects.None, 1);
             }
             else
             {
                 foreach (Crackle crack in crackles)
-                {
-                    Game1.self.spriteBatch.Draw(spriteSheet, crack.Hitbox, new Rectangle(frameX, 312, 24, 24), Color.White);
-                }
-
+                    Game1.self.spriteBatch.Draw(Game1.texture_bullets5C, crack.Hitbox, new Rectangle(frameX, 240, 24, 24), Color.White);
             }
-
         }
 
         public override bool IsAlive()
         {
-            if (Hitbox.X > Game1.WIDTH || Hitbox.X - Hitbox.Width / 2 < 0) return false;
+            if (Hitbox.X > Game1.WIDTH || Hitbox.X - Hitbox.Width / 2 < 0)
+                return false;
 
             return true;
         }
