@@ -222,7 +222,8 @@ namespace Cataclysmic
             //this.Exit();
             KeyboardState KB = Keyboard.GetState();
             MS = Mouse.GetState();
-
+            if (KB.IsKeyDown(Keys.Escape))
+                this.Exit();
             if (KB.IsKeyDown(Keys.D9) && oldKB.IsKeyUp(Keys.D9)) 
             {
                 graphics.ToggleFullScreen();
