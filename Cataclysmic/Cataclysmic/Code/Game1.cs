@@ -178,7 +178,7 @@ namespace Cataclysmic
             texture_enochianChain_1 = Content.Load<Texture2D>("Sprites/GUI/Enochian Chain 1");
             texture_enochianChain_2 = Content.Load<Texture2D>("Sprites/GUI/Enochian Chain 2");
             texture_grid = Content.Load<Texture2D>("Sprites/Environment/GridBackground");
-            texture_bullets1C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 1A");
+            texture_bullets1C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 1C");
             texture_bullets2C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 2C");
             texture_bullets3C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 3C");
             texture_bullets4C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 4C");
