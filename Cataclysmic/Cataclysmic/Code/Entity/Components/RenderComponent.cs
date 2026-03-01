@@ -114,5 +114,10 @@ namespace Cataclysmic
             return (float)Math.Sqrt(Math.Pow(Position.X-target.X, 2) + Math.Pow(Position.Y - target.Y, 2));
         }
 
+        public void DefualtDraw()
+        {
+            Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, rotation, origin, effects, layerDepth);
+        }
+
     }
 }
