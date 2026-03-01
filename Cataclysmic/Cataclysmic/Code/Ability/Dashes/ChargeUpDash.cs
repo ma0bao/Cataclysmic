@@ -20,14 +20,14 @@ namespace Cataclysmic
         float maxCharge = 7;
         SoundEffectInstance charge;
 
-        //How fast to squeeze player
-        float sizeChange;
-        float sizeChangeSpeed = .1f; //Runs every frame, ticks once it is >= 1.0f
+        // Slow down effect
+        float slowDownMultiplier;
+        float originalSpeedModifier;
 
-        //How much to change size per tick
-        int sizeChangeIncrement = 2;
-        int oldHeight;
-        int oldWidth;
+        //Shake effect
+        float shakeIntensity = 7f;
+        Vector2 shakeOffset;
+
         public void Start(RenderComponent renderData, MoveComponent moveData)
         {
             charge = Game1.self.sound_ChargeUp.CreateInstance();
@@ -36,8 +36,9 @@ namespace Cataclysmic
             sizeChange = 0;
             done = false;
             chargeFactor = 0;
-            oldWidth = renderData.DestRect.Width;
-            oldHeight = renderData.DestRect.Height;
+            shakeOffset = Vector2.Zero;
+            slowDownMultiplier = 0.7f;
+            originalSpeedModifier = moveData.speedModifiers;
         }
 
         public void Update(RenderComponent renderData, MoveComponent moveData)
@@ -53,15 +54,18 @@ namespace Cataclysmic
             {
                 chargeFactor += moveData.deltaTime * 3f;
                 chargeFactor = MathHelper.Clamp(chargeFactor, 0, maxCharge);
-                sizeChange += sizeChangeSpeed;
-                if (sizeChange >= 1f)
-                {
-                    if (chargeFactor == maxCharge)
-                        return;
-                    renderData.SetWidth(renderData.DestRect.Width + sizeChangeIncrement*2);
-                    renderData.SetHeight(renderData.DestRect.Height - sizeChangeIncrement);
-                    sizeChange -= 1f;
-                }
+                slowDownMultiplier -= (float)(moveData.deltaTime * 0.7);
+                slowDownMultiplier = MathHelper.Clamp(slowDownMultiplier, 0, 0.7f);
+
+                //gradual slowdown
+                moveData.speedModifiers = originalSpeedModifier * slowDownMultiplier;
+
+                //Shake intensity increases with charge
+                float currentShake = shakeIntensity * (chargeFactor / maxCharge);
+                shakeOffset.X = (float)(Game1.rand.NextDouble() * 2 - 1) * currentShake;
+                shakeOffset.Y = (float)(Game1.rand.NextDouble() * 2 - 1) * currentShake;
+
+                renderData.Position += shakeOffset;
 
             }
             else
@@ -70,6 +74,7 @@ namespace Cataclysmic
                     charge.Stop();
                 Game1.self.sound_whooshDash.Play();
                 done = true;
+                moveData.speedModifiers = originalSpeedModifier;
                 renderData.Position += direction * distance * chargeFactor;
                 renderData.SetWidth(oldWidth);
                 renderData.SetHeight(oldHeight);
