@@ -7,22 +7,10 @@ using System.Text;
 
 namespace Cataclysmic
 {
-    class Speedster : Entity
+    class Speedster : Enemy
     {
-        //Components
-        RenderComponent renderData;
-        MoveComponent moveData;
 
         Player player;
-
-        //Wandering 
-        Vector2 targetPos;
-        Vector2 targetVelocity;
-        float desiredSpeed;
-        float turnSpeed;
-
-        //How far away to start decelerating when close to target
-        const int slowRadius = 150;
 
         //Dash
         IDash currentDash;
@@ -51,7 +39,7 @@ namespace Cataclysmic
 
             //Speeds
             turnSpeed = 600;
-            targetPos = GetRandomPoint();
+            targetPos = renderData.GetRandomPoint();
             desiredSpeed = moveData.maxSpeed;
 
             //Cooldowns
@@ -70,7 +58,7 @@ namespace Cataclysmic
             //Draw
             renderData.DefualtDraw();
 
-            //Game1.self.spriteBatch.Draw(renderData.texture, targetPos, Color.Red);
+            Game1.self.spriteBatch.Draw(renderData.texture, targetPos, Color.Red);
 
             //Draw abilities 
             foreach (Ability abil in abilities)
@@ -84,7 +72,6 @@ namespace Cataclysmic
                 currentDash.Draw(renderData, moveData);
         }
 
-        public override void DrawEx(float opacity) { }
         public override void Update(GameTime gameTime)
         {
             moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -98,7 +85,7 @@ namespace Cataclysmic
                     if (chance <= 8)
                     {
                         currentState = AttackState.Wander;
-                        targetPos = GetRandomPoint();
+                        targetPos = renderData.GetRandomPoint();
                         desiredSpeed = moveData.maxSpeed;
                         if (chance <= 6)
                             Snipe();
@@ -128,7 +115,7 @@ namespace Cataclysmic
             {
                 renderData.color = Color.Aqua;
                 currentState = AttackState.Run;
-                targetPos = GetRandomPoint();
+                targetPos = renderData.GetRandomPoint();
                 desiredSpeed = moveData.maxSpeed;
                 chaseTimer.Reset();
             }
@@ -151,12 +138,6 @@ namespace Cataclysmic
                 dashTimer.Restart(Game1.rand.Next(3, 7));
             }
 
-
-            //Move around
-            IncreaseVelocity();
-            renderData.Position += moveData.velocity * moveData.deltaTime * moveData.speedModifiers;
-            renderData.ResetHitBox();
-
             //Clamp movement to be on screen
             if (currentState != AttackState.GoOnScreen)
             {
@@ -173,6 +154,8 @@ namespace Cataclysmic
             {
                 abil.Update(gameTime);
             }
+
+            base.Update(gameTime);
         }
 
         public void Snipe()
@@ -182,71 +165,7 @@ namespace Cataclysmic
             temp.color = Color.Red;
             abilities.AddFirst(temp);
         }
-        public void IncreaseVelocity()
-        {
-            //Get Direction to target
-            Vector2 direction = targetPos - renderData.Position;
-            if (direction.Length() > 0.1f)
-                direction.Normalize();
-
-            //Get max speed we should accelerate to (desired speed)
-            float distance = renderData.GetDistanceToTarget(targetPos);
-            if (distance < slowRadius)
-            {
-                desiredSpeed = moveData.maxSpeed * (distance / slowRadius);
-            }
-            else
-                desiredSpeed = moveData.maxSpeed;
-
-            //Get Target Velocity we should accelerate to
-            targetVelocity = direction * desiredSpeed;
-
-            //How much to we need to increase velocity by to get to the target
-            Vector2 steering = targetVelocity - moveData.velocity;
-
-            //How much we will allow to steer
-            float maxSteeringThisFrame = turnSpeed * moveData.deltaTime;
-            if (steering.Length() > maxSteeringThisFrame)
-            {
-                steering.Normalize();
-                steering *= maxSteeringThisFrame;
-            }
-
-            //add steering
-            moveData.velocity += steering;
-
-            //Clamp to be under maxSpeed
-            if (moveData.velocity.Length() > moveData.maxSpeed)
-            {
-                moveData.velocity.Normalize();
-                moveData.velocity *= moveData.maxSpeed;
-            }
-        }
-
-        public Vector2 GetRandomPoint()
-        {
-            float x = Game1.rand.Next(50, Game1.WIDTH-50);
-            float y = Game1.rand.Next(50, Game1.HEIGHT-50);
-
-            return new Vector2(x, y);
-        }
 
 
-        public override void Damage(Entity cause, int amount)
-        {
-            return;
-        }
-        public override bool IsAlive()
-        {
-            return true;
-        }
-        public override Entity Clone()
-        {
-            return this;
-        }
-        public override void ApplyEffect(Effect effect)
-        {
-            return;
-        }
     }
 }

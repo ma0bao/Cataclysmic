@@ -152,6 +152,27 @@ namespace Cataclysmic
             return (float)Math.Sqrt(Math.Pow(Position.X-target.X, 2) + Math.Pow(Position.Y - target.Y, 2));
         }
 
+        public Vector2 GetPointClosestToScreen()
+        {
+            float x = MathHelper.Clamp(Position.X, 0, Game1.WIDTH - 50);
+            float y = MathHelper.Clamp(Position.Y, 0, Game1.HEIGHT - 50);
+
+            return new Vector2(x, y);
+        }
+
+        public Vector2 GetRandomPoint()
+        {
+            float x = Game1.rand.Next(50, Game1.WIDTH - 50);
+            float y = Game1.rand.Next(50, Game1.HEIGHT - 50);
+
+            return new Vector2(x, y);
+        }
+
+        public bool IsOnScreen()
+        {
+            return Position.X > 0 && Position.X < Game1.WIDTH - 20;
+        }
+
         public void DefualtDraw()
         {
             Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, rotation, origin, effects, layerDepth);
