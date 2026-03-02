@@ -9,21 +9,26 @@ namespace Cataclysmic
 {
     class Speedster : Entity
     {
+        //Components
         RenderComponent renderData;
         MoveComponent moveData;
 
         Player player;
 
+        //Wandering 
         Vector2 targetPos;
         Vector2 targetVelocity;
         float desiredSpeed;
         float turnSpeed;
 
+        //How far away to start decelerating when close to target
         const int slowRadius = 150;
 
+        //Dash
         IDash currentDash;
         EventTimer dashTimer;
 
+        //How long to chase
         EventTimer chaseTimer;
 
         LinkedList<Ability> abilities;
@@ -39,12 +44,17 @@ namespace Cataclysmic
         AttackState currentState = AttackState.Wander;
         public Speedster(Rectangle _destRect, Player _player)
         {
+            //Components
             player = _player;
-            renderData = new RenderComponent(Game1.self.texture_player, _destRect);
+            renderData = new RenderComponent(Game1.texture_player, _destRect);
             moveData = new MoveComponent(_maxSpeed: 500, _acceleration: 1200);
+
+            //Speeds
             turnSpeed = 600;
             targetPos = GetRandomPoint();
             desiredSpeed = moveData.maxSpeed;
+
+            //Cooldowns
             abilities = new LinkedList<Ability>();
             dashTimer = new EventTimer(.5f);
             chaseTimer = new EventTimer(8f);
@@ -54,18 +64,22 @@ namespace Cataclysmic
         }
         public override void Draw(float opacity)
         {
+            //Set rotation to look at where he is going next
             renderData.rotation = renderData.GetRotationToTarget(renderData.Position + moveData.velocity);
-            Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect,
-                renderData.color, renderData.rotation, renderData.origin, renderData.effects, renderData.layerDepth);
 
-            Game1.self.spriteBatch.Draw(renderData.texture, targetPos, Color.Red);
+            //Draw
+            renderData.DefualtDraw();
 
+            //Game1.self.spriteBatch.Draw(renderData.texture, targetPos, Color.Red);
+
+            //Draw abilities 
             foreach (Ability abil in abilities)
             {
                 if (abil != null)
                     abil.Draw(1.0f);
             }
 
+            //Draw dashes
             if (currentDash != null)
                 currentDash.Draw(renderData, moveData);
         }
@@ -143,7 +157,7 @@ namespace Cataclysmic
             renderData.Position += moveData.velocity * moveData.deltaTime * moveData.speedModifiers;
             renderData.ResetHitBox();
 
-            //Clamp
+            //Clamp movement to be on screen
             if (currentState != AttackState.GoOnScreen)
             {
                 renderData.SetX(MathHelper.Clamp(renderData.Position.X, 0, Game1.WIDTH));
@@ -163,16 +177,19 @@ namespace Cataclysmic
 
         public void Snipe()
         {
-            abilities.AddFirst(new CrackleBurst(renderData.Position, renderData.GetRotationToTarget(player.renderData.Position)));
+            //Shoot a thingy at player
+            CrackleBurst temp = new CrackleBurst(renderData.Position, renderData.GetRotationToTarget(player.renderData.Position));
+            temp.color = Color.Red;
+            abilities.AddFirst(temp);
         }
         public void IncreaseVelocity()
         {
-            //Get Direction
+            //Get Direction to target
             Vector2 direction = targetPos - renderData.Position;
             if (direction.Length() > 0.1f)
                 direction.Normalize();
 
-            //Get desired speed
+            //Get max speed we should accelerate to (desired speed)
             float distance = renderData.GetDistanceToTarget(targetPos);
             if (distance < slowRadius)
             {
@@ -181,12 +198,13 @@ namespace Cataclysmic
             else
                 desiredSpeed = moveData.maxSpeed;
 
-            //Get Target Velocity
+            //Get Target Velocity we should accelerate to
             targetVelocity = direction * desiredSpeed;
 
-            //How much to "steer" the thingy by
+            //How much to we need to increase velocity by to get to the target
             Vector2 steering = targetVelocity - moveData.velocity;
 
+            //How much we will allow to steer
             float maxSteeringThisFrame = turnSpeed * moveData.deltaTime;
             if (steering.Length() > maxSteeringThisFrame)
             {
@@ -194,8 +212,10 @@ namespace Cataclysmic
                 steering *= maxSteeringThisFrame;
             }
 
+            //add steering
             moveData.velocity += steering;
 
+            //Clamp to be under maxSpeed
             if (moveData.velocity.Length() > moveData.maxSpeed)
             {
                 moveData.velocity.Normalize();

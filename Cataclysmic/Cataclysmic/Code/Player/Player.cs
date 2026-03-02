@@ -33,9 +33,13 @@ namespace Cataclysmic
         public Player(Rectangle _destRect)
         {
             LoadContent();
-            renderData = new RenderComponent(Game1.self.texture_player, _destRect);
+            renderData = new RenderComponent(Game1.texture_playerIdle, _destRect);
             moveData = new MoveComponent();
-            
+
+            // Setup idle animation 32x32 2 frames
+            renderData.SetupAnimation(32, 32, 2);
+            renderData.Play();
+
             dashCooldown = new EventTimer(.5f);
             staminaBarRect = new Rectangle(5, 5, 200, 15);
             staminaRect = new Rectangle(5, 5, 1, 15);
@@ -93,7 +97,7 @@ namespace Cataclysmic
 
             if (Game1.MS.LeftButton == ButtonState.Pressed && Game1.oldMS.LeftButton == ButtonState.Released)
             {
-                abilities.AddFirst(new CrackleBurst(renderData.Position, angle));
+                abilities.AddFirst(new CrackleBurst(new Vector2(renderData.Position.X + renderData.hitBox.Width / 2, renderData.Position.Y + renderData.hitBox.Height / 2), angle));
             }
 
             if (dashCooldown.Done)
@@ -114,6 +118,18 @@ namespace Cataclysmic
             {
                 abil.Update(gameTime);
             }
+
+            // switch to walk and idle
+            if (moveData.velocity.Length() > 10f)
+            {
+                renderData.SetState(AnimState.Walk, Game1.texture_playerWalk, 10, 32, 32);
+            }
+            else
+            {
+                renderData.SetState(AnimState.Idle, Game1.texture_playerIdle, 2, 32, 32);
+            }
+
+            renderData.UpdateAnimation(gameTime);
             renderData.ResetHitBox();
         }
 
@@ -197,8 +213,8 @@ namespace Cataclysmic
 
         public void LoadContent()
         {
-            hitBoxTexture = Game1.self.texture_hitBox;
-            Square = Game1.self.texture_square;
+            hitBoxTexture = Game1.texture_hitBox;
+            Square = Game1.texture_square;
         }
 
         public void UpdatePosition(int ticks)

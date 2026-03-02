@@ -175,15 +175,91 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Abilities\Bullet 24x24 Part 5C Free.png">
-      <Name>Bullet 24x24 Part 5C Free</Name>
+    <Compile Include="Sprites\Player\cursor.png">
+      <Name>cursor</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Player\cursor.png">
-      <Name>cursor</Name>
+    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Free Part 1C.png">
+      <Name>Bullet 24x24 Free Part 1C</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Free Part 2C.png">
+      <Name>Bullet 24x24 Free Part 2C</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Free Part 3C.png">
+      <Name>Bullet 24x24 Free Part 3C</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Free Part 4C.png">
+      <Name>Bullet 24x24 Free Part 4C</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 10C Free.png">
+      <Name>Bullet 24x24 Part 10C Free</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 5C Free.png">
+      <Name>Bullet 24x24 Part 5C Free</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 6C Free.png">
+      <Name>Bullet 24x24 Part 6C Free</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 7C Free.png">
+      <Name>Bullet 24x24 Part 7C Free</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 8C Free.png">
+      <Name>Bullet 24x24 Part 8C Free</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 9C Free.png">
+      <Name>Bullet 24x24 Part 9C Free</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\Abilities\Explosions\sfx_exp_short_soft1.wav">
+      <Name>sfx_exp_short_soft1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\Abilities\Weapons\sfx_weapon_singleshot2.wav">
+      <Name>sfx_weapon_singleshot2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Player\Die.png">
+      <Name>Die</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Player\Idle.png">
+      <Name>Idle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Player\Walk.png">
+      <Name>Walk</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

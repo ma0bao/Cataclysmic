@@ -34,6 +34,7 @@ namespace Cataclysmic
         public static MouseState MS;
         long timer;
         long score;
+        public static float volume;
         public Cursor[] cursors;
         Player[] players;
 
@@ -56,18 +57,30 @@ namespace Cataclysmic
 
         // Textures
         #region
-        Texture2D texture_title;
-        Texture2D texture_blank;
-        Texture2D texture_credits;
-        Texture2D texture_grid;
-        Texture2D texture_demoPlayer;
-        Texture2D texture_enochianChain_1;
-        Texture2D texture_enochianChain_2;
-        Texture2D texture_menuSpriteSheet;
-        public static Texture2D texture_spinningBlade;
-        public Texture2D texture_player;
-        public Texture2D texture_hitBox;
-        public Texture2D texture_square;
+        public static Texture2D texture_title;
+        public static Texture2D texture_blank;
+        public static Texture2D texture_credits;
+        public static Texture2D texture_grid;
+        public static Texture2D texture_demoPlayer;
+        public static Texture2D texture_enochianChain_1;
+        public static Texture2D texture_enochianChain_2;
+        public static Texture2D texture_menuSpriteSheet;
+        public static Texture2D texture_bullets1C;
+        public static Texture2D texture_bullets2C;
+        public static Texture2D texture_bullets3C;
+        public static Texture2D texture_bullets4C;
+        public static Texture2D texture_bullets5C;
+        public static Texture2D texture_bullets6C;
+        public static Texture2D texture_bullets7C;
+        public static Texture2D texture_bullets8C;
+        public static Texture2D texture_bullets9C;
+        public static Texture2D texture_bullets10C;
+        public static Texture2D texture_player;
+        public static Texture2D texture_playerIdle;
+        public static Texture2D texture_playerWalk;
+        public static Texture2D texture_playerDie;
+        public static Texture2D texture_hitBox;
+        public static Texture2D texture_square;
 
         //Dash Textures
         #region
@@ -76,20 +89,27 @@ namespace Cataclysmic
 
         #endregion
 
-        //SoundEffects
+        // SoundEffects
         #region
 
-        //Dash Sounds
+        //  Dash Sounds
         #region
         public SoundEffect sound_Teleport;
         public SoundEffect sound_ChargeUp;
         public SoundEffect sound_whooshDash;
         #endregion
 
-        //UI Sounds
+        //  UI Sounds
         #region
         SoundEffect sound_HeavyClick;
         SoundEffect sound_HeavyStart;
+        #endregion
+
+        //  Abilities
+        #region
+        public static SoundEffect sfx_explosion_short1;
+
+        public static SoundEffect sfx_weapon_singleshot2;
         #endregion
 
         #endregion
@@ -132,6 +152,7 @@ namespace Cataclysmic
             oldKB = Keyboard.GetState();
             timer = 0;
             index = 0;
+            volume = 1.0f;
 
             players = new Player[4];
             cursors = new Cursor[4];
@@ -169,7 +190,20 @@ namespace Cataclysmic
             texture_enochianChain_1 = Content.Load<Texture2D>("Sprites/GUI/Enochian Chain 1");
             texture_enochianChain_2 = Content.Load<Texture2D>("Sprites/GUI/Enochian Chain 2");
             texture_grid = Content.Load<Texture2D>("Sprites/Environment/GridBackground");
-            texture_spinningBlade = Content.Load<Texture2D>("Sprites/Abilities/Bullet 24x24 Part 5C Free");
+            texture_bullets1C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 1C");
+            texture_bullets2C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 2C");
+            texture_bullets3C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 3C");
+            texture_bullets4C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 4C");
+            texture_bullets5C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 4C");
+            texture_bullets5C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 5C Free");
+            texture_bullets6C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 6C Free");
+            texture_bullets7C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 7C Free");
+            texture_bullets8C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 8C Free");
+            texture_bullets9C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 9C Free");
+            texture_bullets10C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 10C Free");
+
+            sfx_explosion_short1 = Content.Load<SoundEffect>("Sounds/Abilities/Explosions/sfx_exp_short_soft1");
+            sfx_weapon_singleshot2 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/sfx_weapon_singleshot2");
             #endregion
 
             //Sounds
@@ -198,6 +232,9 @@ namespace Cataclysmic
 
             font_credits = Content.Load<SpriteFont>("Fonts/CreditsFont");
             texture_player = Content.Load<Texture2D>("Sprites/Player/TestSpritePlayer");
+            texture_playerIdle = Content.Load<Texture2D>("Sprites/Player/Idle");
+            texture_playerWalk = Content.Load<Texture2D>("Sprites/Player/Walk");
+            texture_playerDie = Content.Load<Texture2D>("Sprites/Player/Die");
             texture_hitBox = Content.Load<Texture2D>("Hitbox");
             texture_square = Content.Load<Texture2D>("square");
 
@@ -345,7 +382,9 @@ namespace Cataclysmic
                 spriteBatch.Begin();
 
                 spriteBatch.Draw(texture_credits, new Vector2(WIDTH / 2 - texture_credits.Width / 2, 10), Color.White);
-                spriteBatch.DrawString(font_credits, "Developers >>> Evan Tupper, Zackariya Aggour, & Thomas Liew\n\nCursor Sprites >>> Ivan Voirol", new Vector2(10, 300), Color.White);
+                spriteBatch.DrawString(font_credits, "Developers >>> Evan Tupper, Zackariya Aggour, & Thomas Liew" +
+                    "\n\nCursor Sprites >>> Ivan Voirol" +
+                    "\nBullet 24x24 >>> BDragon1727", new Vector2(10, 300), Color.White);
                 spriteBatch.DrawString(font_credits, "Press Back to return...", new Vector2(WIDTH / 2 - 120, HEIGHT - 50), Color.White);
 
                 spriteBatch.End();
@@ -376,12 +415,15 @@ namespace Cataclysmic
                 spriteBatch.Begin();
                 spriteBatch.Draw(texture_grid, rect_screen, Color.White);
 
+                // Put all draw methods that are not exclusive from shaders here.
+
 
                 players[0].Draw(1.0f);
                 speedster.Draw(1.0f);
 
-                spriteBatch.End();
 
+                // End of shader section
+                spriteBatch.End();
                 GraphicsDevice.SetRenderTarget(null);
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, lightEffect);
@@ -391,12 +433,10 @@ namespace Cataclysmic
                 // Overlays
                 spriteBatch.Begin();
                 players[0].DrawEx(1.0f);
-                speedster.Draw(1.0f);
+                
+
+
                 spriteBatch.End();
-
-
-
-
             }
             else if (gameState.Equals(GameState.End))
             {
