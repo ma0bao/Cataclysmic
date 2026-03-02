@@ -138,6 +138,8 @@ namespace Cataclysmic
                 dashTimer.Restart(Game1.rand.Next(3, 7));
             }
 
+            base.Update(gameTime);
+
             //Clamp movement to be on screen
             if (currentState != AttackState.GoOnScreen)
             {
@@ -155,7 +157,6 @@ namespace Cataclysmic
                 abil.Update(gameTime);
             }
 
-            base.Update(gameTime);
         }
 
         public void Snipe()
