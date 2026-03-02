@@ -18,6 +18,7 @@ namespace Cataclysmic
         public abstract void Draw(float opacity);
 
         public abstract void DrawEx(float opacity); // Extra Renders, such as health bars. These are to be ignored by shaders and render on top of most elements except GUI.
+
         public abstract void Update(GameTime gameTime);
 
         public abstract void Damage(Entity cause, int amount);
