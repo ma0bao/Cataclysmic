@@ -5,7 +5,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/ma0bao/Cataclysmic">
-    <img src="/CataclysmicContent/Sprites/GUI/Cataclysmic Title.png" alt="Logo" width="80" height="80">
+    <img src="CataclysmicContent/Sprites/GUI/Cataclysmic Title.png" alt="Logo" width="80" height="80">
   </a>
 </div>
 
