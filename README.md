@@ -4,8 +4,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/ma0bao/Cataclysmic">
-    <img src="tree/master/Cataclysmic/CataclysmicContent/Sprites/GUI/Cataclysmic Title.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/ma0bao/Cataclysmic/tree/master/Cataclysmic">
+    <img src="CataclysmicContent/Sprites/GUI/Cataclysmic Title.png" alt="Logo" width="80" height="80">
   </a>
 </div>
 
