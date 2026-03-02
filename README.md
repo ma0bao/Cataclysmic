@@ -4,8 +4,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/ma0bao/Cataclysmic/tree/master/Cataclysmic">
-    <img src="CataclysmicContent/Sprites/GUI/Cataclysmic Title.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/ma0bao/Cataclysmic">
+    <img src="CataclysmicContent/Sprites/GUI/Cataclysmic%20Title.png" alt="Logo" width="80" height="80">
   </a>
 </div>
 
@@ -29,8 +29,8 @@ Read Me...
 <!-- CONTACT -->
 ## Contact
 
-Evan Tupper - [@evan.tupper.nj](https://www.instagram.com/evan.tupper.ny) - evanjtupper@gmail.com
-Zackariya Aggour
+Evan Tupper - [@evan.tupper.nj](https://www.instagram.com/evan.tupper.ny) - evanjtupper@gmail.com  
+Zackariya Aggour  
 Thomas Liew
 
 
