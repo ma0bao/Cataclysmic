@@ -10,6 +10,7 @@ namespace Cataclysmic
 {
     public enum AnimState { Idle, Walk, Die }
 
+    //Compositon > Inehritwuf 
     public class RenderComponent
     {
         public AnimState currentState;
