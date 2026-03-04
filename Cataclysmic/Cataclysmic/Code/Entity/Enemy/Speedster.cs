@@ -156,7 +156,7 @@ namespace Cataclysmic
             {
                 abil.Update(gameTime);
             }
-
+            renderData.ResetHitBox();
         }
 
         public void Snipe()
