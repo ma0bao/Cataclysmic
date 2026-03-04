@@ -28,5 +28,8 @@ namespace Cataclysmic
         public abstract Entity Clone();
 
         public abstract void ApplyEffect(Effect effect);
+
+        public abstract void OnCollision();
+
     }
 }

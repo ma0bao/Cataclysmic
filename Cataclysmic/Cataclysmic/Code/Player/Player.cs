@@ -323,5 +323,9 @@ namespace Cataclysmic
             return;
         }
 
+        public override void OnCollision()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
