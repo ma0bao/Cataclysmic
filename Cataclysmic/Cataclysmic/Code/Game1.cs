@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Cataclysmic
@@ -81,6 +82,20 @@ namespace Cataclysmic
         public static Texture2D texture_hitBox;
         public static Texture2D texture_square;
 
+
+        //Level Textures
+        #region
+        public static Texture2D texture_grid;
+        public static Texture2D texture_sand;
+        public static Texture2D texture_sandRight;
+        public static Texture2D texture_sandBottom;
+        public static Texture2D texture_sandLeft;
+        public static Texture2D texture_sandTop;
+        public static Texture2D texture_sandSE;
+        public static Texture2D texture_sandSW;
+        public static Texture2D texture_sandNW;
+        public static Texture2D texture_sandNE;
+        #endregion
         //Dash Textures
         #region
         public Texture2D texture_firePortal;
@@ -189,7 +204,6 @@ namespace Cataclysmic
             texture_menuSpriteSheet = Content.Load<Texture2D>("Sprites/GUI/MenuSpriteSheet");
             texture_enochianChain_1 = Content.Load<Texture2D>("Sprites/GUI/Enochian Chain 1");
             texture_enochianChain_2 = Content.Load<Texture2D>("Sprites/GUI/Enochian Chain 2");
-            texture_grid = Content.Load<Texture2D>("Sprites/Environment/GridBackground");
             texture_bullets1C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 1C");
             texture_bullets2C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 2C");
             texture_bullets3C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 3C");
@@ -206,6 +220,19 @@ namespace Cataclysmic
             sfx_weapon_singleshot2 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/sfx_weapon_singleshot2");
             #endregion
 
+            //Level Textures
+            #region
+            texture_grid = Content.Load<Texture2D>("Sprites/Environment/GridBackground");
+            texture_sand = Content.Load<Texture2D>("Sprites/Environment/Desert/sand");
+            texture_sandRight = Content.Load<Texture2D>("Sprites/Environment/Desert/sandRight");
+            texture_sandBottom = Content.Load<Texture2D>("Sprites/Environment/Desert/sandBottom");
+            texture_sandLeft = Content.Load<Texture2D>("Sprites/Environment/Desert/sandLeft");
+            texture_sandTop = Content.Load<Texture2D>("Sprites/Environment/Desert/sandTop");
+            texture_sandSE = Content.Load<Texture2D>("Sprites/Environment/Desert/sandSE");
+            texture_sandSW = Content.Load<Texture2D>("Sprites/Environment/Desert/sandSW");
+            texture_sandNW = Content.Load<Texture2D>("Sprites/Environment/Desert/sandNW");
+            texture_sandNE = Content.Load<Texture2D>("Sprites/Environment/Desert/sandNE");
+            #endregion
             //Sounds
             #region
             sound_HeavyClick = Content.Load<SoundEffect>("Sounds/UI/HeavyClick");
@@ -414,8 +441,12 @@ namespace Cataclysmic
 
 
                 GraphicsDevice.SetRenderTarget(sceneTarget);
+                //GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin();
-                spriteBatch.Draw(texture_grid, rect_screen, Color.White);
+                //spriteBatch.Draw(texture_grid, rect_screen, Color.White);
+
+                DrawLevel(CreateLevel(@"Content/Levels/desertbg.txt")); //CAN BE OPTiMIZED - Drawing uneeded stuff
+                DrawLevel(CreateLevel(@"Content/Levels/desert.txt"));  
 
                 // Put all draw methods that are not exclusive from shaders here.
 
@@ -453,6 +484,93 @@ namespace Cataclysmic
 
 
             base.Draw(gameTime);
+        }
+
+        public int[][] CreateLevel(string levelPath) //returns arr of level
+        {
+            // Sand - 0
+            // sandRight - 1
+            // sandBottom - 2
+            // sandLeft - 3
+            // sandTop - 4
+            // sandSE - 5
+            // sandSW - 6
+            // sandNW - 7
+            // sandNE - 8
+            //48 by 27 level
+            int[][] levelMap = new int[27][];
+            
+            try
+            {
+                using (StreamReader reader = new StreamReader(levelPath))
+                {
+                    for (int c = 0; c < levelMap.Length; c++)
+                    {
+                        levelMap[c] = new int[48];
+
+                        string line = reader.ReadLine();
+                        string[] parts = line.Split(' ');
+                        for (int r = 0; r < levelMap[c].Length; r++)
+                        {
+                            levelMap[c][r] = Convert.ToInt32(parts[r]);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("File could not be read: ");
+                Console.WriteLine(e.Message);
+            }
+
+            return levelMap;
+        }
+
+        public void DrawLevel(int[][] level) //40 by 40 tiles
+        {
+            int tileHeight = 40; 
+            int tileWidth = 40;
+            int y = 0;
+            for (int c = 0; c < level.Length; c++)
+            {
+                int x = 0;
+                for (int r = 0; r < level[c].Length; r++)
+                {
+                    int texture = level[c][r];
+                    switch (texture)
+                    {
+                        case 0:
+                            Game1.self.spriteBatch.Draw(texture_sand, new Rectangle(x,y, tileHeight, tileWidth), Color.White);
+                            break;
+                        case 1:
+                            Game1.self.spriteBatch.Draw(texture_sandRight, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
+                            break;
+                        case 2:
+                            Game1.self.spriteBatch.Draw(texture_sandBottom, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
+                            break;
+                        case 3:
+                            Game1.self.spriteBatch.Draw(texture_sandLeft, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
+                            break;
+                        case 4:
+                            Game1.self.spriteBatch.Draw(texture_sandTop, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
+                            break;
+                        case 5:
+                            Game1.self.spriteBatch.Draw(texture_sandSE, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
+                            break;
+                        case 6:
+                            Game1.self.spriteBatch.Draw(texture_sandSW, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
+                            break;
+                        case 7:
+                            Game1.self.spriteBatch.Draw(texture_sandNW, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
+                            break;
+                        case 8:
+                            Game1.self.spriteBatch.Draw(texture_sandNE, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
+                            break;
+                    }
+                    x += tileWidth;
+                }
+                y += tileHeight;
+            }
         }
     }
 }
