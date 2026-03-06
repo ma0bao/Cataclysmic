@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +16,16 @@ namespace Cataclysmic
         public Vector2 targetPos;
         public Vector2 targetVelocity;
         public float desiredSpeed;
-        public float turnSpeed;
+        public float turnSpeed = 1200;
 
         //How far away to start decelerating when close to target
         public int slowRadius = 150;
 
 
-        public Enemy()
+        public Enemy(Texture2D texture, Rectangle destRect)
         {
-            
+            renderData = new RenderComponent(texture, destRect);
+            moveData = new MoveComponent();
         }
         public override void Draw(float opacity)
         {
@@ -33,8 +35,13 @@ namespace Cataclysmic
         public override void DrawEx(float opacity) { return; } // Extra Renders, such as health bars. These are to be ignored by shaders and render on top of most elements except GUI.
         public override void Update(GameTime gameTime)
         {
+            moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             IncreaseVelocity();
             renderData.Position += moveData.velocity * moveData.deltaTime * moveData.speedModifiers;
+            //Clamp movement 
+            renderData.SetX(MathHelper.Clamp(renderData.Position.X, 0, Game1.WIDTH));
+            renderData.SetY(MathHelper.Clamp(renderData.Position.Y, 0, Game1.HEIGHT));
+
             renderData.ResetHitBox();
         }
 
@@ -83,8 +90,13 @@ namespace Cataclysmic
                 moveData.velocity *= moveData.maxSpeed;
             }
         }
-        
-        
+
+        public void SetNewTargetPosition(Vector2 pos)
+        {
+            targetPos = pos;
+            desiredSpeed = moveData.maxSpeed;
+        }
+
         public override bool IsAlive()
         {
             return true;

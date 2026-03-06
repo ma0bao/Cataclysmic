@@ -61,7 +61,6 @@ namespace Cataclysmic
         public static Texture2D texture_blank;
         public static Texture2D texture_credits;
         public static Texture2D texture_grid;
-        public static Texture2D texture_demoPlayer;
         public static Texture2D texture_enochianChain_1;
         public static Texture2D texture_enochianChain_2;
         public static Texture2D texture_menuSpriteSheet;
@@ -131,6 +130,7 @@ namespace Cataclysmic
 
         //Temporary testing objects
         Speedster speedster;
+        MagicLamp lamp;
 
         public Game1()
         {
@@ -245,7 +245,8 @@ namespace Cataclysmic
             chainEffect = Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Effects/ChainFade");
             #endregion
             players[0] = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
-            speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
+            //speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
+            lamp = new MagicLamp(new Rectangle(200, 200, 40, 40), players);
         }
         protected override void UnloadContent()
         {
@@ -331,7 +332,8 @@ namespace Cataclysmic
             else if (gameState.Equals(GameState.Game))
             {
                 players[0].Update(gameTime);
-                speedster.Update(gameTime);
+                //speedster.Update(gameTime);
+                lamp.Update(gameTime);
             }
             else if (gameState.Equals(GameState.End)) 
             { 
@@ -419,7 +421,8 @@ namespace Cataclysmic
 
 
                 players[0].Draw(1.0f);
-                speedster.Draw(1.0f);
+                //speedster.Draw(1.0f);
+                lamp.Draw(1.0f);
 
 
                 // End of shader section
