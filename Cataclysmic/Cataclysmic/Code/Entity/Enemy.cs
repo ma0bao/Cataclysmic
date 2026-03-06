@@ -112,5 +112,10 @@ namespace Cataclysmic
             return;
         }
 
+        public virtual void Spawn(Vector2 spawnpoint)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

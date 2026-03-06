@@ -73,6 +73,8 @@ namespace Cataclysmic
             Run = 4
         }
 
+        HealthComponent healthData;
+
         Player[] players;
         Player targetedPlayer;
 
@@ -81,6 +83,7 @@ namespace Cataclysmic
         const int AGRO_DISTANCE = 300;
         const float SHAKE_TIME = .8f;
         const float CONE_WIDTH_DEGREES = 45;
+        const int PROJECTILES_PER_FRAME = 5;
 
         EventTimer shakeTimer;
 
@@ -92,7 +95,7 @@ namespace Cataclysmic
         Vector2 sprayRange = new Vector2(150, 150);
         const float SANDSPEED = 500f;
 
-        const int MAX_SHAKE_AMT = 1;
+        const int MAX_SHAKE_AMT = 2;
 
         AttackState currentState = AttackState.Wander;
 
@@ -106,6 +109,7 @@ namespace Cataclysmic
             SetNewTargetPosition(renderData.GetRandomPoint());
             moveData.maxSpeed = 500;
             moveData.acceleration = 4000f;
+            healthData = new HealthComponent(50);
         }
         public override void Update(GameTime gameTime)
         {
@@ -169,7 +173,7 @@ namespace Cataclysmic
                     base.Update(gameTime);
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) < ANGER_DISTANCE)
                     currentState = AttackState.Charge;
-                if (Game1.rand.Next(1000) == 0)
+                if (Game1.rand.Next(180) == 0)
                 {
                     currentState = AttackState.Charge;
                 }
@@ -197,6 +201,11 @@ namespace Cataclysmic
                 baseVelocity.Normalize();
                 baseVelocity *= SANDSPEED;
 
+                float x = Game1.rand.Next(-MAX_SHAKE_AMT-1, MAX_SHAKE_AMT + 2);
+                float y = Game1.rand.Next(-MAX_SHAKE_AMT-1, MAX_SHAKE_AMT + 2);
+                Vector2 shake = new Vector2(x, y);
+                renderData.Position += shake;
+
                 float coneSize = MathHelper.ToRadians(CONE_WIDTH_DEGREES);
 
                 float randomAngle = (float)(Game1.rand.NextDouble() * coneSize) - (coneSize / 2f);
@@ -208,11 +217,11 @@ namespace Cataclysmic
                     baseVelocity.X * cos - baseVelocity.Y * sin,
                     baseVelocity.X * sin + baseVelocity.Y * cos
                     );
-                       
-                sands.Enqueue(new Sand(frictionMultiplier, renderData.Position, rotatedVelocity));
-                sands.Enqueue(new Sand(frictionMultiplier, renderData.Position, rotatedVelocity));
-                sands.Enqueue(new Sand(frictionMultiplier, renderData.Position, rotatedVelocity));
-                sands.Enqueue(new Sand(frictionMultiplier, renderData.Position, rotatedVelocity));
+
+                for (int i = 0; i < PROJECTILES_PER_FRAME; i++)
+                {
+                    sands.Enqueue(new Sand(frictionMultiplier, renderData.Position, rotatedVelocity));
+                }
 
                 frictionMultiplier += 0.01f;
                 if (frictionMultiplier >= 3f)
@@ -240,9 +249,15 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
+            renderData.rotation = renderData.GetRotationToTarget(renderData.Position + moveData.velocity);
             base.Draw(opacity);
             foreach (Sand s in sands)
                 s.Draw();
+        }
+
+        public override bool IsAlive()
+        {
+            return healthData.isAlive && sands.Count == 0;
         }
     }
 }
