@@ -45,6 +45,17 @@ namespace Cataclysmic
             renderData.ResetHitBox();
         }
 
+        public virtual void UpdatePos(int ticks)
+        {
+            IncreaseVelocity();
+            renderData.Position += moveData.velocity * moveData.deltaTime * moveData.speedModifiers * ticks;
+            //Clamp movement 
+            renderData.SetX(MathHelper.Clamp(renderData.Position.X, 0, Game1.WIDTH));
+            renderData.SetY(MathHelper.Clamp(renderData.Position.Y, 0, Game1.HEIGHT));
+
+            renderData.ResetHitBox();
+        }
+
         public override void Damage(Entity cause, int amount)
         {
             

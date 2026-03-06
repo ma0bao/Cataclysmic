@@ -85,7 +85,6 @@ namespace Cataclysmic
 
         //Level Textures
         #region
-        public static Texture2D texture_grid;
         public static Texture2D texture_sand;
         public static Texture2D texture_sandRight;
         public static Texture2D texture_sandBottom;
@@ -145,7 +144,7 @@ namespace Cataclysmic
 
         //Temporary testing objects
         Speedster speedster;
-        MagicLamp lamp;
+        Enemy lamp;
 
         public Game1()
         {
@@ -273,7 +272,7 @@ namespace Cataclysmic
             #endregion
             players[0] = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             //speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
-            lamp = new MagicLamp(new Rectangle(200, 200, 40, 40), players);
+            lamp = new ShotgunLamp(new Rectangle(200, 200, 40, 40), players);
         }
         protected override void UnloadContent()
         {
