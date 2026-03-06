@@ -45,5 +45,22 @@ namespace Cataclysmic
             }
             return direction;
         }
+
+        public void ApplyFriction()
+        {
+            if (velocity.LengthSquared() < 0.001f)
+            {
+                velocity = Vector2.Zero;
+                return;
+            }
+
+            Vector2 frictionForce = -Vector2.Normalize(velocity) * friction * deltaTime;
+
+            if (frictionForce.Length() > velocity.Length())
+                velocity = Vector2.Zero;
+            else
+                velocity += frictionForce;
+        }
+
     }
 }

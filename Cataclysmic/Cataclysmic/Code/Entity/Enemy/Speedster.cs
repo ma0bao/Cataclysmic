@@ -30,11 +30,10 @@ namespace Cataclysmic
         }
 
         AttackState currentState = AttackState.Wander;
-        public Speedster(Rectangle _destRect, Player _player)
+        public Speedster(Rectangle _destRect, Player _player) : base(Game1.texture_player, _destRect)
         {
             //Components
             player = _player;
-            renderData = new RenderComponent(Game1.texture_player, _destRect);
             moveData = new MoveComponent(_maxSpeed: 500, _acceleration: 1200);
 
             //Speeds
@@ -140,12 +139,7 @@ namespace Cataclysmic
 
             base.Update(gameTime);
 
-            //Clamp movement to be on screen
-            if (currentState != AttackState.GoOnScreen)
-            {
-                renderData.SetX(MathHelper.Clamp(renderData.Position.X, 0, Game1.WIDTH));
-                renderData.SetY(MathHelper.Clamp(renderData.Position.Y, 0, Game1.HEIGHT));
-            }
+            
 
             //Update stuffs
             if (currentDash != null)
@@ -156,7 +150,7 @@ namespace Cataclysmic
             {
                 abil.Update(gameTime);
             }
-
+            renderData.ResetHitBox();
         }
 
         public void Snipe()

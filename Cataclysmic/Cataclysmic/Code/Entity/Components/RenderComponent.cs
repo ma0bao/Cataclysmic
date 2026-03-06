@@ -33,6 +33,7 @@ namespace Cataclysmic
                 _destRect = value;
                 _position.X = value.X;
                 _position.Y = value.Y;
+                ResetHitBox();
             }
         }
         public Rectangle _destRect;
@@ -44,6 +45,7 @@ namespace Cataclysmic
                 _position = value;
                 _destRect.X = (int)value.X;
                 _destRect.Y = (int)value.Y;
+                ResetHitBox();
             }
         }
         public Vector2 _position;
