@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="Code\Ability\Ability.cs" />
     <Compile Include="Code\Ability\Attacks\CrackleBurst.cs" />
+    <Compile Include="Code\Ability\Attacks\Revolver.cs" />
     <Compile Include="Code\Ability\Dashes\BlinkDash.cs" />
     <Compile Include="Code\Ability\Dashes\ChargeUpDash.cs" />
     <Compile Include="Code\Ability\Dashes\IDash.cs" />
