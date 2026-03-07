@@ -73,8 +73,6 @@ namespace Cataclysmic
             Run = 4
         }
 
-        HealthComponent healthData;
-
         Player[] players;
         Player targetedPlayer;
 
@@ -257,7 +255,7 @@ namespace Cataclysmic
 
         public override bool IsAlive()
         {
-            return healthData.isAlive && sands.Count == 0;
+            return base.IsAlive() && sands.Count == 0;
         }
     }
 }

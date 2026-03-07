@@ -71,8 +71,6 @@ namespace Cataclysmic
             Run = 4
         }
 
-        HealthComponent healthData;
-
         Player[] players;
         Player targetedPlayer;
 
@@ -85,12 +83,14 @@ namespace Cataclysmic
 
         EventTimer shakeTimer;
 
-        int distanceToBeAtTarget = 15;
+        int distanceToBeAtTarget = 30;
 
         Vector2 sprayRange = new Vector2(150, 150);
         const float SANDSPEED = 1200f;
 
         const int MAX_SHAKE_AMT = 2;
+
+        Vector2 baseVelocity;
 
         AttackState currentState = AttackState.Wander;
         Queue<Sand> sands = new Queue<Sand>();
@@ -104,6 +104,7 @@ namespace Cataclysmic
             moveData.maxSpeed = 500;
             moveData.acceleration = 4000f;
             healthData = new HealthComponent(50);
+            //slowRadius = 0;
         }
         public override void Update(GameTime gameTime)
         {
@@ -119,7 +120,7 @@ namespace Cataclysmic
             }
             else if (currentState == AttackState.Follow)
             {
-                moveData.maxSpeed = 300f;
+                moveData.maxSpeed = 500f;
                 renderData.color = Color.Red;
 
                 float distance = renderData.GetDistanceToTarget(targetedPlayer.renderData.Position);
@@ -172,12 +173,8 @@ namespace Cataclysmic
             }
             else if (currentState == AttackState.Follow)
             {
-                UpdatePos(2);
-                if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) > FOLLOW_DISTANCE)
-                {
+                if(renderData.GetDistanceToTarget(targetPos) > distanceToBeAtTarget)
                     base.Update(gameTime);
-                }
-                UpdatePos(-2);
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) < ANGER_DISTANCE)
                     currentState = AttackState.Charge;
                 if (Game1.rand.Next(500) == 0)
@@ -187,6 +184,7 @@ namespace Cataclysmic
             }
             else if (currentState == AttackState.Charge)
             {
+                IncreaseVelocity();
                 if (shakeTimer == null)
                     shakeTimer = new EventTimer(SHAKE_TIME);
 
@@ -200,24 +198,29 @@ namespace Cataclysmic
                 {
                     shakeTimer = null;
                     currentState = AttackState.Spray;
+                    
                 }
             }
             else if (currentState == AttackState.Spray)
             {
-
+                IncreaseVelocity();
                 float x = Game1.rand.Next(-MAX_SHAKE_AMT - 1, MAX_SHAKE_AMT + 2);
                 float y = Game1.rand.Next(-MAX_SHAKE_AMT - 1, MAX_SHAKE_AMT + 2);
                 Vector2 shake = new Vector2(x, y);
+
                 renderData.Position += shake;
 
                 for (int i = 0; i < PROJECTILES_PER_FRAME; i++)
                 {
-                    Vector2 baseVelocity = moveData.velocity;
-                baseVelocity.Normalize();
-                baseVelocity *= SANDSPEED;
+                    baseVelocity = targetedPlayer.renderData.Position - renderData.Position;
+
+                    if (baseVelocity.LengthSquared() > 0)
+                        baseVelocity.Normalize();
+
+                    baseVelocity *= SANDSPEED;
 
 
-                float coneSize = MathHelper.ToRadians(CONE_WIDTH_DEGREES);
+                    float coneSize = MathHelper.ToRadians(CONE_WIDTH_DEGREES);
 
                 float randomAngle = (float)(Game1.rand.NextDouble() * coneSize) - (coneSize / 2f);
 
@@ -266,7 +269,7 @@ namespace Cataclysmic
 
         public override bool IsAlive()
         {
-            return healthData.isAlive && sands.Count == 0;
+            return base.IsAlive() && sands.Count == 0;
         }
     }
 }

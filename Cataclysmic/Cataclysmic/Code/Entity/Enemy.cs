@@ -11,6 +11,7 @@ namespace Cataclysmic
     {
         public RenderComponent renderData;
         public MoveComponent moveData;
+        public HealthComponent healthData;
 
         //Wandering 
         public Vector2 targetPos;
@@ -26,6 +27,7 @@ namespace Cataclysmic
         {
             renderData = new RenderComponent(texture, destRect);
             moveData = new MoveComponent();
+            healthData = new HealthComponent(50);
         }
         public override void Draw(float opacity)
         {
@@ -58,7 +60,7 @@ namespace Cataclysmic
 
         public override void Damage(Entity cause, int amount)
         {
-            
+            healthData.isAlive = healthData.Damage(cause, amount);
         }
 
         public virtual void IncreaseVelocity()
@@ -110,7 +112,7 @@ namespace Cataclysmic
 
         public override bool IsAlive()
         {
-            return true;
+            return healthData.isAlive;
         }
 
         public override Entity Clone()
