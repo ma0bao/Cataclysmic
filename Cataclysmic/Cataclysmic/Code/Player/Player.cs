@@ -106,8 +106,8 @@ namespace Cataclysmic
 
             if (Game1.MS.LeftButton == ButtonState.Pressed && Game1.oldMS.LeftButton == ButtonState.Released)
             {
-                abilities.AddFirst(new CrackleBurst(new Vector2(renderData.Position.X + renderData.hitBox.Width / 2, renderData.Position.Y + renderData.hitBox.Height / 2), angle));
-              //  abilities.AddFirst(new Revolver(new Vector2(renderData.Position.X + renderData.hitBox.Width / 2, renderData.Position.Y + renderData.hitBox.Height / 2), angle));
+               // abilities.AddFirst(new CrackleBurst(new Vector2(renderData.Position.X + renderData.hitBox.Width / 2, renderData.Position.Y + renderData.hitBox.Height / 2), angle));
+                abilities.AddFirst(new Revolver(renderData.Position, angle));
             }
 
             if (dashCooldown.Done)
@@ -255,8 +255,8 @@ namespace Cataclysmic
         {
             int MouseX = Mouse.GetState().X;
             int MouseY = Mouse.GetState().Y;
-            float directionX = MouseX - (renderData.Position.X + renderData.DestRect.Width / 2);
-            float directionY = MouseY - (renderData.Position.Y + renderData.DestRect.Height / 2);
+            float directionX = MouseX - renderData.Position.X;
+            float directionY = MouseY - renderData.Position.Y;
 
             return (float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f));
         }

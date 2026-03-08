@@ -18,7 +18,7 @@ namespace Cataclysmic
         //When dealing with bullets, length is the "x" while width is the "y" if the bullet is facing to the right
         public const int WIDTH = 20;
         public const int LENGTH = 40;
-        public const float SPEED = .1f;
+        public const float SPEED = 10f;
         Vector2 Position;
         public Rectangle Hitbox;
         public float angle;
@@ -31,7 +31,7 @@ namespace Cataclysmic
         public Revolver(Vector2 position, float angle)
         {
             angle = this.angle = angle - (float)Math.PI * 0.5f; // rotate by 90degrees
-            Hitbox = new Rectangle((int)position.X, (int)Position.Y - LENGTH * 2, LENGTH, WIDTH);
+            Hitbox = new Rectangle((int)position.X - WIDTH / 2, (int)position.Y - LENGTH / 2, LENGTH, WIDTH);
             Position = position;
             color = Color.White;
             timer = 0;
@@ -55,6 +55,8 @@ namespace Cataclysmic
 
             Game1.self.spriteBatch.Draw(Game1.texture_bullets3C, Hitbox, new Rectangle(frameX, 48, 24, 24), this.color, angle, new Vector2(12, 12), SpriteEffects.None, 1);
 
+            // Debug: Draw hitbox outline
+            Game1.self.spriteBatch.Draw(Game1.texture_hitBox, Hitbox, Color.Red * 0.5f);
         }
         public override bool IsAlive()
         {
