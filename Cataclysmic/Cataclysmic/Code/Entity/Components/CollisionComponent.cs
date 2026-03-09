@@ -1,5 +1,9 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Cataclysmic
 {
@@ -48,9 +52,9 @@ namespace Cataclysmic
         // center = center position in world
         public static CollisionComponent CreateRect(Vector2 center, float width, float height)
         {
-            float hw = width / 2;  
-            float hh = height / 2; 
-            
+            float hw = width / 2;
+            float hh = height / 2;
+
             return new CollisionComponent(center, new Vector2[] {
                 new Vector2(-hw, -hh), // top left
                 new Vector2(hw, -hh),  // top right
@@ -185,10 +189,10 @@ namespace Cataclysmic
                 }
 
                 // Calculate how much the shadows overlap. get min overlap
-                float depth = Math.Min(maxA - minB, maxB - minA);
-                if (depth < minDepth)
+                float overlap = Math.Min(maxA - minB, maxB - minA);
+                if (overlap < minDepth)
                 {
-                    minDepth = depth;
+                    minDepth = overlap;
                     minNormal = axis;
                 }
                 //minNormal * minDepth is the shortest path allegedly
@@ -208,7 +212,7 @@ namespace Cataclysmic
                 if (len > 0)
                     axis /= len;
 
-                
+
                 float minA, maxA, minB, maxB;
                 ProjectPolygon(worldVertices, axis, out minA, out maxA);
                 ProjectPolygon(other.worldVertices, axis, out minB, out maxB);
@@ -220,10 +224,10 @@ namespace Cataclysmic
                     return false;
                 }
 
-                float depth = Math.Min(maxA - minB, maxB - minA);
-                if (depth < minDepth)
+                float overlap = Math.Min(maxA - minB, maxB - minA);
+                if (overlap < minDepth)
                 {
-                    minDepth = depth;
+                    minDepth = overlap;
                     minNormal = axis;
                 }
             }
@@ -271,6 +275,30 @@ namespace Cataclysmic
             }
 
             return new Rectangle((int)minX, (int)minY, (int)(maxX - minX), (int)(maxY - minY));
+        }
+
+        // Draws the hitbox outline for debugging
+        // color: outline color (default red at 80% opacity)
+        // thickness: line thickness in pixels (default 2)
+        public void DrawDebug(float thickness = 2f)
+        {
+            Color drawColor = Color.Red * 0.5f;
+
+            for (int i = 0; i < worldVertices.Length; i++)
+            {
+                Vector2 start = worldVertices[i];
+                Vector2 end = worldVertices[(i + 1) % worldVertices.Length];
+                DrawLine(start, end, drawColor, thickness);
+            }
+        }
+
+        private void DrawLine(Vector2 start, Vector2 end, Color color, float thickness)
+        {
+            Vector2 edge = end - start;
+            float angle = (float)Math.Atan2(edge.Y, edge.X);
+            float length = edge.Length();
+
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, start, null, color, angle, Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 1);
         }
     }
 }

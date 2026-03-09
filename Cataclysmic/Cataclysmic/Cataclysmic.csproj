@@ -78,6 +78,7 @@
     <Compile Include="Code\Ability\Dashes\ChargeUpDash.cs" />
     <Compile Include="Code\Ability\Dashes\IDash.cs" />
     <Compile Include="Code\Entity\Components\AITargetComponent.cs" />
+    <Compile Include="Code\Entity\Components\CollisionComponent.cs" />
     <Compile Include="Code\Entity\Components\HealthComponent.cs" />
     <Compile Include="Code\Entity\Components\RenderComponent.cs" />
     <Compile Include="Code\Entity\Enemy\Speedster.cs" />

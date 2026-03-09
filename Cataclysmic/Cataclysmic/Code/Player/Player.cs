@@ -15,7 +15,7 @@ namespace Cataclysmic
         public RenderComponent renderData;
         public MoveComponent moveData;
         public HealthComponent healthData;
-        Texture2D hitBoxTexture;
+        public CollisionComponent Hitbox;
         Texture2D Square;
 
         Rectangle staminaBarRect;
@@ -34,7 +34,9 @@ namespace Cataclysmic
         IDash currentDash;
         EventTimer dashCooldown;
 
+        //Abilities
         LinkedList<Ability> abilities;
+        Dictionary<string, EventTimer> abilityCooldowns;
 
         public Player(Rectangle _destRect)
         {
@@ -54,9 +56,34 @@ namespace Cataclysmic
             healthBar = new Rectangle(305, 5, healthData.currentHealth * HEALTHWIDTH, 15);
             dashCooldown.Unpause();
             angle = 0.0f;
-            renderData.ResetHitBox();
+
+            Hitbox = CollisionComponent.CreateRect(renderData.Position, _destRect.Width - 10, _destRect.Height - 30);
 
             abilities = new LinkedList<Ability>();
+
+            // Add abilities here: (start ready to use)
+            abilityCooldowns = new Dictionary<string, EventTimer>();
+            abilityCooldowns["Revolver"] = new EventTimer(Revolver.COOLDOWN);
+            abilityCooldowns["CrackleBurst"] = new EventTimer(CrackleBurst.COOLDOWN);
+            foreach (EventTimer cd in abilityCooldowns.Values) cd.Done = true;
+        }
+
+        // check if ability is off cooldown, if so, restart cooldown and return true
+        public bool TryUseAbility(string abilityName)
+        {
+            EventTimer timer = abilityCooldowns[abilityName];
+            if (timer.Done)
+            {
+                timer.Restart();
+                return true;
+            }
+            return false;
+        }
+
+        // for upgrades later
+        public void SetAbilityCooldown(string abilityName, float seconds)
+        {
+            abilityCooldowns[abilityName].SetTime(seconds);
         }
 
         public override void Update(GameTime gameTime)
@@ -104,12 +131,20 @@ namespace Cataclysmic
             renderData.Position = new Vector2(newX, newY);
             #endregion
 
-            if (Game1.MS.LeftButton == ButtonState.Pressed && Game1.oldMS.LeftButton == ButtonState.Released)
+            // Attacks/Abilities
+            if (Game1.MS.LeftButton == ButtonState.Pressed)
             {
-               // abilities.AddFirst(new CrackleBurst(new Vector2(renderData.Position.X + renderData.hitBox.Width / 2, renderData.Position.Y + renderData.hitBox.Height / 2), angle));
-                abilities.AddFirst(new Revolver(renderData.Position, angle));
+                if (TryUseAbility("Revolver"))
+                    abilities.AddFirst(new Revolver(renderData.Position, angle));
             }
 
+            if (Game1.self.KB.IsKeyDown(Keys.Q) && !Game1.self.oldKB.IsKeyDown(Keys.Q))
+            {
+                if (TryUseAbility("CrackleBurst"))
+                    abilities.AddFirst(new CrackleBurst(renderData.Position, angle));
+            }
+
+            // Dashes
             if (dashCooldown.Done)
             {
                 ScanForDash(gamePad);
@@ -124,6 +159,7 @@ namespace Cataclysmic
                 }
             }
             dashCooldown.Update();
+            foreach (EventTimer cd in abilityCooldowns.Values) cd.Update();
             foreach (Ability abil in abilities)
             {
                 abil.Update(gameTime);
@@ -140,7 +176,7 @@ namespace Cataclysmic
             }
 
             renderData.UpdateAnimation(gameTime);
-            renderData.ResetHitBox();
+            Hitbox.Update(renderData.Position, angle);
         }
 
         public void ScanForDash(GamePadState gamePad)
@@ -223,7 +259,6 @@ namespace Cataclysmic
 
         public void LoadContent()
         {
-            hitBoxTexture = Game1.texture_hitBox;
             Square = Game1.texture_square;
         }
 
@@ -285,7 +320,7 @@ namespace Cataclysmic
             }
 
 
-            Game1.self.spriteBatch.Draw(hitBoxTexture, renderData.hitBox, Color.White);
+            Hitbox.DrawDebug();
 
         }
 
