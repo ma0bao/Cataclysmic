@@ -284,7 +284,7 @@ namespace Cataclysmic
         {
             //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             //this.Exit();
-            KeyboardState KB = Keyboard.GetState();
+            KB = Keyboard.GetState();
             MS = Mouse.GetState();
             if (KB.IsKeyDown(Keys.Escape))
                 this.Exit();

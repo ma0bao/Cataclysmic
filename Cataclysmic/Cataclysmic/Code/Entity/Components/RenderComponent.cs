@@ -137,9 +137,8 @@ namespace Cataclysmic
 
         public float GetRotationToTarget(Vector2 target)
         {
-
-            float directionX = target.X - (Position.X + DestRect.Width / 2);
-            float directionY = target.Y - (Position.Y + DestRect.Height / 2);
+            float directionX = target.X - Position.X;
+            float directionY = target.Y - Position.Y;
 
             return (float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f));
         }
