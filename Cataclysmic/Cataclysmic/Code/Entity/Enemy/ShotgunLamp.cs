@@ -95,9 +95,10 @@ namespace Cataclysmic
 
         float frictionMultiplier = 5;
 
-        public ShotgunLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_player, destRect)
+        public ShotgunLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_flyingLamp, destRect)
         {
             players = targets;
+            
             SetNewTargetPosition(renderData.GetRandomPoint());
             moveData.maxSpeed = 500;
             moveData.acceleration = 4000f;
@@ -262,7 +263,16 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
-            base.Draw(opacity);
+            // base.Draw(opacity);
+            // Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, rotation, origin, effects, layerDepth);
+            if (renderData.rotation > Math.PI) // Fix Later
+            {
+                //renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipVertically;
+            }
+            else {
+                renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
+            }
+            Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation - MathHelper.ToRadians(90), renderData.origin, renderData.effects, renderData.layerDepth);
             foreach (Sand s in sands)
                 s.Draw();
         }

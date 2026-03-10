@@ -82,6 +82,7 @@ namespace Cataclysmic
         public static Texture2D texture_playerDie;
         public static Texture2D texture_hitBox;
         public static Texture2D texture_square;
+        public static Texture2D texture_flyingLamp;
 
 
         //Level Textures
@@ -263,6 +264,7 @@ namespace Cataclysmic
             texture_playerDie = Content.Load<Texture2D>("Sprites/Player/Die");
             texture_hitBox = Content.Load<Texture2D>("Hitbox");
             texture_square = Content.Load<Texture2D>("square");
+            texture_flyingLamp = Content.Load<Texture2D>("Sprites/Enemies/FlyingLamp");
 
             //Effects
             #region
