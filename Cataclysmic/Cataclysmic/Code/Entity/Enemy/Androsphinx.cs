@@ -21,21 +21,21 @@ namespace Cataclysmic
 
         EventTimer agroCooldown = new EventTimer(2);
         EventTimer attackCooldown = new EventTimer(1);
-        EventTimer shakeTimer = new EventTimer(.1f);
+        EventTimer shakeTimer = new EventTimer(.4f);
 
         Rectangle top = new Rectangle(Game1.BOUNDS.X, Game1.BOUNDS.Y, Game1.BOUNDS.Width, 150);
         Rectangle bottom = new Rectangle(0, Game1.BOUNDS.Bottom-150, Game1.BOUNDS.Width, 150);
 
         Rectangle currentRegion;
+        Rectangle oppisiteRegion;
 
         Player[] players;
         Player targetedPlayer;
         Player lastTargetedPlayer;
 
-        Vector2 newTarget;
-
         const int AGRO_DISTANCE = 300;
-        const int ATTACK_DISTANCE = 25;
+
+        const int MAX_SHAKE_AMT = 2;
 
         public Androsphinx(Rectangle destRect, Player[] targets) : base(Game1.texture_player, destRect)
         {
@@ -52,16 +52,19 @@ namespace Cataclysmic
 
             if (currentState == AttackState.Wander)
             {
+                renderData.color = Color.AliceBlue;
                 slowRadius = 150;
                 turnSpeed = 2000f;
                 moveData.maxSpeed = 500f;
                 if (renderData.GetDistanceToTarget(targetPos) < distanceToBeAtTarget)
+                {
                     SetNewTargetPosition(renderData.GetRandomPoint());
+                }
             }
             else if (currentState == AttackState.Track)
             {
                 slowRadius = 30;
-                turnSpeed = 2500;
+                turnSpeed = 2000f;
                 moveData.maxSpeed = 500f;
 
                 SetNewTargetPosition(new Vector2(lastTargetedPlayer.renderData.Position.X, currentRegion.Center.Y));
@@ -72,10 +75,12 @@ namespace Cataclysmic
             }
             else if (currentState == AttackState.Dash)
             {
+                SetNewTargetPosition(new Vector2(targetPos.X, oppisiteRegion.Center.Y));
+                renderData.color = Color.Red;
                 moveData.maxSpeed = 90000f;
                 turnSpeed = 5000f;
-                if (renderData.GetDistanceToTarget(targetPos) < distanceToBeAtTarget+50)
-                    currentState = AttackState.Track;
+                if (renderData.hitBox.Intersects(oppisiteRegion))
+                    currentState = AttackState.Wander;
             }
 
             #endregion
@@ -134,24 +139,10 @@ namespace Cataclysmic
             else if (currentState == AttackState.Track)
             {
                 base.Update(gameTime);
-                Vector2 center = new Vector2(Game1.WIDTH/2, Game1.HEIGHT / 2);
-                if (currentRegion.Equals(top))
+                if (Game1.rand.Next(200) == 0)
                 {
-                    if (lastTargetedPlayer.renderData.Position.Y < center.Y)
-                    {
-                        currentRegion = bottom;
-                        currentState = AttackState.Dash;
-                        SetNewTargetPosition(new Vector2(targetPos.X, currentRegion.Center.Y));
-                    }
-                }
-                else
-                {
-                    if (lastTargetedPlayer.renderData.Position.Y > center.Y)
-                    {
-                        currentRegion = top;
-                        currentState = AttackState.Dash;
-                        SetNewTargetPosition(new Vector2(targetPos.X, currentRegion.Center.Y));
-                    }
+                    shakeTimer.Restart();
+                    currentState = AttackState.Shake;
                 }
             }
             else if (currentState == AttackState.Dash)
@@ -159,6 +150,25 @@ namespace Cataclysmic
                 if (lastTargetedPlayer.renderData.hitBox.Intersects(Swipe()))
                     lastTargetedPlayer.healthData.Damage(this, 3);
                 base.Update(gameTime);
+            }
+            else if (currentState == AttackState.Shake)
+            {
+
+                float x = Game1.rand.Next(-MAX_SHAKE_AMT, MAX_SHAKE_AMT + 1);
+                float y = Game1.rand.Next(-MAX_SHAKE_AMT, MAX_SHAKE_AMT + 1);
+                Vector2 shake = new Vector2(x, y);
+                renderData.Position += shake;
+
+                if (shakeTimer.Done)
+                {
+                    if (currentRegion.Equals(top))
+                        oppisiteRegion = bottom;
+                    else if (currentRegion.Equals(bottom))
+                        oppisiteRegion = top;
+                    currentState = AttackState.Dash;
+                }
+
+                shakeTimer.Update();
             }
             #endregion
             //ADD SHAKE

@@ -19,7 +19,7 @@ namespace Cataclysmic
     {
         public static int WIDTH = 1920;
         public static int HEIGHT = 1080;
-        public static Rectangle BOUNDS = new Rectangle(50, 50, WIDTH-50, HEIGHT-50);
+        public static Rectangle BOUNDS = new Rectangle(50, 50, WIDTH-70, HEIGHT-70);
         public static Color ambientColor = new Color(241, 220, 170);
         public static Game1 self;
         GraphicsDeviceManager graphics;
@@ -272,7 +272,7 @@ namespace Cataclysmic
             #endregion
             players[0] = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             //speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
-            testEnemy = new Androsphinx(new Rectangle(200, 200, 40, 40), players);
+            testEnemy = new ShotgunLamp(new Rectangle(200, 200, 40, 40), players);
         }
         protected override void UnloadContent()
         {
