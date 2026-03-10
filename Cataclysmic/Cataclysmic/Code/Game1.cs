@@ -19,6 +19,7 @@ namespace Cataclysmic
     {
         public static int WIDTH = 1920;
         public static int HEIGHT = 1080;
+        public static Rectangle BOUNDS = new Rectangle(50, 50, WIDTH-50, HEIGHT-50);
         public static Color ambientColor = new Color(241, 220, 170);
         public static Game1 self;
         GraphicsDeviceManager graphics;
@@ -142,9 +143,8 @@ namespace Cataclysmic
         public Microsoft.Xna.Framework.Graphics.Effect timeEffect;
         public Microsoft.Xna.Framework.Graphics.Effect chainEffect;
 
-        //Temporary testing objects
-        Speedster speedster;
-        Enemy lamp;
+        //Temporary testing Object
+        Enemy testEnemy;
 
         public Game1()
         {
@@ -272,7 +272,7 @@ namespace Cataclysmic
             #endregion
             players[0] = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             //speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
-            lamp = new ShotgunLamp(new Rectangle(200, 200, 40, 40), players);
+            testEnemy = new Androsphinx(new Rectangle(200, 200, 40, 40), players);
         }
         protected override void UnloadContent()
         {
@@ -359,7 +359,7 @@ namespace Cataclysmic
             {
                 players[0].Update(gameTime);
                 //speedster.Update(gameTime);
-                lamp.Update(gameTime);
+                testEnemy.Update(gameTime);
             }
             else if (gameState.Equals(GameState.End)) 
             { 
@@ -452,7 +452,7 @@ namespace Cataclysmic
 
                 players[0].Draw(1.0f);
                 //speedster.Draw(1.0f);
-                lamp.Draw(1.0f);
+                testEnemy.Draw(1.0f);
 
 
                 // End of shader section

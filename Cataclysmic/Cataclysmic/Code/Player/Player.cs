@@ -24,7 +24,7 @@ namespace Cataclysmic
         //Healthbar
         Rectangle healthBarRect;
         Rectangle healthBar;
-        int HEALTHWIDTH = 20;
+        int HEALTHWIDTH = 200;
 
         float angle;
 
@@ -41,7 +41,7 @@ namespace Cataclysmic
             LoadContent();
             renderData = new RenderComponent(Game1.texture_playerIdle, _destRect);
             moveData = new MoveComponent();
-            healthData = new HealthComponent(10);
+            healthData = new HealthComponent(50);
 
             // Setup idle animation 32x32 2 frames
             renderData.SetupAnimation(32, 32, 2);
@@ -50,8 +50,8 @@ namespace Cataclysmic
             dashCooldown = new EventTimer(.5f);
             staminaBarRect = new Rectangle(5, 5, 200, 15);
             staminaRect = new Rectangle(5, 5, 1, 15);
-            healthBarRect = new Rectangle(305, 5, healthData.maxHealth * HEALTHWIDTH, 15);
-            healthBar = new Rectangle(305, 5, healthData.currentHealth * HEALTHWIDTH, 15);
+            healthBarRect = new Rectangle(305, 5, HEALTHWIDTH, 15);
+            healthBar = new Rectangle(305, 5, HEALTHWIDTH, 15);
             dashCooldown.Unpause();
             angle = 0.0f;
             renderData.ResetHitBox();
@@ -295,7 +295,7 @@ namespace Cataclysmic
             Game1.self.spriteBatch.Draw(Square, staminaBarRect, Color.Red * opacity);
             Game1.self.spriteBatch.Draw(Square, staminaRect, Color.Orange * opacity);
 
-            healthBar.Width = healthData.currentHealth * HEALTHWIDTH;
+            healthBar.Width = (int) (healthData.lerpValue * HEALTHWIDTH);
             Game1.self.spriteBatch.Draw(Square, healthBarRect, Color.Red * opacity);
             Game1.self.spriteBatch.Draw(Square, healthBar, Color.Green * opacity);
 

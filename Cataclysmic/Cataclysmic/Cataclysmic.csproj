@@ -80,6 +80,7 @@
     <Compile Include="Code\Entity\Components\HealthComponent.cs" />
     <Compile Include="Code\Entity\Components\RenderComponent.cs" />
     <Compile Include="Code\Entity\Enemy.cs" />
+    <Compile Include="Code\Entity\Enemy\Androsphinx.cs" />
     <Compile Include="Code\Entity\Enemy\MagicLamp.cs" />
     <Compile Include="Code\Entity\Enemy\ShotgunLamp.cs" />
     <Compile Include="Code\Entity\Enemy\Speedster.cs" />

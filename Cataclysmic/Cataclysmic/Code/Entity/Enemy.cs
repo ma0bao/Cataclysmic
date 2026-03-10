@@ -22,6 +22,9 @@ namespace Cataclysmic
         //How far away to start decelerating when close to target
         public int slowRadius = 150;
 
+        //When considered to be at target
+        public int distanceToBeAtTarget = 30;
+
 
         public Enemy(Texture2D texture, Rectangle destRect)
         {
