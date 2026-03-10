@@ -163,8 +163,8 @@ namespace Cataclysmic
 
         public Vector2 GetRandomPoint()
         {
-            float x = Game1.rand.Next(50, Game1.WIDTH - 50);
-            float y = Game1.rand.Next(50, Game1.HEIGHT - 50);
+            float x = Game1.rand.Next(Game1.BOUNDS.X, Game1.BOUNDS.Width);
+            float y = Game1.rand.Next(Game1.BOUNDS.Y, Game1.BOUNDS.Height);
 
             return new Vector2(x, y);
         }

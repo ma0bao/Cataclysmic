@@ -75,18 +75,16 @@ namespace Cataclysmic
         Player targetedPlayer;
 
         const int ANGER_DISTANCE = 20;
-        const int FOLLOW_DISTANCE = 300;
+        const int FOLLOW_DISTANCE = 200;
         const int AGRO_DISTANCE = 300;
-        const float SHAKE_TIME = .8f;
+        const float SHAKE_TIME = .7f;
         const float CONE_WIDTH_DEGREES = 30;
         const int PROJECTILES_PER_FRAME = 20;
 
         EventTimer shakeTimer;
 
-        int distanceToBeAtTarget = 30;
-
         Vector2 sprayRange = new Vector2(150, 150);
-        const float SANDSPEED = 1200f;
+        const float SANDSPEED = 1350f;
 
         const int MAX_SHAKE_AMT = 2;
 
@@ -177,13 +175,14 @@ namespace Cataclysmic
                     base.Update(gameTime);
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) < ANGER_DISTANCE)
                     currentState = AttackState.Charge;
-                if (Game1.rand.Next(500) == 0)
+                if (Game1.rand.Next(650) == 0)
                 {
                     currentState = AttackState.Charge;
                 }
             }
             else if (currentState == AttackState.Charge)
             {
+                renderData.rotation = renderData.GetRotationToTarget(targetPos);
                 IncreaseVelocity();
                 if (shakeTimer == null)
                     shakeTimer = new EventTimer(SHAKE_TIME);
@@ -203,6 +202,7 @@ namespace Cataclysmic
             }
             else if (currentState == AttackState.Spray)
             {
+                renderData.rotation = renderData.GetRotationToTarget(targetPos);
                 IncreaseVelocity();
                 float x = Game1.rand.Next(-MAX_SHAKE_AMT - 1, MAX_SHAKE_AMT + 2);
                 float y = Game1.rand.Next(-MAX_SHAKE_AMT - 1, MAX_SHAKE_AMT + 2);

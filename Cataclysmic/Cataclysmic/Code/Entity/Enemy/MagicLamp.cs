@@ -85,8 +85,6 @@ namespace Cataclysmic
 
         EventTimer shakeTimer;
 
-        int distanceToBeAtTarget = 15;
-
         float sprayVelocityLerp = 0;
         
 
