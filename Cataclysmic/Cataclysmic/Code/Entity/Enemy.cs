@@ -107,6 +107,11 @@ namespace Cataclysmic
             }
         }
 
+        public bool IsAtTarget()
+        {
+            return renderData.GetDistanceToTarget(targetPos) < distanceToBeAtTarget;
+        }
+
         public void SetNewTargetPosition(Vector2 pos)
         {
             targetPos = pos;
