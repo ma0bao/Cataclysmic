@@ -88,7 +88,7 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
-            ScanDamage();
+            
             GamePadState gamePad = GamePad.GetState(PlayerIndex.One);
             moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             GetVelocity(gameTime, gamePad);
@@ -178,6 +178,9 @@ namespace Cataclysmic
 
             renderData.UpdateAnimation(gameTime);
             Hitbox.Update(renderData.Position, angle);
+            healthData.Update();
+
+            ScanDamage();
         }
 
         public void ScanForDash(GamePadState gamePad)
@@ -362,7 +365,7 @@ namespace Cataclysmic
         }
         public override void Damage(Entity cause, int amount)
         {
-            healthData.Damage(cause, 1);
+            healthData.Damage(cause, amount);
             return;
         }
 

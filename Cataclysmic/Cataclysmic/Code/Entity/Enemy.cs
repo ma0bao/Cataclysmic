@@ -56,6 +56,7 @@ namespace Cataclysmic
 
             renderData.ResetHitBox();
             collision.Update(renderData.Position, renderData.rotation);
+            healthData.Update();
         }
 
         public virtual void UpdatePos(int ticks)
