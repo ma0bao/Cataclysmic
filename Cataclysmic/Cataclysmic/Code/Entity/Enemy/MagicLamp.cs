@@ -99,7 +99,7 @@ namespace Cataclysmic
 
         float frictionMultiplier = 1;
 
-        public MagicLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_player, destRect)
+        public MagicLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_flyingLamp, destRect)
         {
             players = targets;
             SetNewTargetPosition(renderData.GetRandomPoint());
@@ -246,9 +246,20 @@ namespace Cataclysmic
         public override void Draw(float opacity)
         {
             renderData.rotation = renderData.GetRotationToTarget(renderData.Position + moveData.velocity);
-            base.Draw(opacity);
+
+            if (renderData.rotation > Math.PI || renderData.rotation < 0)
+            {
+                renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipVertically;
+            }
+            else
+            {
+                renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
+            }
+            Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation - MathHelper.ToRadians(90), renderData.origin, renderData.effects, renderData.layerDepth);
             foreach (Sand s in sands)
                 s.Draw();
+
+            //base.Draw(opacity);
         }
 
         public override bool IsAlive()
