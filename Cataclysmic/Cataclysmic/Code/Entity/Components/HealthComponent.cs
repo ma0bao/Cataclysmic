@@ -10,6 +10,8 @@ namespace Cataclysmic
 {
     public class HealthComponent
     {
+        public const int MAXIFRAMES = 10; // Tweak as needed
+        public int frames = 0;
         public int maxHealth;
         public int currentHealth;
         public bool isAlive;
@@ -31,24 +33,33 @@ namespace Cataclysmic
             isAlive = true;
         }
 
+        public void Update()
+        {
+            frames--;
+        }
         //Entity has a damge thing. do you want to do it here?
         public bool Damage(Entity cause, int _damage)
         {
-            if (currentHealth - _damage > 0)
+            if (frames < 0)
             {
-                currentHealth -= _damage;
-                return true;
-            }
+                frames = MAXIFRAMES;
+                if (currentHealth - _damage > 0)
+                {
+                    currentHealth -= _damage;
+                    return true;
+                }
 
-            if (currentHealth - _damage <= 0)
-            {
-                currentHealth = 0;
-                isAlive = false;
+                if (currentHealth - _damage <= 0)
+                {
+                    currentHealth = 0;
+                    isAlive = false;
 
+                }
+                
             }
+            
             return false;
         }
-
         
 
     }
