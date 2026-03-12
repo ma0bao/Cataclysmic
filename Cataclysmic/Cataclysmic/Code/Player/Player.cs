@@ -88,6 +88,7 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+            ScanDamage();
             GamePadState gamePad = GamePad.GetState(PlayerIndex.One);
             moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             GetVelocity(gameTime, gamePad);
@@ -344,8 +345,24 @@ namespace Cataclysmic
             return true;
         }
 
+        public bool ScanDamage()
+        {
+            foreach (Enemy e in Game1.enemies)
+            {
+                float pCollisionDepth;
+                Vector2 pCollisionNormal;
+                if (Hitbox.Intersects(e.collision, out pCollisionDepth, out pCollisionNormal))
+                {
+                    Damage(e, 1);
+                    return true;
+                }
+            }
+            return false;
+
+        }
         public override void Damage(Entity cause, int amount)
         {
+            healthData.Damage(cause, 1);
             return;
         }
 

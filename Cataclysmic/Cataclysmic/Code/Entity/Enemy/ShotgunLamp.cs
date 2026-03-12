@@ -262,6 +262,7 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
+            collision.DrawDebug();
             base.Draw(opacity);
             foreach (Sand s in sands)
                 s.Draw();

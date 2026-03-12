@@ -144,7 +144,7 @@ namespace Cataclysmic
         public Microsoft.Xna.Framework.Graphics.Effect chainEffect;
 
         //Temporary testing Object
-        Enemy testEnemy;
+        public static List<Enemy> enemies;
 
         public Game1()
         {
@@ -172,7 +172,7 @@ namespace Cataclysmic
             cursors = new Cursor[4];
             cursors[0] = new Cursor(Content);
             sceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-
+            enemies = new List<Enemy>();
             // Rectangles
             #region
             rect_screen = new Rectangle(0, 0, WIDTH, HEIGHT);
@@ -272,7 +272,7 @@ namespace Cataclysmic
             #endregion
             players[0] = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             //speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
-            testEnemy = new ShotgunLamp(new Rectangle(200, 200, 40, 40), players);
+            enemies.Add(new ShotgunLamp(new Rectangle(200, 200, 40, 40), players));
         }
         protected override void UnloadContent()
         {
@@ -359,7 +359,18 @@ namespace Cataclysmic
             {
                 players[0].Update(gameTime);
                 //speedster.Update(gameTime);
-                testEnemy.Update(gameTime);
+                for (int i = enemies.Count - 1; i >= 0; i--)
+                {
+                    if (!enemies[i].healthData.isAlive)
+                    {
+                        enemies.RemoveAt(i);
+                    }
+                    else
+                    {
+                        enemies[i].Update(gameTime);
+                    }
+                }
+                
             }
             else if (gameState.Equals(GameState.End)) 
             { 
@@ -452,7 +463,8 @@ namespace Cataclysmic
 
                 players[0].Draw(1.0f);
                 //speedster.Draw(1.0f);
-                testEnemy.Draw(1.0f);
+                foreach(Enemy e in enemies)
+                    e.Draw(1.0f);
 
 
                 // End of shader section

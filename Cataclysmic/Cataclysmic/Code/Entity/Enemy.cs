@@ -12,6 +12,7 @@ namespace Cataclysmic
         public RenderComponent renderData;
         public MoveComponent moveData;
         public HealthComponent healthData;
+        public CollisionComponent collision;
 
         //Wandering 
         public Vector2 targetPos;
@@ -31,10 +32,16 @@ namespace Cataclysmic
             renderData = new RenderComponent(texture, destRect);
             moveData = new MoveComponent();
             healthData = new HealthComponent(50);
+            collision = CollisionComponent.CreateRect(new Vector2(destRect.X, destRect.Y), destRect.Width / 2, destRect.Height / 2);
+            
+
         }
         public override void Draw(float opacity)
         {
-            renderData.DefualtDraw();
+            
+        renderData.DefualtDraw();
+        collision.DrawDebug();
+            
         }
 
         public override void DrawEx(float opacity) { return; } // Extra Renders, such as health bars. These are to be ignored by shaders and render on top of most elements except GUI.
@@ -48,6 +55,7 @@ namespace Cataclysmic
             renderData.SetY(MathHelper.Clamp(renderData.Position.Y, 0, Game1.HEIGHT));
 
             renderData.ResetHitBox();
+            collision.Update(renderData.Position, renderData.rotation);
         }
 
         public virtual void UpdatePos(int ticks)
@@ -59,6 +67,7 @@ namespace Cataclysmic
             renderData.SetY(MathHelper.Clamp(renderData.Position.Y, 0, Game1.HEIGHT));
 
             renderData.ResetHitBox();
+            collision.Update(renderData.Position, renderData.rotation);
         }
 
         public override void Damage(Entity cause, int amount)
