@@ -76,7 +76,7 @@ namespace Cataclysmic
         Player[] players;
         Player targetedPlayer;
 
-        const int ANGER_DISTANCE = 250;
+        const int ANGER_DISTANCE = 50;
         const int FOLLOW_DISTANCE = 300;
         const int AGRO_DISTANCE = 300;
         const float SHAKE_TIME = .8f;
@@ -169,7 +169,7 @@ namespace Cataclysmic
                     base.Update(gameTime);
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) < ANGER_DISTANCE)
                     currentState = AttackState.Charge;
-                if (Game1.rand.Next(180) == 0)
+                if (Game1.rand.Next(650) == 0)
                 {
                     currentState = AttackState.Charge;
                 }
