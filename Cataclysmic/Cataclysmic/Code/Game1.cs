@@ -54,7 +54,7 @@ namespace Cataclysmic
 
         // Fonts
         #region
-        SpriteFont font_credits;
+        public static SpriteFont font_credits;
         #endregion
 
         // Textures
@@ -276,6 +276,7 @@ namespace Cataclysmic
             //speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
             enemies.Add(new Androsphinx(new Rectangle(200, 200, 40, 40), players));
             enemies.Add(new ShotgunLamp(new Rectangle(200, 200, 40, 40), players));
+            enemies.Add(new MagicLamp(new Rectangle(2000, 200, 40, 40), players));
         }
         protected override void UnloadContent()
         {
