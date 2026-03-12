@@ -274,6 +274,8 @@ namespace Cataclysmic
                 renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
             }
             Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation - MathHelper.ToRadians(90), renderData.origin, renderData.effects, renderData.layerDepth);
+            collision.DrawDebug();
+            base.Draw(opacity);
             foreach (Sand s in sands)
                 s.Draw();
         }

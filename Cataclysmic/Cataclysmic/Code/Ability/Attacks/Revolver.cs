@@ -19,6 +19,7 @@ namespace Cataclysmic
         public const int LENGTH = 40;  // bullet length (along travel direction)
         public const float SPEED = 10f;
         public const float SPAWN_OFFSET = 20f; // distance from player center to spawn bullet
+        public const int DAMAGE = 10;
         Vector2 Position;
         public CollisionComponent Hitbox;
         public float angle;
@@ -29,6 +30,7 @@ namespace Cataclysmic
 
         public Revolver(Vector2 position, float angle)
         {
+            
             this.angle = angle - (float)Math.PI * 0.5f; // rotate by 90degrees
 
             float spawnAngle = this.angle;
@@ -50,9 +52,30 @@ namespace Cataclysmic
             Position.Y += (float)Math.Sin(angle) * SPEED;
             Hitbox.UpdatePosition(Position);
             timer++;
+            ScanDamage();
         }
 
+        public bool ScanDamage()
+        {
+            foreach(Enemy e in Game1.enemies)
+            {
+                float depth;
+                Vector2 normal;
+                if (Hitbox.Intersects(e.collision, out depth, out normal))
+                {
+                    Damage(e, DAMAGE);
+                    return true;
+                }
+            }
+            return false;
 
+        }
+
+        public void Damage(Enemy enemy, int amount)
+        {
+            enemy.healthData.Damage(null, amount);
+            return;
+        }
 
         public override void Draw(float opacity)
         {
