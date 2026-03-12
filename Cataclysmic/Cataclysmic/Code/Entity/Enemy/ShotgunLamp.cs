@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -176,7 +177,7 @@ namespace Cataclysmic
                     base.Update(gameTime);
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) < ANGER_DISTANCE)
                     currentState = AttackState.Charge;
-                if (Game1.rand.Next(650) == 0)
+                if (Game1.rand.Next(650) == 0) //Keyboard.GetState().IsKeyDown(Keys.L))
                 {
                     currentState = AttackState.Charge;
                 }
@@ -210,7 +211,7 @@ namespace Cataclysmic
                 Vector2 shake = new Vector2(x, y);
 
                 renderData.Position += shake;
-
+                UpdatePos(-2);
                 for (int i = 0; i < PROJECTILES_PER_FRAME; i++)
                 {
                     baseVelocity = targetedPlayer.renderData.Position - renderData.Position;
