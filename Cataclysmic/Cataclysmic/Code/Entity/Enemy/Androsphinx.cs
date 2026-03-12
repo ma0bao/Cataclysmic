@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,7 @@ namespace Cataclysmic
             lastTargetedPlayer = players[0];
             attackCooldown.Unpause();
             moveData.maxSpeed = 500f;
+            SetNewTargetPosition(renderData.GetRandomPoint());
         }
 
         public override void Update(GameTime gameTime)
@@ -77,10 +79,23 @@ namespace Cataclysmic
             {
                 SetNewTargetPosition(new Vector2(targetPos.X, oppisiteRegion.Center.Y));
                 renderData.color = Color.Red;
-                moveData.maxSpeed = 90000f;
+                moveData.maxSpeed = 9000f;
                 turnSpeed = 5000f;
-                if (renderData.hitBox.Intersects(oppisiteRegion))
+                if (currentRegion.Equals(top) && renderData.Position.Y > bottom.Top)
+                {
+                    agroCooldown.Restart();
                     currentState = AttackState.Wander;
+                    //moveData.velocity = Vector2.One;
+                    SetNewTargetPosition(renderData.GetRandomPoint());
+                }
+                if (currentRegion.Equals(bottom) && renderData.Position.Y < top.Bottom)
+                {
+                    agroCooldown.Restart();
+                    currentState = AttackState.Wander;
+                    //moveData.velocity = Vector2.One;
+                    SetNewTargetPosition(renderData.GetRandomPoint());
+                }
+
             }
 
             #endregion
@@ -108,7 +123,7 @@ namespace Cataclysmic
                     currentState = AttackState.Swipe;
                 }
 
-                if (Game1.rand.Next(0, 600) == 0)
+                if (Game1.rand.Next(0, 600) == 0 || Keyboard.GetState().IsKeyDown(Keys.K))
                 {
                     currentState = AttackState.Track;
                     if (lastTargetedPlayer.renderData.Position.Y < Game1.HEIGHT / 2)
@@ -139,7 +154,7 @@ namespace Cataclysmic
             else if (currentState == AttackState.Track)
             {
                 base.Update(gameTime);
-                if (Game1.rand.Next(200) == 0)
+                if (Game1.rand.Next(500) == 0)
                 {
                     shakeTimer.Restart();
                     currentState = AttackState.Shake;

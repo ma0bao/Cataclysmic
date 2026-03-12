@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,9 +96,10 @@ namespace Cataclysmic
 
         float frictionMultiplier = 5;
 
-        public ShotgunLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_player, destRect)
+        public ShotgunLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_flyingLamp, destRect)
         {
             players = targets;
+            
             SetNewTargetPosition(renderData.GetRandomPoint());
             moveData.maxSpeed = 500;
             moveData.acceleration = 4000f;
@@ -175,7 +177,7 @@ namespace Cataclysmic
                     base.Update(gameTime);
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) < ANGER_DISTANCE)
                     currentState = AttackState.Charge;
-                if (Game1.rand.Next(650) == 0)
+                if (Game1.rand.Next(650) == 0) //Keyboard.GetState().IsKeyDown(Keys.L))
                 {
                     currentState = AttackState.Charge;
                 }
@@ -209,7 +211,7 @@ namespace Cataclysmic
                 Vector2 shake = new Vector2(x, y);
 
                 renderData.Position += shake;
-
+                UpdatePos(-2);
                 for (int i = 0; i < PROJECTILES_PER_FRAME; i++)
                 {
                     baseVelocity = targetedPlayer.renderData.Position - renderData.Position;
@@ -262,6 +264,16 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
+            // base.Draw(opacity);
+            // Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, rotation, origin, effects, layerDepth);
+            if (renderData.rotation > Math.PI) // Fix Later
+            {
+                //renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipVertically;
+            }
+            else {
+                renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
+            }
+            Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation - MathHelper.ToRadians(90), renderData.origin, renderData.effects, renderData.layerDepth);
             collision.DrawDebug();
             base.Draw(opacity);
             foreach (Sand s in sands)
