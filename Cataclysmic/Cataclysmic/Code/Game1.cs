@@ -38,7 +38,7 @@ namespace Cataclysmic
         long score;
         public static float volume;
         public Cursor[] cursors;
-        Player[] players;
+        public static Player[] players;
 
         // Keyboard Controls
         #region
