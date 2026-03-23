@@ -15,12 +15,14 @@ namespace Cataclysmic
             EventTimer death = new EventTimer(8);
             RenderComponent renderData;
             MoveComponent moveData;
+            CollisionComponent sandHitbox;
             Vector2 randomOffset;
             const int MAX_OFFSET = 10;
             const int SIZE = 5;
 
             public Sand(float frictionMultiplier, Vector2 Position, Vector2 velocity)
             {
+                sandHitbox = CollisionComponent.CreateRect(Position, SIZE, SIZE);
                 renderData = new RenderComponent(Game1.texture_blank, new Rectangle((int)Position.X, (int)Position.Y, SIZE, SIZE));
                 moveData = new MoveComponent(300, 2000, 150*frictionMultiplier);
                 renderData.color = Color.Red;
@@ -45,7 +47,13 @@ namespace Cataclysmic
             {
                 moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 renderData.color.A = (byte)MathHelper.Lerp(255, 0, death.lerpValue);
-                
+                sandHitbox.UpdatePosition(renderData.Position);
+                float depth;
+                Vector2 normal;
+                if (sandHitbox.Intersects(Game1.players[0].Hitbox, out depth, out normal))
+                {
+                    Game1.players[0].Damage(null, 5);
+                }
 
                 renderData.Position += moveData.velocity * moveData.deltaTime;
                 moveData.ApplyFriction();
@@ -61,6 +69,7 @@ namespace Cataclysmic
             public void Draw()
             {
                 renderData.DefualtDraw();
+                sandHitbox.DrawDebug();
             }
         }
 

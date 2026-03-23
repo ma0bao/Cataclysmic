@@ -38,7 +38,7 @@ namespace Cataclysmic
         long score;
         public static float volume;
         public Cursor[] cursors;
-        Player[] players;
+        public static Player[] players;
 
         // Keyboard Controls
         #region
@@ -274,7 +274,7 @@ namespace Cataclysmic
             #endregion
             players[0] = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             //speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
-            testEnemy = new Apesh(new Rectangle(200, 200, 40, 40), players[0]);
+            enemies.Add(new Apesh(new Rectangle(200, 200, 40, 40), players[0]));
             enemies.Add(new Androsphinx(new Rectangle(200, 200, 40, 40), players));
             enemies.Add(new ShotgunLamp(new Rectangle(200, 200, 40, 40), players));
             enemies.Add(new MagicLamp(new Rectangle(2000, 200, 40, 40), players));
