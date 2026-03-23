@@ -107,7 +107,7 @@ namespace Cataclysmic
 
             color = Color.White;
             timer = 0;
-            Game1.sfx_weapon_singleshot2.Play(Game1.volume, 1, 0);
+            Game1.sfx_weapon_singleshot2.Play(Game1.volume, 0, 0);
         }
 
 
@@ -129,7 +129,7 @@ namespace Cataclysmic
                     crackles.AddFirst(new Crackle(Position, (float)Math.PI * 2 * ((float)i / n)));
                 }
                 
-                Game1.sfx_explosion_short1.Play(Game1.volume, 1, 0);
+                Game1.sfx_explosion_short1.Play(Game1.volume, 0, 0);
 
             }
             else

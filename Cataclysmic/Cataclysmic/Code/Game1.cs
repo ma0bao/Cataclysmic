@@ -19,6 +19,7 @@ namespace Cataclysmic
     {
         public static int WIDTH = 1920;
         public static int HEIGHT = 1080;
+        public const float MAX_VOLUME = 1.00f; // Vol range : [0.0f -> 1.0f]     Pitch range : [-1.0f -> 1.0f]
         public static Rectangle BOUNDS = new Rectangle(50, 50, WIDTH-70, HEIGHT-70);
         public static Color ambientColor = new Color(241, 220, 170);
         public static Game1 self;
@@ -38,7 +39,7 @@ namespace Cataclysmic
         long score;
         public static float volume;
         public Cursor[] cursors;
-        Player[] players;
+        public static Player[] players;
 
         // Keyboard Controls
         #region
@@ -62,6 +63,7 @@ namespace Cataclysmic
         public static Texture2D texture_title;
         public static Texture2D texture_blank;
         public static Texture2D texture_credits;
+        public static Texture2D texture_settings;
         public static Texture2D texture_grid;
         public static Texture2D texture_enochianChain_1;
         public static Texture2D texture_enochianChain_2;
@@ -118,6 +120,7 @@ namespace Cataclysmic
         #region
         SoundEffect sound_HeavyClick;
         SoundEffect sound_HeavyStart;
+        SoundEffect sound_click;
         #endregion
 
         //  Abilities
@@ -138,6 +141,8 @@ namespace Cataclysmic
         Rectangle chain3R;
         Rectangle chain3RC;
         Rectangle rect_screen;
+
+        int optionPointer;
         #endregion
 
         public Microsoft.Xna.Framework.Graphics.Effect lightEffect;
@@ -169,6 +174,7 @@ namespace Cataclysmic
             index = 0;
             volume = 1.0f;
 
+            optionPointer = 0;
             players = new Player[4];
             cursors = new Cursor[4];
             cursors[0] = new Cursor(Content);
@@ -200,6 +206,7 @@ namespace Cataclysmic
             texture_blank = new Texture2D(GraphicsDevice, 1, 1);
             texture_blank.SetData(new []{ Color.White });
             texture_title = Content.Load<Texture2D>("Sprites/GUI/Cataclysmic Title");
+            texture_settings = Content.Load<Texture2D>("Sprites/GUI/Settings Title");
             texture_credits = Content.Load<Texture2D>("Sprites/GUI/Credits Title");
             texture_menuSpriteSheet = Content.Load<Texture2D>("Sprites/GUI/MenuSpriteSheet");
             texture_enochianChain_1 = Content.Load<Texture2D>("Sprites/GUI/Enochian Chain 1");
@@ -237,6 +244,7 @@ namespace Cataclysmic
             #region
             sound_HeavyClick = Content.Load<SoundEffect>("Sounds/UI/HeavyClick");
             sound_HeavyStart = Content.Load<SoundEffect>("Sounds/UI/HeavyStart");
+            sound_click = Content.Load<SoundEffect>("Sounds/UI/click");
             #endregion
 
             #endregion
@@ -306,7 +314,7 @@ namespace Cataclysmic
                     else if (index == 0)
                     {
                         gameState = GameState.Game;
-                        sound_HeavyStart.Play();
+                        sound_HeavyStart.Play(volume, 0, 0);
                     }
                     else if (index == 1)
                     {
@@ -320,20 +328,20 @@ namespace Cataclysmic
                         this.Exit();
                     }
 
-                    
+
                 }
 
                 if ((KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down)) ||
                     (KB.IsKeyDown(Keys.S) && oldKB.IsKeyUp(Keys.S))) {
                     index = index + 1;
                     index %= 4;
-                    sound_HeavyClick.Play();
+                    sound_click.Play(volume, -0.25f + (float) rand.NextDouble() * 0.5f, 0);
                 }
                 if ((KB.IsKeyDown(Keys.Up) && oldKB.IsKeyUp(Keys.Up)) ||
                     (KB.IsKeyDown(Keys.W) && oldKB.IsKeyUp(Keys.W)))
                 {
                     index = index - 1;
-                    sound_HeavyClick.Play();
+                    sound_click.Play(volume,  -0.25f + (float)rand.NextDouble() * 0.5f, 0);
                     if (index < 0) index = 3;
                 }
 
@@ -358,6 +366,25 @@ namespace Cataclysmic
                 {
                     gameState = GameState.Menu;
                 }
+
+                if (optionPointer == 0) {
+                    if (KB.IsKeyDown(Keys.Left) && timer % 3 == 0) {
+                        if (volume - 0.01f > 0)
+                        {
+                            volume = volume - 0.01f;
+                            sound_click.Play(volume, -0.1f, 0);
+                        }
+                    }
+                    
+                    if (KB.IsKeyDown(Keys.Right) && timer % 3 == 0)
+                    {
+                        if (volume < MAX_VOLUME) {
+                            volume = Math.Min(MAX_VOLUME, volume + 0.01f);
+                            sound_click.Play(volume, 0.1f, 0);
+                        }
+                    }
+                }
+
             }
             else if (gameState.Equals(GameState.Game))
             {
@@ -435,6 +462,14 @@ namespace Cataclysmic
             else if (gameState.Equals(GameState.Options))
             {
                 spriteBatch.Begin();
+
+                spriteBatch.Draw(texture_settings, new Vector2(WIDTH / 2 - texture_credits.Width / 2, 10), Color.White);
+
+                spriteBatch.DrawString(font_credits, "Volume >>> ", new Vector2(10, 300), Color.White);
+                spriteBatch.DrawString(font_credits, ""+Math.Round(volume*100)+"%", new Vector2(300, 300), Color.White);
+
+                spriteBatch.DrawString(font_credits, "Press Back to return...", new Vector2(WIDTH / 2 - 120, HEIGHT - 50), Color.White);
+
 
                 spriteBatch.End();
             }

@@ -22,7 +22,7 @@ namespace Cataclysmic
         public void Start(RenderComponent renderData, MoveComponent moveData)
         {
             SoundEffectInstance sound = Game1.self.sound_Teleport.CreateInstance();
-            sound.Volume = 1f;
+            sound.Volume = Game1.volume;
             sound.Play();
             pos1 = renderData.Position;
             Vector2 direction = moveData.GetDirection();
