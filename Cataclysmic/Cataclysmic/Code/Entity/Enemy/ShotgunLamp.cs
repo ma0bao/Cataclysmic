@@ -14,12 +14,14 @@ namespace Cataclysmic
             EventTimer death = new EventTimer(3);
             RenderComponent renderData;
             MoveComponent moveData;
+            CollisionComponent sandHitbox;
             Vector2 randomOffset;
             const int MAX_OFFSET = 10;
             const int SIZE = 5;
 
             public Sand(float frictionMultiplier, Vector2 Position, Vector2 velocity)
             {
+                sandHitbox = CollisionComponent.CreateRect(Position, SIZE, SIZE);
                 renderData = new RenderComponent(Game1.texture_blank, new Rectangle((int)Position.X, (int)Position.Y, SIZE, SIZE));
                 moveData = new MoveComponent(300, 2000, 400 * frictionMultiplier);
                 renderData.color = Color.Red;
