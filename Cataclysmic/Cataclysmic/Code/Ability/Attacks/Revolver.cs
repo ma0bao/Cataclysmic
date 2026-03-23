@@ -44,7 +44,7 @@ namespace Cataclysmic
 
             color = Color.White;
             timer = 0;
-            Game1.sfx_weapon_singleshot2.Play(Game1.volume, 1, 0);
+            Game1.sfx_weapon_singleshot2.Play(Game1.volume, 0, 0);
         }
         public override void Update(GameTime gameTime)
         {
