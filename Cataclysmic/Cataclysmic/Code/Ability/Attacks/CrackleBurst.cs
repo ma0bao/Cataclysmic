@@ -19,6 +19,7 @@ namespace Cataclysmic
         {
             public const int WIDTH = 20;
             public const float SPEED = 3.0f;
+            public const int DAMAGE = 10;
             public Vector2 Position;
             public CollisionComponent Hitbox;
             float angle;
@@ -32,6 +33,7 @@ namespace Cataclysmic
 
             public void Update()
             {
+                ScanDamage();
                 Position.X += (float)Math.Cos(angle) * SPEED;
                 Position.Y += (float)Math.Sin(angle) * SPEED;
                 Hitbox.UpdatePosition(Position);
@@ -41,6 +43,28 @@ namespace Cataclysmic
             {
                 Game1.self.spriteBatch.Draw(Game1.texture_bullets5C, Position, new Rectangle(frameX, 240, 24, 24), color, angle, new Vector2(12, 12), 1f, SpriteEffects.None, 1);
                 Hitbox.DrawDebug();
+            }
+
+            public bool ScanDamage()
+            {
+                foreach (Enemy e in Game1.enemies)
+                {
+                    float depth;
+                    Vector2 normal;
+                    if (Hitbox.Intersects(e.collision, out depth, out normal))
+                    {
+                        Damage(e, DAMAGE);
+                        return true;
+                    }
+                }
+                return false;
+
+            }
+
+            public void Damage(Enemy enemy, int amount)
+            {
+                enemy.healthData.Damage(null, amount);
+                return;
             }
 
             public bool IsAlive()
@@ -62,6 +86,7 @@ namespace Cataclysmic
         public const float MANA_COST = 60;
         public const float SPAWN_OFFSET = 20f;
         public const float COOLDOWN = 1.0f;
+        public const int DAMAGE = 20;
 
         public CollisionComponent Hitbox;
         public Color color;
@@ -88,6 +113,7 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+
             if (timer < FRAMES_TO_BURST)
             {
                 Position.X += (float)Math.Cos(Angle) * SPEED;
@@ -114,8 +140,8 @@ namespace Cataclysmic
                 }
             }
 
-            
 
+            ScanDamage();
             timer++;
         }
 
@@ -135,6 +161,27 @@ namespace Cataclysmic
             }
         }
 
+        public bool ScanDamage()
+        {
+            foreach (Enemy e in Game1.enemies)
+            {
+                float depth;
+                Vector2 normal;
+                if (Hitbox.Intersects(e.collision, out depth, out normal))
+                {
+                    Damage(e, DAMAGE);
+                    return true;
+                }
+            }
+            return false;
+
+        }
+
+        public void Damage(Enemy enemy, int amount)
+        {
+            enemy.healthData.Damage(null, amount);
+            return;
+        }
         public override bool IsAlive()
         {
             if (Position.X > Game1.WIDTH || Position.X < 0 || Position.Y < 0 || Position.Y > Game1.HEIGHT)

@@ -265,12 +265,13 @@ namespace Cataclysmic
         public override void Draw(float opacity)
         {
             // base.Draw(opacity);
-            // Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, rotation, origin, effects, layerDepth);
-            if (renderData.rotation > Math.PI) // Fix Later
+            // Test for Rotation : Game1.self.spriteBatch.DrawString(Game1.font_credits, "" + renderData.rotation, renderData.Position, Color.White);
+            if (renderData.rotation > Math.PI || renderData.rotation < 0)
             {
-                //renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipVertically;
+                renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipVertically;
             }
-            else {
+            else
+            {
                 renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
             }
             Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation - MathHelper.ToRadians(90), renderData.origin, renderData.effects, renderData.layerDepth);
