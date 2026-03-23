@@ -278,6 +278,7 @@ namespace Cataclysmic
             enemies.Add(new Androsphinx(new Rectangle(200, 200, 40, 40), players));
             enemies.Add(new ShotgunLamp(new Rectangle(200, 200, 40, 40), players));
             enemies.Add(new MagicLamp(new Rectangle(2000, 200, 40, 40), players));
+            enemies.Add(new Speedster(new Rectangle(2000, 200, 40, 40), players[0]));
         }
         protected override void UnloadContent()
         {
