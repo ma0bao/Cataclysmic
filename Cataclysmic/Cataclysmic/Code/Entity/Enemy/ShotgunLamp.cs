@@ -286,6 +286,7 @@ namespace Cataclysmic
             Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation - MathHelper.ToRadians(90), renderData.origin, renderData.effects, renderData.layerDepth);
             foreach (Sand s in sands)
                 s.Draw();
+            collision.DrawDebug();
         }
 
         public override bool IsAlive()

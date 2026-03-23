@@ -38,9 +38,13 @@ namespace Cataclysmic
         }
         public override void Draw(float opacity)
         {
-            
-        renderData.DefualtDraw();
-        collision.DrawDebug();
+            if (healthData.invincible)
+            {
+                renderData.DrawFlash();
+            }
+
+            renderData.DefualtDraw();
+            collision.DrawDebug();
             
         }
 
@@ -57,6 +61,7 @@ namespace Cataclysmic
             renderData.ResetHitBox();
             collision.Update(renderData.Position, renderData.rotation);
             healthData.Update();
+            
         }
 
         public virtual void UpdatePos(int ticks)
