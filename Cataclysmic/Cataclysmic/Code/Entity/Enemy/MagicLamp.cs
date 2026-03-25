@@ -255,7 +255,10 @@ namespace Cataclysmic
         public override void Draw(float opacity)
         {
             renderData.rotation = renderData.GetRotationToTarget(renderData.Position + moveData.velocity);
-
+            if (healthData.invincible)
+            {
+                renderData.DrawFlash();
+            }
             if (renderData.rotation > Math.PI || renderData.rotation < 0)
             {
                 renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipVertically;
@@ -267,7 +270,8 @@ namespace Cataclysmic
             Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation - MathHelper.ToRadians(90), renderData.origin, renderData.effects, renderData.layerDepth);
             foreach (Sand s in sands)
                 s.Draw();
-
+            collision.DrawDebug();
+            
             //base.Draw(opacity);
         }
 

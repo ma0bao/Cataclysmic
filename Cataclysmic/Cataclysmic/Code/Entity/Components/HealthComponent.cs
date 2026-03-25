@@ -17,6 +17,8 @@ namespace Cataclysmic
         public bool isAlive;
         public float lerpValue => (float)currentHealth / maxHealth;
 
+        public bool invincible => frames > 0;
+
         // For when health is the same as maxhealth
         public HealthComponent(int _maxHealth)
         {
@@ -61,6 +63,5 @@ namespace Cataclysmic
             return false;
         }
         
-
     }
 }
