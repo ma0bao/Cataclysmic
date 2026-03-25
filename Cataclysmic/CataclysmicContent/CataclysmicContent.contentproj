@@ -365,10 +365,11 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Sprites\Enemies\meatballEgypt.png">
-      <Name>meatballEgypt</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
+	  <Compile Include="Sprites\Enemies\meatballEgypt.png">
+		  <Name>meatballEgypt</Name>
+		  <Importer>TextureImporter</Importer>
+		  <Processor>TextureProcessor</Processor>
+	  </Compile>
     <Compile Include="Sounds\Abilities\Weapons\sandShoot1.wav">
       <Name>sandShoot1</Name>
       <Importer>WavImporter</Importer>
