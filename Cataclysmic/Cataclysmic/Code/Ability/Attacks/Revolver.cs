@@ -74,6 +74,7 @@ namespace Cataclysmic
         public void Damage(Enemy enemy, int amount)
         {
             enemy.healthData.Damage(null, amount);
+            Game1.sfx_hurtSound1.Play(Game1.volume, -0.3f + (float)Game1.rand.NextDouble() * 0.2f, 0);
             return;
         }
 

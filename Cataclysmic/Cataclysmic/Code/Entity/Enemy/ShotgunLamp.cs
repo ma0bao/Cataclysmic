@@ -221,6 +221,7 @@ namespace Cataclysmic
 
                 renderData.Position += shake;
                 UpdatePos(-2);
+                Game1.sfx_sandBurst1.Play(Game1.volume, -0.2f + (float) Game1.rand.NextDouble() * 0.4f, 0);
                 for (int i = 0; i < PROJECTILES_PER_FRAME; i++)
                 {
                     baseVelocity = targetedPlayer.renderData.Position - renderData.Position;

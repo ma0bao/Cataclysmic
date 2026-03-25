@@ -369,6 +369,24 @@
       <Name>meatballEgypt</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    <Compile Include="Sounds\Abilities\Weapons\sandShoot1.wav">
+      <Name>sandShoot1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\Abilities\Weapons\sandBurst1.wav">
+      <Name>sandBurst1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\hitHurt.wav">
+      <Name>hitHurt</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
