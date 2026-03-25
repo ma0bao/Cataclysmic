@@ -126,8 +126,10 @@ namespace Cataclysmic
         //  Abilities
         #region
         public static SoundEffect sfx_explosion_short1;
-
         public static SoundEffect sfx_weapon_singleshot2;
+        public static SoundEffect sfx_sand1;
+        public static SoundEffect sfx_sandBurst1;
+        public static SoundEffect sfx_hurtSound1;
         #endregion
 
         #endregion
@@ -280,6 +282,15 @@ namespace Cataclysmic
             timeEffect = Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Effects/TimeTravel");
             chainEffect = Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Effects/ChainFade");
             #endregion
+
+            // SFX
+            #region
+            sfx_sand1 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/sandShoot1");
+            sfx_sandBurst1 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/sandBurst1");
+            sfx_hurtSound1 = Content.Load<SoundEffect>("Sounds/hitHurt");
+            #endregion
+
+
             players[0] = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             //speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
             enemies.Add(new Apesh(new Rectangle(200, 200, 40, 40), players[0]));
