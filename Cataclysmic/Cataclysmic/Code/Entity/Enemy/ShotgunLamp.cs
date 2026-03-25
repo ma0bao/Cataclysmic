@@ -273,6 +273,10 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
+            if (healthData.invincible)
+            {
+                renderData.DrawFlash();
+            }
             // base.Draw(opacity);
             // Test for Rotation : Game1.self.spriteBatch.DrawString(Game1.font_credits, "" + renderData.rotation, renderData.Position, Color.White);
             if (renderData.rotation > Math.PI || renderData.rotation < 0)
@@ -287,6 +291,7 @@ namespace Cataclysmic
             foreach (Sand s in sands)
                 s.Draw();
             collision.DrawDebug();
+            
         }
 
         public override bool IsAlive()
