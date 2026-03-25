@@ -223,6 +223,7 @@ namespace Cataclysmic
                     baseVelocity.X * sin + baseVelocity.Y * cos
                     );
 
+                Game1.sfx_sand1.Play(Game1.volume, -0.1f + (float) Game1.rand.NextDouble() * 0.2f, 0);
                 for (int i = 0; i < PROJECTILES_PER_FRAME; i++)
                 {
                     sands.Enqueue(new Sand(frictionMultiplier, renderData.Position, rotatedVelocity));
