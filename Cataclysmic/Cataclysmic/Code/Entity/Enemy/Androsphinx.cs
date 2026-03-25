@@ -38,7 +38,7 @@ namespace Cataclysmic
 
         const int MAX_SHAKE_AMT = 2;
 
-        public Androsphinx(Rectangle destRect, Player[] targets) : base(Game1.texture_player, destRect)
+        public Androsphinx(Rectangle destRect, Player[] targets) : base(Game1.texture_meatballEgypt, destRect)
         {
             currentRegion = top;
             players = targets;
