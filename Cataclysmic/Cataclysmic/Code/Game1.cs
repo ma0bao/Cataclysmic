@@ -130,6 +130,7 @@ namespace Cataclysmic
         public static SoundEffect sfx_sand1;
         public static SoundEffect sfx_sandBurst1;
         public static SoundEffect sfx_hurtSound1;
+        public static SoundEffect sfx_spin1;
         #endregion
 
         #endregion
@@ -288,6 +289,7 @@ namespace Cataclysmic
             sfx_sand1 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/sandShoot1");
             sfx_sandBurst1 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/sandBurst1");
             sfx_hurtSound1 = Content.Load<SoundEffect>("Sounds/hitHurt");
+            sfx_spin1 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/spin3");
             #endregion
 
 

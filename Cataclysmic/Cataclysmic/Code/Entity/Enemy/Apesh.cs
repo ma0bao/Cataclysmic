@@ -88,6 +88,8 @@ namespace Cataclysmic
                 moveData.maxSpeed = 200;
                 slowRadius = 150;
 
+                Game1.sfx_spin1.Play(Game1.volume, -0.1f + (float) Game1.rand.NextDouble() * 0.2f, 0);
+
                 if (timeToSpin.Done)
                 {
                     SetNewTargetPosition(renderData.GetRandomPoint());
