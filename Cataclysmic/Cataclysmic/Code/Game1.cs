@@ -152,6 +152,7 @@ namespace Cataclysmic
         public Microsoft.Xna.Framework.Graphics.Effect lightEffect;
         public Microsoft.Xna.Framework.Graphics.Effect timeEffect;
         public Microsoft.Xna.Framework.Graphics.Effect chainEffect;
+        public Microsoft.Xna.Framework.Graphics.Effect crtEffect;
 
         //Temporary testing Object
         public static List<Enemy> enemies;
@@ -284,6 +285,7 @@ namespace Cataclysmic
             lightEffect = Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Effects/Light");
             timeEffect = Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Effects/TimeTravel");
             chainEffect = Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Effects/ChainFade");
+            crtEffect = Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Effects/CRT");
             #endregion
 
             // SFX
@@ -435,10 +437,19 @@ namespace Cataclysmic
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+            crtEffect.Parameters["LightPosition"].SetValue(new Vector2(players[0].renderData.Position.X + players[0].renderData.DestRect.Width / 2, players[0].renderData.Position.Y + players[0].renderData.DestRect.Height / 2)); // Center
+            crtEffect.Parameters["LightRadius"].SetValue(1500f);
+            crtEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
+            crtEffect.Parameters["LightColor"].SetValue(new Vector3(1.0f, 1.0f, 1.0f)); // White
+            crtEffect.Parameters["Intensity"].SetValue(1.0f);
+            crtEffect.Parameters["timer"].SetValue(timer);
 
-            
+
             if (gameState.Equals(GameState.Menu))
             {
+
+                GraphicsDevice.SetRenderTarget(sceneTarget);
+                GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
                 if (timer > 300) {
                     spriteBatch.Draw(texture_enochianChain_2, chain2R, Color.White * 0.7f);
@@ -461,6 +472,11 @@ namespace Cataclysmic
                     
                 }
 
+                spriteBatch.End();
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
+                spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
                 spriteBatch.End();
             }
             else if (gameState.Equals(GameState.Credits))
@@ -504,6 +520,8 @@ namespace Cataclysmic
                 timeEffect.Parameters["Intensity"].SetValue(1.0f);
                 timeEffect.Parameters["timer"].SetValue(timer);
 
+                
+
 
                 GraphicsDevice.SetRenderTarget(sceneTarget);
                 //GraphicsDevice.Clear(Color.Black);
@@ -526,7 +544,7 @@ namespace Cataclysmic
                 spriteBatch.End();
                 GraphicsDevice.SetRenderTarget(null);
 
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, lightEffect);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
                 spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
                 spriteBatch.End();
 

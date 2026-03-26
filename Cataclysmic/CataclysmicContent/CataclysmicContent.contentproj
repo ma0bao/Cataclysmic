@@ -365,11 +365,11 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-	  <Compile Include="Sprites\Enemies\meatballEgypt.png">
-		  <Name>meatballEgypt</Name>
-		  <Importer>TextureImporter</Importer>
-		  <Processor>TextureProcessor</Processor>
-	  </Compile>
+    <Compile Include="Sprites\Enemies\meatballEgypt.png">
+      <Name>meatballEgypt</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Sounds\Abilities\Weapons\sandShoot1.wav">
       <Name>sandShoot1</Name>
       <Importer>WavImporter</Importer>
@@ -409,6 +409,13 @@
       <Name>spin3</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\CRT.fx">
+      <Name>CRT</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
