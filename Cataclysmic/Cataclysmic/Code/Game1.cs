@@ -15,6 +15,13 @@ namespace Cataclysmic
     public enum GameState { 
         Menu, Credits, Options, Game, End
     }
+
+     /*  TUPPER TO-DO:
+      1. Make shaders more finite <- done for now
+      2. Global debug option 
+      3. Fix Lamps
+      
+      */
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         public static int WIDTH = 1920;
@@ -25,6 +32,7 @@ namespace Cataclysmic
         public static Game1 self;
         GraphicsDeviceManager graphics;
         public RenderTarget2D sceneTarget;
+        public RenderTarget2D sceneTargetCRT;
         public SpriteBatch spriteBatch;
         int index;
         public static Random rand = new Random();
@@ -184,6 +192,7 @@ namespace Cataclysmic
             cursors = new Cursor[4];
             cursors[0] = new Cursor(Content);
             sceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            sceneTargetCRT = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             enemies = new List<Enemy>();
             // Rectangles
             #region
@@ -437,10 +446,10 @@ namespace Cataclysmic
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            crtEffect.Parameters["LightPosition"].SetValue(new Vector2(players[0].renderData.Position.X + players[0].renderData.DestRect.Width / 2, players[0].renderData.Position.Y + players[0].renderData.DestRect.Height / 2)); // Center
+            //crtEffect.Parameters["LightPosition"].SetValue(new Vector2(players[0].renderData.Position.X + players[0].renderData.DestRect.Width / 2, players[0].renderData.Position.Y + players[0].renderData.DestRect.Height / 2)); // Center
+            crtEffect.Parameters["LightPosition"].SetValue(new Vector2(WIDTH/2, HEIGHT/2));
             crtEffect.Parameters["LightRadius"].SetValue(1500f);
             crtEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
-            crtEffect.Parameters["LightColor"].SetValue(new Vector3(1.0f, 1.0f, 1.0f)); // White
             crtEffect.Parameters["Intensity"].SetValue(1.0f);
             crtEffect.Parameters["timer"].SetValue(timer);
 
@@ -510,8 +519,8 @@ namespace Cataclysmic
                 lightEffect.Parameters["LightPosition"].SetValue(new Vector2(players[0].renderData.Position.X + players[0].renderData.DestRect.Width / 2, players[0].renderData.Position.Y + players[0].renderData.DestRect.Height / 2)); // Center
                 lightEffect.Parameters["LightRadius"].SetValue(1300f);
                 lightEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
-                lightEffect.Parameters["LightColor"].SetValue(new Vector3(1f, 1f, 0.8f)); // Warm yellow
-                lightEffect.Parameters["Intensity"].SetValue(1.0f);
+                lightEffect.Parameters["LightColor"].SetValue(new Vector3(1.1f, 1.1f, 1.1f)); // Warm yellow
+                lightEffect.Parameters["Intensity"].SetValue(1.1f);
 
                 timeEffect.Parameters["LightPosition"].SetValue(new Vector2(players[0].renderData.Position.X + players[0].renderData.DestRect.Width / 2, players[0].renderData.Position.Y + players[0].renderData.DestRect.Height / 2)); // Center
                 timeEffect.Parameters["LightRadius"].SetValue(700f);
@@ -542,14 +551,16 @@ namespace Cataclysmic
 
                 // End of shader section
                 spriteBatch.End();
-                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.SetRenderTarget(sceneTargetCRT);
 
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, lightEffect);
                 spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
                 spriteBatch.End();
 
                 // Overlays
-                spriteBatch.Begin();
+                GraphicsDevice.SetRenderTarget(null);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
+                spriteBatch.Draw(sceneTargetCRT, Vector2.Zero, Color.White);
                 players[0].DrawEx(1.0f);
                 
 

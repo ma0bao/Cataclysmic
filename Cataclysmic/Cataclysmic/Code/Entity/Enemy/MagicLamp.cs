@@ -91,6 +91,11 @@ namespace Cataclysmic
         const float SHAKE_TIME = .8f;
         const float CONE_WIDTH_DEGREES = 45;
         const int PROJECTILES_PER_FRAME = 5;
+        const int MAX_COOLDOWN_FRAMES = 240;
+        const int MIN_COOLDOWN_FRAMES = 60;
+
+        int cooldown_frames;
+
 
         EventTimer shakeTimer;
 
@@ -115,6 +120,7 @@ namespace Cataclysmic
             moveData.maxSpeed = 500;
             moveData.acceleration = 4000f;
             healthData = new HealthComponent(50);
+            cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
         }
         public override void Update(GameTime gameTime)
         {
@@ -173,14 +179,16 @@ namespace Cataclysmic
             }
             else if (currentState == AttackState.Follow)
             {
+                cooldown_frames--;
                 IncreaseVelocity();
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) > FOLLOW_DISTANCE)
                     base.Update(gameTime);
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) < ANGER_DISTANCE)
                     currentState = AttackState.Charge;
-                if (Game1.rand.Next(650) == 0)
+                if (cooldown_frames <= 0)
                 {
                     currentState = AttackState.Charge;
+                    cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
                 }
             }
             else if (currentState == AttackState.Charge)

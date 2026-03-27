@@ -3,7 +3,6 @@ sampler2D TextureSampler : register(s0);
 float2 LightPosition;   
 float2 ScreenSize;      
 float LightRadius;
-float3 LightColor;
 float Intensity;
 float timer;
 
@@ -37,7 +36,8 @@ float4 PixelShaderFunction(float2 texCoord : TEXCOORD0) : COLOR0
 
     // Convert texCoord (0..1) into coordinates
     float2 pixelPos = texCoord * ScreenSize;
-    pixelPos.x = pixelPos.x + sin((pixelPos.y + (timer/7))/ 4) * 50 ;
+
+    pixelPos.x = pixelPos.x + sin((pixelPos.y + (timer/5))) * 30 ;
     pixelPos.y = pixelPos.y - 100 + (200.0*rand_2_10(pixelPos.x));
 
     float4 color = tex2D(TextureSampler, texCoord);
@@ -46,10 +46,10 @@ float4 PixelShaderFunction(float2 texCoord : TEXCOORD0) : COLOR0
     // Distance from light
     float dist = distance(pixelPos, LightPosition);
 
-    float attenuation = saturate(1 - dist / LightRadius);
+    float attenuation = saturate(1 - dist / 2000);
 
     // Apply light
-    float3 lit = color.rgb * (LightColor * attenuation * Intensity);
+    float3 lit = color.rgb * (attenuation);
 
     return float4(lit, color.a);
 }
