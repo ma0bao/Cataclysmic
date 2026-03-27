@@ -16,18 +16,16 @@ namespace Cataclysmic
         Menu, Credits, Options, Game, End
     }
 
-     /*  TUPPER TO-DO:
-      1. Make shaders more finite <- done for now
-      2. Global debug option 
-      3. Fix Lamps
-      
-      */
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         public static int WIDTH = 1920;
         public static int HEIGHT = 1080;
         public const float MAX_VOLUME = 1.00f; // Vol range : [0.0f -> 1.0f]     Pitch range : [-1.0f -> 1.0f]
         public static Rectangle BOUNDS = new Rectangle(50, 50, WIDTH-70, HEIGHT-70);
+        public const int FADE_IN_START_FRAME = 0;
+        public const int FADE_IN_TIME = 240;
+
+
         public static Color ambientColor = new Color(241, 220, 170);
         public static Game1 self;
         GraphicsDeviceManager graphics;
@@ -36,6 +34,9 @@ namespace Cataclysmic
         public SpriteBatch spriteBatch;
         int index;
         public static Random rand = new Random();
+
+        public const int OPTION_COUNT = 2;
+        public static bool debugMode = true;
         
 
         GameState gameState;
@@ -334,7 +335,7 @@ namespace Cataclysmic
             if (gameState.Equals(GameState.Menu))
             {
                 if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter)) {
-                    if (timer < 300)
+                    if (false && timer < 300)
                     {
                         timer = 300;
                     }
@@ -394,21 +395,50 @@ namespace Cataclysmic
                     gameState = GameState.Menu;
                 }
 
-                if (optionPointer == 0) {
-                    if (KB.IsKeyDown(Keys.Left) && timer % 3 == 0) {
+                if (KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down))
+                {
+                    optionPointer = (optionPointer + 1) % OPTION_COUNT;
+                }
+
+                if (KB.IsKeyDown(Keys.Up) && oldKB.IsKeyUp(Keys.Up))
+                {
+                    optionPointer = (optionPointer - 1);
+                    if (optionPointer < 0)
+                        optionPointer = OPTION_COUNT - 1;
+                }
+
+                if (optionPointer == 0)
+                {
+                    if (KB.IsKeyDown(Keys.Left) && timer % 3 == 0)
+                    {
                         if (volume - 0.01f > 0)
                         {
                             volume = volume - 0.01f;
                             sound_click.Play(volume, -0.1f, 0);
                         }
                     }
-                    
+
                     if (KB.IsKeyDown(Keys.Right) && timer % 3 == 0)
                     {
-                        if (volume < MAX_VOLUME) {
+                        if (volume < MAX_VOLUME)
+                        {
                             volume = Math.Min(MAX_VOLUME, volume + 0.01f);
                             sound_click.Play(volume, 0.1f, 0);
                         }
+                    }
+                }
+                else if (optionPointer == 1) {
+                    if (KB.IsKeyDown(Keys.Left) && oldKB.IsKeyUp(Keys.Left))
+                    {
+                        debugMode = false;
+                    }
+                    if (KB.IsKeyDown(Keys.Right) && oldKB.IsKeyUp(Keys.Right))
+                    {
+                        debugMode = true;
+                    }
+                    if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter))
+                    {
+                        debugMode = !debugMode;
                     }
                 }
 
@@ -460,7 +490,7 @@ namespace Cataclysmic
                 GraphicsDevice.SetRenderTarget(sceneTarget);
                 GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                if (timer > 300) {
+                if (timer > FADE_IN_START_FRAME) {
                     spriteBatch.Draw(texture_enochianChain_2, chain2R, Color.White * 0.7f);
                     spriteBatch.Draw(texture_enochianChain_2, chain2RC, Color.White * 0.7f);
                     spriteBatch.Draw(texture_enochianChain_1, chain1R, Color.White * 0.7f);
@@ -475,9 +505,9 @@ namespace Cataclysmic
 
                     spriteBatch.Draw(texture_title,new Vector2(180,100), Color.White);
                 }
-                if (timer > 300 && timer < 600)
+                if (timer > FADE_IN_START_FRAME && timer < FADE_IN_START_FRAME + FADE_IN_TIME)
                 {
-                    spriteBatch.Draw(texture_blank, rect_screen, null, Color.Black * (float)(1 - ((timer - 300) / 300.0)), 0, Vector2.Zero, SpriteEffects.None, 1);
+                    spriteBatch.Draw(texture_blank, rect_screen, null, Color.Black * (float)(1 - ((timer - FADE_IN_START_FRAME) / (float)FADE_IN_TIME)), 0, Vector2.Zero, SpriteEffects.None, 1);
                     
                 }
 
@@ -490,6 +520,8 @@ namespace Cataclysmic
             }
             else if (gameState.Equals(GameState.Credits))
             {
+                GraphicsDevice.SetRenderTarget(sceneTarget);
+                GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin();
 
                 spriteBatch.Draw(texture_credits, new Vector2(WIDTH / 2 - texture_credits.Width / 2, 10), Color.White);
@@ -499,19 +531,37 @@ namespace Cataclysmic
                 spriteBatch.DrawString(font_credits, "Press Back to return...", new Vector2(WIDTH / 2 - 120, HEIGHT - 50), Color.White);
 
                 spriteBatch.End();
+
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
+                spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
+                spriteBatch.End();
             }
             else if (gameState.Equals(GameState.Options))
             {
+                GraphicsDevice.SetRenderTarget(sceneTarget);
+                GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin();
 
                 spriteBatch.Draw(texture_settings, new Vector2(WIDTH / 2 - texture_credits.Width / 2, 10), Color.White);
 
-                spriteBatch.DrawString(font_credits, "Volume >>> ", new Vector2(10, 300), Color.White);
+                spriteBatch.DrawString(font_credits, "Volume >>> ", new Vector2(50, 300), Color.White);
                 spriteBatch.DrawString(font_credits, ""+Math.Round(volume*100)+"%", new Vector2(300, 300), Color.White);
+
+                spriteBatch.DrawString(font_credits, "Show Debug >>> ", new Vector2(50, 350), Color.White);
+                spriteBatch.DrawString(font_credits, "" + debugMode, new Vector2(300, 350), Color.White);
+
+                spriteBatch.DrawString(font_credits, "->", new Vector2(10, 300 + 50 * optionPointer), Color.White);
 
                 spriteBatch.DrawString(font_credits, "Press Back to return...", new Vector2(WIDTH / 2 - 120, HEIGHT - 50), Color.White);
 
+                spriteBatch.End();
 
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
+                spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
                 spriteBatch.End();
             }
             else if (gameState.Equals(GameState.Game))
