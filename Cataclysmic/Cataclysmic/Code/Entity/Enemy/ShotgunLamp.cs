@@ -90,6 +90,10 @@ namespace Cataclysmic
         const float SHAKE_TIME = .7f;
         const float CONE_WIDTH_DEGREES = 30;
         const int PROJECTILES_PER_FRAME = 20;
+        const int MAX_COOLDOWN_FRAMES = 240;
+        const int MIN_COOLDOWN_FRAMES = 60;
+
+        int cooldown_frames;
 
         EventTimer shakeTimer;
 
@@ -114,6 +118,7 @@ namespace Cataclysmic
             moveData.acceleration = 4000f;
             healthData = new HealthComponent(50);
             //slowRadius = 0;
+            cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
         }
         public override void Update(GameTime gameTime)
         {
@@ -153,6 +158,7 @@ namespace Cataclysmic
 
 
             #region Update Based On State
+            
             if (currentState == AttackState.Run)
             {
                 base.Update(gameTime);
@@ -182,13 +188,15 @@ namespace Cataclysmic
             }
             else if (currentState == AttackState.Follow)
             {
-                if(renderData.GetDistanceToTarget(targetPos) > distanceToBeAtTarget)
+                cooldown_frames--;
+                if (renderData.GetDistanceToTarget(targetPos) > distanceToBeAtTarget)
                     base.Update(gameTime);
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) < ANGER_DISTANCE)
                     currentState = AttackState.Charge;
-                if (Game1.rand.Next(650) == 0) //Keyboard.GetState().IsKeyDown(Keys.L))
+                if (cooldown_frames <= 0) //Keyboard.GetState().IsKeyDown(Keys.L))
                 {
                     currentState = AttackState.Charge;
+                    cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
                 }
             }
             else if (currentState == AttackState.Charge)
