@@ -282,6 +282,9 @@ namespace Cataclysmic
         // thickness: line thickness in pixels (default 2)
         public void DrawDebug(float thickness = 2f)
         {
+            if (!Game1.debugMode) {
+                return;
+            }
             Color drawColor = Color.Red * 0.5f;
 
             for (int i = 0; i < worldVertices.Length; i++)
