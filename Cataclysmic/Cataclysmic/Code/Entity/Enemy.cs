@@ -39,8 +39,8 @@ namespace Cataclysmic
         public override void Draw(float opacity)
         {
             
-        renderData.DefualtDraw();
-        collision.DrawDebug();
+            renderData.DefualtDraw();
+            collision.DrawDebug();
             
         }
 
