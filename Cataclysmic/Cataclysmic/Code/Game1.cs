@@ -607,14 +607,15 @@ namespace Cataclysmic
                 spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
                 spriteBatch.End();
 
+                
+                spriteBatch.Begin();
+                players[0].DrawEx(1.0f);
+                spriteBatch.End();
+
                 // Overlays
                 GraphicsDevice.SetRenderTarget(null);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
                 spriteBatch.Draw(sceneTargetCRT, Vector2.Zero, Color.White);
-                players[0].DrawEx(1.0f);
-                
-
-
                 spriteBatch.End();
             }
             else if (gameState.Equals(GameState.End))
