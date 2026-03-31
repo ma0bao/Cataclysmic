@@ -95,6 +95,7 @@ namespace Cataclysmic
         public static Texture2D texture_square;
         public static Texture2D texture_flyingLamp;
         public static Texture2D texture_meatballEgypt;
+        public static Texture2D texture_clockHand;
 
 
         //Level Textures
@@ -237,6 +238,8 @@ namespace Cataclysmic
             texture_bullets8C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 8C Free");
             texture_bullets9C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 9C Free");
             texture_bullets10C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 10C Free");
+            texture_clockHand = Content.Load<Texture2D>("Sprites/Abilities/clockHand");
+
 
             sfx_explosion_short1 = Content.Load<SoundEffect>("Sounds/Abilities/Explosions/sfx_exp_short_soft1");
             sfx_weapon_singleshot2 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/sfx_weapon_singleshot2");

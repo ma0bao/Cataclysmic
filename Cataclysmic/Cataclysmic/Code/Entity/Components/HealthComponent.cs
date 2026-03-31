@@ -10,7 +10,7 @@ namespace Cataclysmic
 {
     public class HealthComponent
     {
-        public const int MAXIFRAMES = 10; // Tweak as needed
+        public const int MAXIFRAMES = 30; // Tweak as needed
         public int frames = 0;
         public int maxHealth;
         public int currentHealth;
