@@ -176,7 +176,7 @@ namespace Cataclysmic
 
         public void DefualtDraw()
         {
-            Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, rotation, origin, effects, layerDepth);
+            Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, MathHelper.ToRadians(rotation), origin, effects, layerDepth);
         }
 
         public void SetupAnimation(int width, int height, int frames, float secondsPerFrame = 0.1f) // 0.1 is 10 fps animation, could be changed
