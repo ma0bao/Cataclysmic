@@ -20,6 +20,7 @@ namespace Cataclysmic
         public const float COOLDOWN = 2f;
         public const int DAMAGE = 20;
         public const int PUSH = 15;
+        public const int LIFETIME = 60;
 
         public CollisionComponent Hitbox;
         public Color color;
@@ -42,7 +43,8 @@ namespace Cataclysmic
             Hitbox.Update(Position, angle);
             ScanDamage();
             timer++;
-            angle += 40;
+            double x = (double)timer / LIFETIME;
+            angle += 40 * (float) Math.Abs(Math.Pow(x, 5) - Math.Pow(x, 2)) * 3.0f;
         }
 
         public override void Draw(float opacity)
@@ -78,7 +80,7 @@ namespace Cataclysmic
         }
         public override bool IsAlive()
         {
-            if (timer > 20)
+            if (timer > LIFETIME)
             {
                 return false;
             }
