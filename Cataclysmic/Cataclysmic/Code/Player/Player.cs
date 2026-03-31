@@ -66,6 +66,7 @@ namespace Cataclysmic
             abilityCooldowns["Revolver"] = new EventTimer(Revolver.COOLDOWN);
             abilityCooldowns["CrackleBurst"] = new EventTimer(CrackleBurst.COOLDOWN);
             abilityCooldowns["CircleSlash"] = new EventTimer(CircleSlash.COOLDOWN);
+            abilityCooldowns["Slash"] = new EventTimer(Slash.COOLDOWN);
             foreach (EventTimer cd in abilityCooldowns.Values) cd.Done = true;
         }
 
@@ -138,6 +139,12 @@ namespace Cataclysmic
             {
                 if (TryUseAbility("Revolver"))
                     abilities.Add(new Revolver(renderData.Position, angle));
+            }
+
+            if (Game1.MS.RightButton == ButtonState.Pressed)
+            {
+                if (TryUseAbility("Slash"))
+                    abilities.Add(new Slash(renderData.Position, angle));
             }
 
             if (Game1.self.KB.IsKeyDown(Keys.Q) && !Game1.self.oldKB.IsKeyDown(Keys.Q))
