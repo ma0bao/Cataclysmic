@@ -35,7 +35,7 @@ namespace Cataclysmic
         EventTimer dashCooldown;
 
         //Abilities
-        LinkedList<Ability> abilities;
+        List<Ability> abilities;
         Dictionary<string, EventTimer> abilityCooldowns;
 
         public Player(Rectangle _destRect)
@@ -59,12 +59,13 @@ namespace Cataclysmic
 
             Hitbox = CollisionComponent.CreateRect(renderData.Position, _destRect.Width - 10, _destRect.Height - 30);
 
-            abilities = new LinkedList<Ability>();
+            abilities = new List<Ability>();
 
             // Add abilities here: (start ready to use)
             abilityCooldowns = new Dictionary<string, EventTimer>();
             abilityCooldowns["Revolver"] = new EventTimer(Revolver.COOLDOWN);
             abilityCooldowns["CrackleBurst"] = new EventTimer(CrackleBurst.COOLDOWN);
+            abilityCooldowns["CircleSlash"] = new EventTimer(CircleSlash.COOLDOWN);
             foreach (EventTimer cd in abilityCooldowns.Values) cd.Done = true;
         }
 
@@ -136,13 +137,19 @@ namespace Cataclysmic
             if (Game1.MS.LeftButton == ButtonState.Pressed)
             {
                 if (TryUseAbility("Revolver"))
-                    abilities.AddFirst(new Revolver(renderData.Position, angle));
+                    abilities.Add(new Revolver(renderData.Position, angle));
             }
 
             if (Game1.self.KB.IsKeyDown(Keys.Q) && !Game1.self.oldKB.IsKeyDown(Keys.Q))
             {
                 if (TryUseAbility("CrackleBurst"))
-                    abilities.AddFirst(new CrackleBurst(renderData.Position, angle));
+                    abilities.Add(new CrackleBurst(renderData.Position, angle));
+            }
+
+            if (Game1.self.KB.IsKeyDown(Keys.E) && !Game1.self.oldKB.IsKeyDown(Keys.E))
+            {
+                if (TryUseAbility("CircleSlash"))
+                    abilities.Add(new CircleSlash(renderData.Position));
             }
 
             // Dashes
@@ -164,6 +171,12 @@ namespace Cataclysmic
             foreach (Ability abil in abilities)
             {
                 abil.Update(gameTime);
+            }
+
+            for (int i = abilities.Count - 1; i >= 0; i--)
+            {
+                if (!abilities[i].IsAlive())
+                    abilities.RemoveAt(i);
             }
 
             // switch to walk and idle
