@@ -377,6 +377,7 @@ namespace Cataclysmic
 
                 if (timer == FADE_IN_START_FRAME) {
                     music_menu1.Volume = 0;
+                    music_menu1.IsLooped = true;
                     music_menu1.Play();
                 }
                 if (timer < FADE_IN_START_FRAME + FADE_IN_TIME && timer > FADE_IN_START_FRAME)
