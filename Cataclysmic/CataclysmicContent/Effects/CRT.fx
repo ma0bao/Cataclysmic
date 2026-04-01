@@ -37,15 +37,20 @@ float4 PixelShaderFunction(float2 texCoord : TEXCOORD0) : COLOR0
     // Convert texCoord (0..1) into coordinates
     float2 pixelPos = texCoord * ScreenSize;
 
-    pixelPos.x = pixelPos.x + sin((pixelPos.y + (timer/5))) * 30 ;
+    float1 sinn = sin((pixelPos.y + (timer/5)));
+    pixelPos.x = pixelPos.x + sinn * 30;
     pixelPos.y = pixelPos.y - 100 + (200.0*rand_2_10(pixelPos.x));
 
     float4 color = tex2D(TextureSampler, texCoord);
-
+    if (sinn < 0) {
+        color *= 1 - Intensity;
+    }
+    else {
+        color *= 1 + Intensity;
+    }
 
     // Distance from light
     float dist = distance(pixelPos, LightPosition);
-
     float attenuation = saturate(1 - dist / 2000);
 
     // Apply light

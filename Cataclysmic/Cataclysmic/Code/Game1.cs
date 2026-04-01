@@ -24,7 +24,7 @@ namespace Cataclysmic
         public static Rectangle BOUNDS = new Rectangle(50, 50, WIDTH-70, HEIGHT-70);
         public const int FADE_IN_START_FRAME = 0;
         public const int FADE_IN_TIME = 240;
-
+        public SoundEffectInstance music_menu1;
 
         public static Color ambientColor = new Color(241, 220, 170);
         public static Game1 self;
@@ -96,6 +96,7 @@ namespace Cataclysmic
         public static Texture2D texture_flyingLamp;
         public static Texture2D texture_meatballEgypt;
         public static Texture2D texture_clockHand;
+        public static Texture2D texture_character1;
 
 
         //Level Textures
@@ -196,6 +197,8 @@ namespace Cataclysmic
             sceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             sceneTargetCRT = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             enemies = new List<Enemy>();
+
+            
             // Rectangles
             #region
             rect_screen = new Rectangle(0, 0, WIDTH, HEIGHT);
@@ -292,6 +295,9 @@ namespace Cataclysmic
             texture_square = Content.Load<Texture2D>("square");
             texture_flyingLamp = Content.Load<Texture2D>("Sprites/Enemies/FlyingLamp");
             texture_meatballEgypt = Content.Load<Texture2D>("Sprites/Enemies/meatballEgypt");
+            texture_character1 = Content.Load<Texture2D>("Sprites/GUI/MainCharacter1");
+
+            music_menu1 = Content.Load<SoundEffect>("Sounds/Music/VampPiano").CreateInstance();
 
             //Effects
             #region
@@ -299,6 +305,11 @@ namespace Cataclysmic
             timeEffect = Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Effects/TimeTravel");
             chainEffect = Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Effects/ChainFade");
             crtEffect = Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Effects/CRT");
+            crtEffect.Parameters["LightPosition"].SetValue(new Vector2(WIDTH / 2, HEIGHT / 2));
+            crtEffect.Parameters["LightRadius"].SetValue(1500f);
+            crtEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
+            crtEffect.Parameters["Intensity"].SetValue(0.08f);
+
             #endregion
 
             // SFX
@@ -327,6 +338,7 @@ namespace Cataclysmic
         {
             //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             //this.Exit();
+
             KB = Keyboard.GetState();
             MS = Mouse.GetState();
             if (KB.IsKeyDown(Keys.Escape))
@@ -346,6 +358,7 @@ namespace Cataclysmic
                     {
                         gameState = GameState.Game;
                         sound_HeavyStart.Play(volume, 0, 0);
+                        music_menu1.Stop();
                     }
                     else if (index == 1)
                     {
@@ -360,6 +373,18 @@ namespace Cataclysmic
                     }
 
 
+                }
+
+                if (timer == FADE_IN_START_FRAME) {
+                    music_menu1.Volume = 0;
+                    music_menu1.Play();
+                }
+                if (timer < FADE_IN_START_FRAME + FADE_IN_TIME && timer > FADE_IN_START_FRAME)
+                {
+                    music_menu1.Volume = timer / (float) (FADE_IN_START_FRAME + FADE_IN_TIME) * volume;
+                }
+                else if (timer > FADE_IN_START_FRAME) {
+                    music_menu1.Volume = volume;
                 }
 
                 if ((KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down)) ||
@@ -429,6 +454,7 @@ namespace Cataclysmic
                             sound_click.Play(volume, 0.1f, 0);
                         }
                     }
+                    music_menu1.Volume = volume;
                 }
                 else if (optionPointer == 1) {
                     if (KB.IsKeyDown(Keys.Left) && oldKB.IsKeyUp(Keys.Left))
@@ -480,10 +506,6 @@ namespace Cataclysmic
         {
             GraphicsDevice.Clear(Color.Black);
             //crtEffect.Parameters["LightPosition"].SetValue(new Vector2(players[0].renderData.Position.X + players[0].renderData.DestRect.Width / 2, players[0].renderData.Position.Y + players[0].renderData.DestRect.Height / 2)); // Center
-            crtEffect.Parameters["LightPosition"].SetValue(new Vector2(WIDTH/2, HEIGHT/2));
-            crtEffect.Parameters["LightRadius"].SetValue(1500f);
-            crtEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
-            crtEffect.Parameters["Intensity"].SetValue(1.0f);
             crtEffect.Parameters["timer"].SetValue(timer);
 
 
@@ -503,7 +525,8 @@ namespace Cataclysmic
 
                     spriteBatch.Draw(texture_menuSpriteSheet, new Rectangle(250 - 42, 400 - 42 + 130 * index, 334, 209), new Rectangle(0, 1250, 843, 344), Color.White);
                     spriteBatch.Draw(texture_menuSpriteSheet, new Rectangle(250, 400, 250, 500), new Rectangle(0, 0, 600, 1200), Color.White);
-                    
+
+                    spriteBatch.Draw(texture_character1, new Vector2(0, 0), Color.White);
 
 
                     spriteBatch.Draw(texture_title,new Vector2(180,100), Color.White);
