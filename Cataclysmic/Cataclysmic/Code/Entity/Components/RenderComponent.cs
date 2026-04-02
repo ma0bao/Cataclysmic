@@ -33,6 +33,7 @@ namespace Cataclysmic
                 _destRect = value;
                 _position.X = value.X;
                 _position.Y = value.Y;
+                ResetHitBox();
             }
         }
         public Rectangle _destRect;
@@ -44,6 +45,7 @@ namespace Cataclysmic
                 _position = value;
                 _destRect.X = (int)value.X;
                 _destRect.Y = (int)value.Y;
+                ResetHitBox();
             }
         }
         public Vector2 _position;
@@ -135,9 +137,8 @@ namespace Cataclysmic
 
         public float GetRotationToTarget(Vector2 target)
         {
-
-            float directionX = target.X - (Position.X + DestRect.Width / 2);
-            float directionY = target.Y - (Position.Y + DestRect.Height / 2);
+            float directionX = target.X - Position.X;
+            float directionY = target.Y - Position.Y;
 
             return (float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f));
         }
@@ -162,8 +163,8 @@ namespace Cataclysmic
 
         public Vector2 GetRandomPoint()
         {
-            float x = Game1.rand.Next(50, Game1.WIDTH - 50);
-            float y = Game1.rand.Next(50, Game1.HEIGHT - 50);
+            float x = Game1.rand.Next(Game1.BOUNDS.X, Game1.BOUNDS.Width);
+            float y = Game1.rand.Next(Game1.BOUNDS.Y, Game1.BOUNDS.Height);
 
             return new Vector2(x, y);
         }
@@ -176,6 +177,11 @@ namespace Cataclysmic
         public void DefualtDraw()
         {
             Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, rotation, origin, effects, layerDepth);
+        }
+
+        public void DrawFlash()
+        {
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, DestRect, sourceRect, Color.White, rotation, origin, effects, layerDepth);
         }
 
         public void SetupAnimation(int width, int height, int frames, float secondsPerFrame = 0.1f) // 0.1 is 10 fps animation, could be changed

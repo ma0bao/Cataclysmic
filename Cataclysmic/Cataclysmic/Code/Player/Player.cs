@@ -15,7 +15,7 @@ namespace Cataclysmic
         public RenderComponent renderData;
         public MoveComponent moveData;
         public HealthComponent healthData;
-        Texture2D hitBoxTexture;
+        public CollisionComponent Hitbox;
         Texture2D Square;
 
         Rectangle staminaBarRect;
@@ -24,7 +24,7 @@ namespace Cataclysmic
         //Healthbar
         Rectangle healthBarRect;
         Rectangle healthBar;
-        int HEALTHWIDTH = 20;
+        int HEALTHWIDTH = 200;
 
         float angle;
 
@@ -34,14 +34,16 @@ namespace Cataclysmic
         IDash currentDash;
         EventTimer dashCooldown;
 
-        LinkedList<Ability> abilities;
+        //Abilities
+        List<Ability> abilities;
+        Dictionary<string, EventTimer> abilityCooldowns;
 
         public Player(Rectangle _destRect)
         {
             LoadContent();
             renderData = new RenderComponent(Game1.texture_playerIdle, _destRect);
             moveData = new MoveComponent();
-            healthData = new HealthComponent(10);
+            healthData = new HealthComponent(50);
 
             // Setup idle animation 32x32 2 frames
             renderData.SetupAnimation(32, 32, 2);
@@ -50,17 +52,44 @@ namespace Cataclysmic
             dashCooldown = new EventTimer(.5f);
             staminaBarRect = new Rectangle(5, 5, 200, 15);
             staminaRect = new Rectangle(5, 5, 1, 15);
-            healthBarRect = new Rectangle(305, 5, healthData.maxHealth * HEALTHWIDTH, 15);
-            healthBar = new Rectangle(305, 5, healthData.currentHealth * HEALTHWIDTH, 15);
+            healthBarRect = new Rectangle(305, 5, HEALTHWIDTH, 15);
+            healthBar = new Rectangle(305, 5, HEALTHWIDTH, 15);
             dashCooldown.Unpause();
             angle = 0.0f;
-            renderData.ResetHitBox();
 
-            abilities = new LinkedList<Ability>();
+            Hitbox = CollisionComponent.CreateRect(renderData.Position, _destRect.Width - 10, _destRect.Height - 30);
+
+            abilities = new List<Ability>();
+
+            // Add abilities here: (start ready to use)
+            abilityCooldowns = new Dictionary<string, EventTimer>();
+            abilityCooldowns["Revolver"] = new EventTimer(Revolver.COOLDOWN);
+            abilityCooldowns["CrackleBurst"] = new EventTimer(CrackleBurst.COOLDOWN);
+            abilityCooldowns["CircleSlash"] = new EventTimer(CircleSlash.COOLDOWN);
+            foreach (EventTimer cd in abilityCooldowns.Values) cd.Done = true;
+        }
+
+        // check if ability is off cooldown, if so, restart cooldown and return true
+        public bool TryUseAbility(string abilityName)
+        {
+            EventTimer timer = abilityCooldowns[abilityName];
+            if (timer.Done)
+            {
+                timer.Restart();
+                return true;
+            }
+            return false;
+        }
+
+        // for upgrades later
+        public void SetAbilityCooldown(string abilityName, float seconds)
+        {
+            abilityCooldowns[abilityName].SetTime(seconds);
         }
 
         public override void Update(GameTime gameTime)
         {
+            
             GamePadState gamePad = GamePad.GetState(PlayerIndex.One);
             moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             GetVelocity(gameTime, gamePad);
@@ -78,37 +107,52 @@ namespace Cataclysmic
             renderData.Position += moveData.velocity * moveData.deltaTime * moveData.speedModifiers;
             //Position = new Vector2(MathHelper.Clamp(Position.X, 0, Game1.WIDTH), MathHelper.Clamp(Position.Y, 0, Game1.HEIGHT));
             float newX = renderData.Position.X;
-            if (renderData.Position.X > Game1.WIDTH - renderData.DestRect.Width / 2)
+            if (renderData.Position.X > Game1.BOUNDS.Right - renderData.DestRect.Width / 2)
             {
                 moveData.velocity.X = -Math.Abs(moveData.velocity.X);
-                newX = Game1.WIDTH - renderData.DestRect.Width / 2;
+                newX = Game1.BOUNDS.Right - renderData.DestRect.Width / 2;
             }
-            else if (renderData.Position.X - renderData.DestRect.Width / 2 < 0)
+            else if (renderData.Position.X - renderData.DestRect.Width / 2 < Game1.BOUNDS.Left)
             {
                 moveData.velocity.X = Math.Abs(moveData.velocity.X);
-                newX = renderData.DestRect.Width / 2;
+                newX = Game1.BOUNDS.Left + renderData.DestRect.Width / 2;
             }
 
             float newY = renderData.Position.Y;
-            if (renderData.Position.Y > Game1.HEIGHT - renderData.DestRect.Height / 2)
+            if (renderData.Position.Y > Game1.BOUNDS.Bottom - renderData.DestRect.Height / 2)
             {
                 moveData.velocity.Y = -Math.Abs(moveData.velocity.Y);
-                newY = Game1.HEIGHT - renderData.DestRect.Height / 2;
+                newY = Game1.BOUNDS.Bottom - renderData.DestRect.Height / 2;
             }
-            else if (renderData.Position.Y - renderData.DestRect.Height / 2 < 0)
+            else if (renderData.Position.Y - renderData.DestRect.Height / 2 < Game1.BOUNDS.Top)
             {
                 moveData.velocity.Y = Math.Abs(moveData.velocity.Y);
-                newY = renderData.DestRect.Height / 2;
+                newY = Game1.BOUNDS.Top + renderData.DestRect.Height / 2;
             }
 
             renderData.Position = new Vector2(newX, newY);
             #endregion
 
-            if (Game1.MS.LeftButton == ButtonState.Pressed && Game1.oldMS.LeftButton == ButtonState.Released)
+            // Attacks/Abilities
+            if (Game1.MS.LeftButton == ButtonState.Pressed)
             {
-                abilities.AddFirst(new CrackleBurst(new Vector2(renderData.Position.X + renderData.hitBox.Width / 2, renderData.Position.Y + renderData.hitBox.Height / 2), angle));
+                if (TryUseAbility("Revolver"))
+                    abilities.Add(new Revolver(renderData.Position, angle));
             }
 
+            if (Game1.KB.IsKeyDown(Keys.Q) && !Game1.oldKB.IsKeyDown(Keys.Q))
+            {
+                if (TryUseAbility("CrackleBurst"))
+                    abilities.Add(new CrackleBurst(renderData.Position, angle));
+            }
+
+            if (Game1.KB.IsKeyDown(Keys.E) && !Game1.oldKB.IsKeyDown(Keys.E))
+            {
+                if (TryUseAbility("CircleSlash"))
+                    abilities.Add(new CircleSlash(renderData.Position));
+            }
+
+            // Dashes
             if (dashCooldown.Done)
             {
                 ScanForDash(gamePad);
@@ -123,9 +167,16 @@ namespace Cataclysmic
                 }
             }
             dashCooldown.Update();
+            foreach (EventTimer cd in abilityCooldowns.Values) cd.Update();
             foreach (Ability abil in abilities)
             {
                 abil.Update(gameTime);
+            }
+
+            for (int i = abilities.Count - 1; i >= 0; i--)
+            {
+                if (!abilities[i].IsAlive())
+                    abilities.RemoveAt(i);
             }
 
             // switch to walk and idle
@@ -139,7 +190,10 @@ namespace Cataclysmic
             }
 
             renderData.UpdateAnimation(gameTime);
-            renderData.ResetHitBox();
+            Hitbox.Update(renderData.Position, angle);
+            healthData.Update();
+
+            ScanDamage();
         }
 
         public void ScanForDash(GamePadState gamePad)
@@ -175,10 +229,8 @@ namespace Cataclysmic
         public void GetVelocity(GameTime gameTime, GamePadState gpInput)
         {
             Vector2 input = Vector2.Zero;
-            if (GamePad.GetState(PlayerIndex.One).IsConnected)
+            
                 input = new Vector2(gpInput.ThumbSticks.Left.X, -gpInput.ThumbSticks.Left.Y);
-            else
-            {
                 KeyboardState ks = Keyboard.GetState();
                 if (ks.IsKeyDown(Game1.player1_moveUp))
                     input.Y -= 1;
@@ -188,7 +240,7 @@ namespace Cataclysmic
                     input.X -= 1;
                 if (ks.IsKeyDown(Game1.player1_moveRight))
                     input.X += 1;
-            }
+            
 
             if (input.Length() > 1f)
                 input.Normalize();
@@ -222,7 +274,6 @@ namespace Cataclysmic
 
         public void LoadContent()
         {
-            hitBoxTexture = Game1.texture_hitBox;
             Square = Game1.texture_square;
         }
 
@@ -254,8 +305,8 @@ namespace Cataclysmic
         {
             int MouseX = Mouse.GetState().X;
             int MouseY = Mouse.GetState().Y;
-            float directionX = MouseX - (renderData.Position.X + renderData.DestRect.Width / 2);
-            float directionY = MouseY - (renderData.Position.Y + renderData.DestRect.Height / 2);
+            float directionX = MouseX - renderData.Position.X;
+            float directionY = MouseY - renderData.Position.Y;
 
             return (float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f));
         }
@@ -284,7 +335,7 @@ namespace Cataclysmic
             }
 
 
-            Game1.self.spriteBatch.Draw(hitBoxTexture, renderData.hitBox, Color.White);
+            Hitbox.DrawDebug();
 
         }
 
@@ -295,7 +346,7 @@ namespace Cataclysmic
             Game1.self.spriteBatch.Draw(Square, staminaBarRect, Color.Red * opacity);
             Game1.self.spriteBatch.Draw(Square, staminaRect, Color.Orange * opacity);
 
-            healthBar.Width = healthData.currentHealth * HEALTHWIDTH;
+            healthBar.Width = (int) (healthData.lerpValue * HEALTHWIDTH);
             Game1.self.spriteBatch.Draw(Square, healthBarRect, Color.Red * opacity);
             Game1.self.spriteBatch.Draw(Square, healthBar, Color.Green * opacity);
 
@@ -308,8 +359,24 @@ namespace Cataclysmic
             return true;
         }
 
+        public bool ScanDamage()
+        {
+            foreach (Enemy e in Game1.enemies)
+            {
+                float pCollisionDepth;
+                Vector2 pCollisionNormal;
+                if (Hitbox.Intersects(e.collision, out pCollisionDepth, out pCollisionNormal))
+                {
+                    Damage(e, 1);
+                    return true;
+                }
+            }
+            return false;
+
+        }
         public override void Damage(Entity cause, int amount)
         {
+            healthData.Damage(cause, amount);
             return;
         }
 
