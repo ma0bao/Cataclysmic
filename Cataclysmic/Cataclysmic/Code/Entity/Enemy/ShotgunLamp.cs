@@ -24,7 +24,8 @@ namespace Cataclysmic
                 sandHitbox = CollisionComponent.CreateRect(Position, SIZE, SIZE);
                 renderData = new RenderComponent(Game1.texture_blank, new Rectangle((int)Position.X, (int)Position.Y, SIZE, SIZE));
                 moveData = new MoveComponent(300, 2000, 400 * frictionMultiplier);
-                renderData.color = Color.Red;
+                //renderData.color = Color.Red;
+                renderData.color = new Color(119, 96, 66);
                 moveData.velocity = velocity;
                 randomOffset.X = Game1.rand.Next(-MAX_OFFSET, MAX_OFFSET + 1);
                 randomOffset.Y = Game1.rand.Next(-MAX_OFFSET, MAX_OFFSET + 1);
@@ -45,7 +46,7 @@ namespace Cataclysmic
             public void Update(GameTime gameTime)
             {
                 moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                renderData.color.A = (byte)MathHelper.Lerp(255, 0, death.lerpValue);
+                renderData.color.A = (byte)MathHelper.Lerp(255, 200, death.lerpValue);
                 sandHitbox.UpdatePosition(renderData.Position);
                 float depth;
                 Vector2 normal;
@@ -87,7 +88,7 @@ namespace Cataclysmic
         const int ANGER_DISTANCE = 20;
         const int FOLLOW_DISTANCE = 200;
         const int AGRO_DISTANCE = 300;
-        const float SHAKE_TIME = .7f;
+        const float SHAKE_TIME = 1.4f;
         const float CONE_WIDTH_DEGREES = 30;
         const int PROJECTILES_PER_FRAME = 20;
         const int MAX_COOLDOWN_FRAMES = 240;
@@ -109,7 +110,7 @@ namespace Cataclysmic
 
         float frictionMultiplier = 5;
 
-        public ShotgunLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_flyingLamp, destRect)
+        public ShotgunLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_flyingLamp, destRect, 40, 40)
         {
             players = targets;
             
@@ -128,14 +129,14 @@ namespace Cataclysmic
             {
                 renderData.rotation = renderData.GetRotationToTarget(renderData.Position + moveData.velocity);
                 moveData.maxSpeed = 500f;
-                renderData.color = Color.AliceBlue;
+                //renderData.color = Color.AliceBlue;
                 if (targetPos == Vector2.Zero)
                     SetNewTargetPosition(renderData.GetRandomPoint());
             }
             else if (currentState == AttackState.Follow)
             {
                 moveData.maxSpeed = 500f;
-                renderData.color = Color.Red;
+                //renderData.color = Color.Red;
 
                 float distance = renderData.GetDistanceToTarget(targetedPlayer.renderData.Position);
                 float diffX = renderData.Position.X - targetedPlayer.renderData.Position.X;

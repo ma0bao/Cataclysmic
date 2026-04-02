@@ -27,7 +27,7 @@ namespace Cataclysmic
 
         EventTimer cooldownTimer;
 
-        public Apesh(Rectangle destRect, Player p) : base(Game1.texture_player, destRect)
+        public Apesh(Rectangle destRect, Player p) : base(Game1.texture_player, destRect, 64, 64)
         {
             player = p;
             SetNewTargetPosition(player.renderData.Position);

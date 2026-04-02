@@ -30,7 +30,7 @@ namespace Cataclysmic
         }
 
         AttackState currentState = AttackState.Wander;
-        public Speedster(Rectangle _destRect, Player _player) : base(Game1.texture_player, _destRect)
+        public Speedster(Rectangle _destRect, Player _player) : base(Game1.texture_player, _destRect, 32, 32)
         {
             //Components
             player = _player;
