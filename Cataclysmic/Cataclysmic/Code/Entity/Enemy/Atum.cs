@@ -50,6 +50,7 @@ namespace Cataclysmic
         public Atum(Rectangle destRect, Player player) : base(Game1.texture_player, destRect)
         {
             target = player;
+            healthData = new HealthComponent(100);
 
             //Geyser
             geyserCooldown = new EventTimer(.2f);
@@ -118,17 +119,33 @@ namespace Cataclysmic
             #region Get Target Based On State
             if (currentState == AttackStates.Center)
             {
-                SetNewTargetPosition(Game1.BOUNDS.Center);
+                //SetNewTargetPosition(Game1.BOUNDS.Center);
+                float time = (float)gameTime.TotalGameTime.TotalSeconds;
+
+                Vector2 center = new Vector2(Game1.BOUNDS.Center.X, Game1.BOUNDS.Center.Y);
+
+                Vector2 offset = new Vector2(
+                    (float)Math.Sin(time * 2f) * 120f,
+                    (float)Math.Cos(time * 1.5f) * 80f
+                );
+
+                SetNewTargetPosition(center + offset);
             }
             else if (currentState == AttackStates.Follow)
             {
                 SetNewTargetPosition(target.renderData.Position);
+            }
+            else if (currentState == AttackStates.Geyser)
+            {
+                SetNewTargetPosition(Game1.BOUNDS.Center);
             }
             #endregion
 
             #region Update Based On State
             if (currentState == AttackStates.Center)
             {
+                renderData.color = Color.Lerp(Color.White, Color.Red, (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 3f) * 0.5f + 0.5f);
+
                 base.Update(gameTime);
                 if (AttackTickTimer == null)
                     AttackTickTimer = new EventTimer(Game1.rand.Next(2, 8));
@@ -153,6 +170,7 @@ namespace Cataclysmic
             }
             else if (currentState == AttackStates.Geyser)
             {
+                base.Update(gameTime);
                 if (geyserCooldown.Done)
                 {
                     geyserCooldown.Restart();

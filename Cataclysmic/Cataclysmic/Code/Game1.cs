@@ -274,7 +274,7 @@ namespace Cataclysmic
             #endregion
             players[0] = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             //speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
-            enemies.Add(new Atum(new Rectangle(200, 200, 40, 40), players[0]));
+            enemies.Add(new Atum(new Rectangle(200, 200, 150, 200), players[0]));
         }
         protected override void UnloadContent()
         {
