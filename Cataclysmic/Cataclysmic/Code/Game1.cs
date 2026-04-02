@@ -21,7 +21,7 @@ namespace Cataclysmic
         public static int WIDTH = 1920;
         public static int HEIGHT = 1080;
         public const float MAX_VOLUME = 1.00f; // Vol range : [0.0f -> 1.0f]     Pitch range : [-1.0f -> 1.0f]
-        public static Rectangle BOUNDS = new Rectangle(50, 50, WIDTH-70, HEIGHT-70);
+        public static Rectangle BOUNDS = new Rectangle(60, 60, 1800, 850);
         public const int FADE_IN_START_FRAME = 0;
         public const int FADE_IN_TIME = 240;
         public SoundEffectInstance music_menu1;
@@ -36,14 +36,16 @@ namespace Cataclysmic
         public static Random rand = new Random();
 
         public const int OPTION_COUNT = 2;
-        public static bool debugMode = true;
+        public static bool debugMode = false;
         
 
         GameState gameState;
-        public KeyboardState oldKB;
-        public KeyboardState KB;
+        public static KeyboardState oldKB;
+        public static KeyboardState KB;
         public static MouseState oldMS;
         public static MouseState MS;
+        public static GamePadState oldGS;
+        public static GamePadState GS;
         long timer;
         long score;
         public static float volume;
@@ -97,6 +99,8 @@ namespace Cataclysmic
         public static Texture2D texture_meatballEgypt;
         public static Texture2D texture_clockHand;
         public static Texture2D texture_character1;
+        public static Texture2D texture_overlay1;
+        public static Texture2D texture_environment1;
 
 
         //Level Textures
@@ -288,15 +292,16 @@ namespace Cataclysmic
 
             font_credits = Content.Load<SpriteFont>("Fonts/CreditsFont");
             texture_player = Content.Load<Texture2D>("Sprites/Player/TestSpritePlayer");
-            texture_playerIdle = Content.Load<Texture2D>("Sprites/Player/Idle");
-            texture_playerWalk = Content.Load<Texture2D>("Sprites/Player/Walk");
+            texture_playerIdle = Content.Load<Texture2D>("Sprites/Player/IdleBlack");
+            texture_playerWalk = Content.Load<Texture2D>("Sprites/Player/WalkBlack");
             texture_playerDie = Content.Load<Texture2D>("Sprites/Player/Die");
             texture_hitBox = Content.Load<Texture2D>("Hitbox");
             texture_square = Content.Load<Texture2D>("square");
             texture_flyingLamp = Content.Load<Texture2D>("Sprites/Enemies/FlyingLamp");
             texture_meatballEgypt = Content.Load<Texture2D>("Sprites/Enemies/meatballEgypt");
             texture_character1 = Content.Load<Texture2D>("Sprites/GUI/MainCharacter1");
-
+            texture_overlay1 = Content.Load<Texture2D>("Levels/Overlay1");
+            texture_environment1 = Content.Load<Texture2D>("Levels/Environment1");
             music_menu1 = Content.Load<SoundEffect>("Sounds/Music/VampPiano").CreateInstance();
 
             //Effects
@@ -341,15 +346,18 @@ namespace Cataclysmic
 
             KB = Keyboard.GetState();
             MS = Mouse.GetState();
+            GS = GamePad.GetState(PlayerIndex.One);
             if (KB.IsKeyDown(Keys.Escape))
                 this.Exit();
-            if (KB.IsKeyDown(Keys.D9) && oldKB.IsKeyUp(Keys.D9)) 
+            if ((KB.IsKeyDown(Keys.D9) && oldKB.IsKeyUp(Keys.D9))
+                || (GS.Buttons.Start == ButtonState.Pressed && oldGS.Buttons.Start == ButtonState.Released))
             {
                 graphics.ToggleFullScreen();
             }
             if (gameState.Equals(GameState.Menu))
             {
-                if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter)) {
+                if ((KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter))
+                    || (GS.Buttons.A == ButtonState.Pressed && oldGS.Buttons.A == ButtonState.Released)) {
                     if (false && timer < 300)
                     {
                         timer = 300;
@@ -382,20 +390,22 @@ namespace Cataclysmic
                 }
                 if (timer < FADE_IN_START_FRAME + FADE_IN_TIME && timer > FADE_IN_START_FRAME)
                 {
-                    music_menu1.Volume = timer / (float) (FADE_IN_START_FRAME + FADE_IN_TIME) * volume;
+                    music_menu1.Volume = timer / (float)(FADE_IN_START_FRAME + FADE_IN_TIME) * volume;
                 }
                 else if (timer > FADE_IN_START_FRAME) {
                     music_menu1.Volume = volume;
                 }
 
                 if ((KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down)) ||
-                    (KB.IsKeyDown(Keys.S) && oldKB.IsKeyUp(Keys.S))) {
+                    (KB.IsKeyDown(Keys.S) && oldKB.IsKeyUp(Keys.S)) ||
+                    (GS.DPad.Down == ButtonState.Pressed && oldGS.DPad.Down == ButtonState.Released)) {
                     index = index + 1;
                     index %= 4;
                     sound_click.Play(volume, -0.25f + (float) rand.NextDouble() * 0.5f, 0);
                 }
                 if ((KB.IsKeyDown(Keys.Up) && oldKB.IsKeyUp(Keys.Up)) ||
-                    (KB.IsKeyDown(Keys.W) && oldKB.IsKeyUp(Keys.W)))
+                    (KB.IsKeyDown(Keys.W) && oldKB.IsKeyUp(Keys.W)) ||
+                    (GS.DPad.Up == ButtonState.Pressed && oldGS.DPad.Up == ButtonState.Released))
                 {
                     index = index - 1;
                     sound_click.Play(volume,  -0.25f + (float)rand.NextDouble() * 0.5f, 0);
@@ -412,24 +422,30 @@ namespace Cataclysmic
             }
             else if (gameState.Equals(GameState.Credits))
             {
-                if (KB.IsKeyDown(Keys.Back) && oldKB.IsKeyUp(Keys.Back))
+                if ((KB.IsKeyDown(Keys.Back) && oldKB.IsKeyUp(Keys.Back)) ||
+                    (GS.Buttons.X == ButtonState.Pressed && oldGS.Buttons.X == ButtonState.Released))
                 {
                     gameState = GameState.Menu;
                 }
             }
             else if (gameState.Equals(GameState.Options))
             {
-                if (KB.IsKeyDown(Keys.Back) && oldKB.IsKeyUp(Keys.Back))
+                if ((KB.IsKeyDown(Keys.Back) && oldKB.IsKeyUp(Keys.Back)) ||
+                    (GS.Buttons.X == ButtonState.Pressed && oldGS.Buttons.X == ButtonState.Released))
                 {
                     gameState = GameState.Menu;
                 }
 
-                if (KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down))
+                if ((KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down)) ||
+                    (KB.IsKeyDown(Keys.S) && oldKB.IsKeyUp(Keys.S)) ||
+                    (GS.DPad.Down == ButtonState.Pressed && oldGS.DPad.Down == ButtonState.Released))
                 {
                     optionPointer = (optionPointer + 1) % OPTION_COUNT;
                 }
 
-                if (KB.IsKeyDown(Keys.Up) && oldKB.IsKeyUp(Keys.Up))
+                if ((KB.IsKeyDown(Keys.Up) && oldKB.IsKeyUp(Keys.Up)) ||
+                    (KB.IsKeyDown(Keys.W) && oldKB.IsKeyUp(Keys.W)) ||
+                    (GS.DPad.Up == ButtonState.Pressed && oldGS.DPad.Up == ButtonState.Released))
                 {
                     optionPointer = (optionPointer - 1);
                     if (optionPointer < 0)
@@ -438,7 +454,7 @@ namespace Cataclysmic
 
                 if (optionPointer == 0)
                 {
-                    if (KB.IsKeyDown(Keys.Left) && timer % 3 == 0)
+                    if (KB.IsKeyDown(Keys.Left) && timer % 3 == 0 || GS.DPad.Left == ButtonState.Pressed && timer % 3 == 0)
                     {
                         if (volume - 0.01f > 0)
                         {
@@ -447,7 +463,7 @@ namespace Cataclysmic
                         }
                     }
 
-                    if (KB.IsKeyDown(Keys.Right) && timer % 3 == 0)
+                    if (KB.IsKeyDown(Keys.Right) && timer % 3 == 0 || GS.DPad.Right == ButtonState.Pressed && timer % 3 == 0)
                     {
                         if (volume < MAX_VOLUME)
                         {
@@ -458,15 +474,15 @@ namespace Cataclysmic
                     music_menu1.Volume = volume;
                 }
                 else if (optionPointer == 1) {
-                    if (KB.IsKeyDown(Keys.Left) && oldKB.IsKeyUp(Keys.Left))
+                    if ((KB.IsKeyDown(Keys.Left) && oldKB.IsKeyUp(Keys.Left)) || (GS.DPad.Left == ButtonState.Pressed && oldGS.DPad.Left == ButtonState.Released))
                     {
                         debugMode = false;
                     }
-                    if (KB.IsKeyDown(Keys.Right) && oldKB.IsKeyUp(Keys.Right))
+                    if (KB.IsKeyDown(Keys.Right) && oldKB.IsKeyUp(Keys.Right) || (GS.DPad.Right == ButtonState.Pressed && oldGS.DPad.Right == ButtonState.Released))
                     {
                         debugMode = true;
                     }
-                    if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter))
+                    if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter) || (GS.Buttons.A == ButtonState.Pressed && oldGS.Buttons.A == ButtonState.Released))
                     {
                         debugMode = !debugMode;
                     }
@@ -499,6 +515,7 @@ namespace Cataclysmic
             timer++;
             oldMS = MS;
             oldKB = KB;
+            oldGS = GS;
             base.Update(gameTime);
         }
 
@@ -554,7 +571,9 @@ namespace Cataclysmic
                 spriteBatch.Draw(texture_credits, new Vector2(WIDTH / 2 - texture_credits.Width / 2, 10), Color.White);
                 spriteBatch.DrawString(font_credits, "Developers >>> Evan Tupper, Zackariya Aggour, & Thomas Liew" +
                     "\n\nCursor Sprites >>> Ivan Voirol" +
-                    "\nBullet 24x24 >>> BDragon1727", new Vector2(10, 300), Color.White);
+                    "\nBullet 24x24 >>> BDragon1727" +
+                    "\nMain Menu Assets >>> Keisha Sespene" +
+                    "\nMenu Music >>> Tadon", new Vector2(10, 300), Color.White);
                 spriteBatch.DrawString(font_credits, "Press Back to return...", new Vector2(WIDTH / 2 - 120, HEIGHT - 50), Color.White);
 
                 spriteBatch.End();
@@ -610,18 +629,14 @@ namespace Cataclysmic
 
 
                 GraphicsDevice.SetRenderTarget(sceneTarget);
-                //GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin();
-                //spriteBatch.Draw(texture_grid, rect_screen, Color.White);
 
-                DrawLevel(CreateLevel(@"Content/Levels/desertbg.txt")); //CAN BE OPTiMIZED - Drawing uneeded stuff
-                DrawLevel(CreateLevel(@"Content/Levels/desert.txt"));  
+                spriteBatch.Draw(texture_environment1, new Vector2(0, 0), Color.White);
 
                 // Put all draw methods that are not exclusive from shaders here.
 
 
                 players[0].Draw(1.0f);
-                //speedster.Draw(1.0f);
                 foreach(Enemy e in enemies)
                     e.Draw(1.0f);
 
@@ -636,6 +651,7 @@ namespace Cataclysmic
 
                 
                 spriteBatch.Begin();
+                spriteBatch.Draw(texture_overlay1, new Vector2(0, 0), Color.White);
                 players[0].DrawEx(1.0f);
                 spriteBatch.End();
 
@@ -659,91 +675,6 @@ namespace Cataclysmic
             base.Draw(gameTime);
         }
 
-        public int[][] CreateLevel(string levelPath) //returns arr of level
-        {
-            // Sand - 0
-            // sandRight - 1
-            // sandBottom - 2
-            // sandLeft - 3
-            // sandTop - 4
-            // sandSE - 5
-            // sandSW - 6
-            // sandNW - 7
-            // sandNE - 8
-            //48 by 27 level
-            int[][] levelMap = new int[27][];
-            
-            try
-            {
-                using (StreamReader reader = new StreamReader(levelPath))
-                {
-                    for (int c = 0; c < levelMap.Length; c++)
-                    {
-                        levelMap[c] = new int[48];
-
-                        string line = reader.ReadLine();
-                        string[] parts = line.Split(' ');
-                        for (int r = 0; r < levelMap[c].Length; r++)
-                        {
-                            levelMap[c][r] = Convert.ToInt32(parts[r]);
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("File could not be read: ");
-                Console.WriteLine(e.Message);
-            }
-
-            return levelMap;
-        }
-
-        public void DrawLevel(int[][] level) //40 by 40 tiles
-        {
-            int tileHeight = 40; 
-            int tileWidth = 40;
-            int y = 0;
-            for (int c = 0; c < level.Length; c++)
-            {
-                int x = 0;
-                for (int r = 0; r < level[c].Length; r++)
-                {
-                    int texture = level[c][r];
-                    switch (texture)
-                    {
-                        case 0:
-                            Game1.self.spriteBatch.Draw(texture_sand, new Rectangle(x,y, tileHeight, tileWidth), Color.White);
-                            break;
-                        case 1:
-                            Game1.self.spriteBatch.Draw(texture_sandRight, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
-                            break;
-                        case 2:
-                            Game1.self.spriteBatch.Draw(texture_sandBottom, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
-                            break;
-                        case 3:
-                            Game1.self.spriteBatch.Draw(texture_sandLeft, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
-                            break;
-                        case 4:
-                            Game1.self.spriteBatch.Draw(texture_sandTop, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
-                            break;
-                        case 5:
-                            Game1.self.spriteBatch.Draw(texture_sandSE, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
-                            break;
-                        case 6:
-                            Game1.self.spriteBatch.Draw(texture_sandSW, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
-                            break;
-                        case 7:
-                            Game1.self.spriteBatch.Draw(texture_sandNW, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
-                            break;
-                        case 8:
-                            Game1.self.spriteBatch.Draw(texture_sandNE, new Rectangle(x, y, tileHeight, tileWidth), Color.White);
-                            break;
-                    }
-                    x += tileWidth;
-                }
-                y += tileHeight;
-            }
-        }
+        
     }
 }

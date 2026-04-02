@@ -271,12 +271,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Levels\desert.txt">
-      <Name>desert</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sprites\Environment\Desert\sandBottom.png">
       <Name>sandBottom</Name>
       <Importer>TextureImporter</Importer>
@@ -331,12 +325,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Levels\desertbg.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Name>desertbg</Name>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Sprites\Enemies\FlyingLamp.png">
@@ -435,6 +423,32 @@
   <ItemGroup>
     <Compile Include="Sprites\GUI\MainCharacter1.png">
       <Name>MainCharacter1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Levels\Overlay1.png">
+      <Name>Overlay1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Levels\Environment1.png">
+      <Name>Environment1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Player\IdleBlack.png">
+      <Name>IdleBlack</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Player\WalkBlack.png">
+      <Name>WalkBlack</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
