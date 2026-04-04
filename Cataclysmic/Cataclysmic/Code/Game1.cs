@@ -35,7 +35,7 @@ namespace Cataclysmic
         int index;
         public static Random rand = new Random();
 
-        public const int OPTION_COUNT = 2;
+        public const int OPTION_COUNT = 3;
         public static bool debugMode = false;
         
 
@@ -49,8 +49,16 @@ namespace Cataclysmic
         long timer;
         long score;
         public static float volume;
-        public Cursor[] cursors;
-        public static Player[] players;
+        public static float intensityOfCRT;
+        public const float MAX_INTENSITY = 0.5f;
+        public const float INTENSITY_INCREMENTER = 0.01f;
+        public Cursor cursor;
+        public static Player player;
+
+        // Game Loop
+        public Environment currentEnvironment;
+        public int environmentPointer = 0;
+        public Environment[] environments;
 
         // Keyboard Controls
         #region
@@ -169,8 +177,11 @@ namespace Cataclysmic
         public Microsoft.Xna.Framework.Graphics.Effect chainEffect;
         public Microsoft.Xna.Framework.Graphics.Effect crtEffect;
 
+        public SoundEffectInstance music_desert1;
+        public SoundEffectInstance music_desert2;
+
         //Temporary testing Object
-        public static List<Enemy> enemies;
+        //public static List<Enemy> enemies;
 
         public Game1()
         {
@@ -195,12 +206,10 @@ namespace Cataclysmic
             volume = 1.0f;
 
             optionPointer = 0;
-            players = new Player[4];
-            cursors = new Cursor[4];
-            cursors[0] = new Cursor(Content);
+            cursor = new Cursor(Content);
             sceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             sceneTargetCRT = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            enemies = new List<Enemy>();
+            //enemies = new List<Enemy>();
 
             
             // Rectangles
@@ -299,10 +308,13 @@ namespace Cataclysmic
             texture_square = Content.Load<Texture2D>("square");
             texture_flyingLamp = Content.Load<Texture2D>("Sprites/Enemies/FlyingLamp");
             texture_meatballEgypt = Content.Load<Texture2D>("Sprites/Enemies/meatballEgypt");
-            texture_character1 = Content.Load<Texture2D>("Sprites/GUI/MainCharacter1");
+            texture_character1 = Content.Load<Texture2D>("Sprites/GUI/MainCharacter2");
             texture_overlay1 = Content.Load<Texture2D>("Levels/Overlay1");
-            texture_environment1 = Content.Load<Texture2D>("Levels/Environment1");
+            texture_environment1 = Content.Load<Texture2D>("Levels/EgyptianEnvironmentBackground");
             music_menu1 = Content.Load<SoundEffect>("Sounds/Music/VampPiano").CreateInstance();
+            //music_desert1 = Content.Load<SoundEffect>("Sounds/Music/the_suns_heat").CreateInstance();
+            music_desert1 = Content.Load<SoundEffect>("Sounds/Music/desert_loops_2").CreateInstance();
+            music_desert1.IsLooped = true;
 
             //Effects
             #region
@@ -326,13 +338,15 @@ namespace Cataclysmic
             #endregion
 
 
-            players[0] = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
+            player = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             //speedster = new Speedster(new Rectangle(100, 100, 60, 60), players[0]);
-            enemies.Add(new Apesh(new Rectangle(200, 200, 40, 40), players[0]));
-            enemies.Add(new Androsphinx(new Rectangle(200, 200, 40, 40), players));
-            enemies.Add(new ShotgunLamp(new Rectangle(200, 200, 40, 40), players));
-            enemies.Add(new MagicLamp(new Rectangle(2000, 200, 40, 40), players));
-        }
+            //enemies.Add(new Apesh(new Vector2(200, 200)));
+            //enemies.Add(new Androsphinx(new Vector2(200, 200)));
+            //enemies.Add(new ShotgunLamp(new Vector2(200, 200)));
+            //enemies.Add(new MagicLamp(new Vector2(2000, 200)));
+            environments = new Environment[]{ new EgyptEnvironment() };
+            currentEnvironment = environments[0];
+    }
         protected override void UnloadContent()
         {
             
@@ -487,23 +501,50 @@ namespace Cataclysmic
                         debugMode = !debugMode;
                     }
                 }
+                else if (optionPointer == 2) { // Intensity
+                    if (KB.IsKeyDown(Keys.Left) && timer % 3 == 0 || GS.DPad.Left == ButtonState.Pressed && timer % 3 == 0)
+                    {
+                        if (intensityOfCRT - INTENSITY_INCREMENTER > 0)
+                        {
+                            intensityOfCRT = intensityOfCRT - INTENSITY_INCREMENTER;
+                        }
+                    }
+
+                    if (KB.IsKeyDown(Keys.Right) && timer % 3 == 0 || GS.DPad.Right == ButtonState.Pressed && timer % 3 == 0)
+                    {
+                        if (intensityOfCRT < MAX_INTENSITY)
+                        {
+                            intensityOfCRT = Math.Min(MAX_INTENSITY, intensityOfCRT + INTENSITY_INCREMENTER);
+                        }
+                    }
+
+                }
 
             }
             else if (gameState.Equals(GameState.Game))
             {
-                players[0].Update(gameTime);
-                //speedster.Update(gameTime);
-                for (int i = enemies.Count - 1; i >= 0; i--)
-                {
-                    if (!enemies[i].healthData.isAlive)
+                if (currentEnvironment.IsComplete()) {
+                    if (environmentPointer + 1 >= environments.Length - 1)
                     {
-                        enemies.RemoveAt(i);
+                        gameState = GameState.End;
+                        return;
                     }
-                    else
-                    {
-                        enemies[i].Update(gameTime);
-                    }
+                    currentEnvironment = environments[++environmentPointer];
                 }
+                player.Update(gameTime);
+                currentEnvironment.Update(gameTime);
+                //speedster.Update(gameTime);
+                //for (int i = enemies.Count - 1; i >= 0; i--)
+                //{
+                    //if (!enemies[i].healthData.isAlive)
+                    //{
+                    //    enemies.RemoveAt(i);
+                    //}
+                    //else
+                    //{
+                    //    enemies[i].Update(gameTime);
+                    //}
+                //}
                 
             }
             else if (gameState.Equals(GameState.End)) 
@@ -511,7 +552,7 @@ namespace Cataclysmic
                 
             }
 
-            cursors[0].Update();
+            cursor.Update();
             timer++;
             oldMS = MS;
             oldKB = KB;
@@ -525,7 +566,7 @@ namespace Cataclysmic
             GraphicsDevice.Clear(Color.Black);
             //crtEffect.Parameters["LightPosition"].SetValue(new Vector2(players[0].renderData.Position.X + players[0].renderData.DestRect.Width / 2, players[0].renderData.Position.Y + players[0].renderData.DestRect.Height / 2)); // Center
             crtEffect.Parameters["timer"].SetValue(timer);
-
+            crtEffect.Parameters["Intensity"].SetValue(intensityOfCRT);
 
             if (gameState.Equals(GameState.Menu))
             {
@@ -598,6 +639,9 @@ namespace Cataclysmic
                 spriteBatch.DrawString(font_credits, "Show Debug >>> ", new Vector2(50, 350), Color.White);
                 spriteBatch.DrawString(font_credits, "" + debugMode, new Vector2(300, 350), Color.White);
 
+                spriteBatch.DrawString(font_credits, "CRT Intensity >>> ", new Vector2(50, 400), Color.White);
+                spriteBatch.DrawString(font_credits, "" + intensityOfCRT, new Vector2(300, 400), Color.White);
+
                 spriteBatch.DrawString(font_credits, "->", new Vector2(10, 300 + 50 * optionPointer), Color.White);
 
                 spriteBatch.DrawString(font_credits, "Press Back to return...", new Vector2(WIDTH / 2 - 120, HEIGHT - 50), Color.White);
@@ -612,13 +656,13 @@ namespace Cataclysmic
             }
             else if (gameState.Equals(GameState.Game))
             {
-                lightEffect.Parameters["LightPosition"].SetValue(new Vector2(players[0].renderData.Position.X + players[0].renderData.DestRect.Width / 2, players[0].renderData.Position.Y + players[0].renderData.DestRect.Height / 2)); // Center
+                lightEffect.Parameters["LightPosition"].SetValue(new Vector2(player.renderData.Position.X + player.renderData.DestRect.Width / 2, player.renderData.Position.Y + player.renderData.DestRect.Height / 2)); // Center
                 lightEffect.Parameters["LightRadius"].SetValue(1300f);
                 lightEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
                 lightEffect.Parameters["LightColor"].SetValue(new Vector3(1.1f, 1.1f, 1.1f)); // Warm yellow
                 lightEffect.Parameters["Intensity"].SetValue(1.1f);
 
-                timeEffect.Parameters["LightPosition"].SetValue(new Vector2(players[0].renderData.Position.X + players[0].renderData.DestRect.Width / 2, players[0].renderData.Position.Y + players[0].renderData.DestRect.Height / 2)); // Center
+                timeEffect.Parameters["LightPosition"].SetValue(new Vector2(player.renderData.Position.X + player.renderData.DestRect.Width / 2, player.renderData.Position.Y + player.renderData.DestRect.Height / 2)); // Center
                 timeEffect.Parameters["LightRadius"].SetValue(700f);
                 timeEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
                 timeEffect.Parameters["LightColor"].SetValue(new Vector3(1f, 0.8f, 1.0f)); // Purple
@@ -631,14 +675,16 @@ namespace Cataclysmic
                 GraphicsDevice.SetRenderTarget(sceneTarget);
                 spriteBatch.Begin();
 
-                spriteBatch.Draw(texture_environment1, new Vector2(0, 0), Color.White);
+                currentEnvironment.DrawBackground();
+                //spriteBatch.Draw(texture_environment1, new Vector2(0, 0), Color.White);
 
                 // Put all draw methods that are not exclusive from shaders here.
 
 
-                players[0].Draw(1.0f);
-                foreach(Enemy e in enemies)
-                    e.Draw(1.0f);
+                player.Draw(1.0f);
+                currentEnvironment.Draw();
+                //foreach(Enemy e in enemies)
+                    //e.Draw(1.0f);
 
 
                 // End of shader section
@@ -652,13 +698,23 @@ namespace Cataclysmic
                 
                 spriteBatch.Begin();
                 spriteBatch.Draw(texture_overlay1, new Vector2(0, 0), Color.White);
-                players[0].DrawEx(1.0f);
+                player.DrawEx(1.0f);
                 spriteBatch.End();
 
                 // Overlays
                 GraphicsDevice.SetRenderTarget(null);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
                 spriteBatch.Draw(sceneTargetCRT, Vector2.Zero, Color.White);
+                currentEnvironment.DrawEx();
+                if (debugMode) {
+                    int incrementer = 0;
+                    foreach (Enemy e in currentEnvironment.GetEnemies()) {
+                        spriteBatch.DrawString(font_credits, ""+e, new Vector2(10, 10 + 30 * incrementer), Color.White);
+                        incrementer++;
+                    }
+                    spriteBatch.DrawString(font_credits, "Wave: "+currentEnvironment.GetCooldown(), new Vector2(10, 10+30*incrementer), Color.White);
+                }
+
                 spriteBatch.End();
             }
             else if (gameState.Equals(GameState.End))
@@ -668,7 +724,7 @@ namespace Cataclysmic
                 spriteBatch.End();
             }
             spriteBatch.Begin();
-            cursors[0].Draw(1.0f);
+            cursor.Draw(1.0f);
             spriteBatch.End();
 
 

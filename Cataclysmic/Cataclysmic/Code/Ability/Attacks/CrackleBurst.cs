@@ -47,7 +47,7 @@ namespace Cataclysmic
 
             public bool ScanDamage()
             {
-                foreach (Enemy e in Game1.enemies)
+                foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies())
                 {
                     float depth;
                     Vector2 normal;
@@ -168,7 +168,7 @@ namespace Cataclysmic
 
         public bool ScanDamage()
         {
-            foreach (Enemy e in Game1.enemies)
+            foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies())
             {
                 float depth;
                 Vector2 normal;

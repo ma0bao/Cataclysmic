@@ -98,8 +98,8 @@ namespace Cataclysmic
             int MouseX = Game1.MS.X;
             int MouseY = Game1.MS.Y;
 
-            float directionX = Game1.self.cursors[0].Position.X - (renderData.Position.X);
-            float directionY = Game1.self.cursors[0].Position.Y - (renderData.Position.Y);
+            float directionX = Game1.self.cursor.Position.X - (renderData.Position.X);
+            float directionY = Game1.self.cursor.Position.Y - (renderData.Position.Y);
             angle = (float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f));
 
             // Collision
@@ -361,7 +361,7 @@ namespace Cataclysmic
 
         public bool ScanDamage()
         {
-            foreach (Enemy e in Game1.enemies)
+            foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies())
             {
                 float pCollisionDepth;
                 Vector2 pCollisionNormal;

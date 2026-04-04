@@ -93,6 +93,9 @@
     <Compile Include="Code\Entity\Entity.cs" />
     <Compile Include="Code\Entity\Components\MoveComponent.cs" />
     <Compile Include="Code\Misc\Effect.cs" />
+    <Compile Include="Code\Misc\Environment.cs" />
+    <Compile Include="Code\Misc\Environments\EgyptEnvironment.cs" />
+    <Compile Include="Code\Misc\Particle.cs" />
     <Compile Include="Code\Player\Cursor.cs" />
     <Compile Include="Code\Player\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
