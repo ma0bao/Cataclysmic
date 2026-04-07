@@ -28,6 +28,8 @@ namespace Cataclysmic
         public int Lifetime;
         public float Opacity;
         public Color Color;
+        public bool fadeInfadeOut = false;
+        public int startLifetime;
 
         public Vector2 Origin;
 
@@ -44,6 +46,7 @@ namespace Cataclysmic
             Origin = new Vector2(Texture.Width/2, Texture.Height/2);
             DestRect = new Rectangle((int)Position.X - Width / 2, (int)Position.Y - Height / 2, Width, Height);
             Lifetime = _Lifetime;
+            startLifetime = Lifetime;
             Opacity = 1.0f;
             Color = Color.White;
         }
@@ -59,7 +62,15 @@ namespace Cataclysmic
         }
 
         public void Draw() {
-            Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color.White * Opacity, Angle, Origin, SpriteEffects.None, 1.0f);
+            if (fadeInfadeOut)
+            {
+                float factor = (float) Math.Sin((1 - (double)Lifetime/startLifetime) * Math.PI);
+                Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color.White * Opacity * factor, Angle, Origin, SpriteEffects.None, 1.0f);
+            }
+            else {
+                Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color.White * Opacity, Angle, Origin, SpriteEffects.None, 1.0f);
+            }
+            
         }
 
         public bool IsAlive() {

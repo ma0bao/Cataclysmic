@@ -307,7 +307,7 @@ namespace Cataclysmic
 
         public override bool IsAlive()
         {
-            return base.IsAlive() || sands.Count == 0;
+            return base.IsAlive();
         }
     }
 }
