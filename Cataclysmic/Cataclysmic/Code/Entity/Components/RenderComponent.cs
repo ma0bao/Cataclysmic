@@ -176,6 +176,14 @@ namespace Cataclysmic
             return new Vector2(x, y);
         }
 
+        public Vector2 GetRandomPoint(Rectangle bound)
+        {
+            float x = Game1.rand.Next(bound.X, bound.Width);
+            float y = Game1.rand.Next(bound.Y, bound.Height);
+
+            return new Vector2(x, y);
+        }
+
         public bool IsOnScreen()
         {
             return Position.X > 0 && Position.X < Game1.WIDTH - 20;

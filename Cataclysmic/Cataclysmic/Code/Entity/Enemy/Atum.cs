@@ -12,6 +12,9 @@ namespace Cataclysmic
 
         Player target;
 
+        const int WIDTH = 150;
+        const int HEIGHT = 250;
+
         //States
         enum AttackStates
         {
@@ -51,10 +54,10 @@ namespace Cataclysmic
         AttackStates nextAttackState;
 
         
-        public Atum(Rectangle destRect, Player player) : base(Game1.texture_player, destRect)
+        public Atum(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), WIDTH, HEIGHT)
         {
-            target = player;
-            healthData = new HealthComponent(100);
+            target = Game1.player;
+            healthData = new HealthComponent(250);
 
             //Geyser
             geyserCooldown = new EventTimer(.2f);
@@ -110,12 +113,12 @@ namespace Cataclysmic
 
         public void Teleport()
         {
-            teleportPosOne = new RenderComponent(Game1.self.texture_firePortal, new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, 50, 50));
+            teleportPosOne = new RenderComponent(Game1.texture_firePortal, new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, 50, 50));
             Vector2 newPos = target.renderData.Position;
             newPos.X += Game1.rand.Next(-TELEPORT_MAX_DISTANCE, TELEPORT_MAX_DISTANCE);
             newPos.Y += Game1.rand.Next(-TELEPORT_MAX_DISTANCE, TELEPORT_MAX_DISTANCE);
             renderData.Position = newPos;
-            teleportPosTwo = new RenderComponent(Game1.self.texture_firePortal, new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, 50, 50));
+            teleportPosTwo = new RenderComponent(Game1.texture_firePortal, new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, 50, 50));
             collision.Update(renderData.Position, renderData.rotation);
 
             TeleportTimer.Restart();
