@@ -51,7 +51,7 @@ namespace Cataclysmic
         AttackStates nextAttackState;
 
         
-        public Atum(Rectangle destRect, Player player) : base(Game1.texture_player, destRect)
+        public Atum(Rectangle destRect, Player player) : base(Game1.texture_player, destRect, destRect.Width, destRect.Height)
         {
             target = player;
             healthData = new HealthComponent(100);
