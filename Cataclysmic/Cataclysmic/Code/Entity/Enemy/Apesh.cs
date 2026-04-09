@@ -27,9 +27,14 @@ namespace Cataclysmic
 
         EventTimer cooldownTimer;
 
-        public Apesh(Rectangle destRect, Player p) : base(Game1.texture_player, destRect)
+        const int WIDTH = 64;
+        const int HEIGHT = 64;
+        const int HITBOX_WIDTH = 64;
+        const int HITBOX_HEIGHT = 64;
+
+        public Apesh(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
-            player = p;
+            player = Game1.player;
             SetNewTargetPosition(player.renderData.Position);
             distanceToBeAtTarget = 100;
             spinTimer = new EventTimer(10);
@@ -87,6 +92,8 @@ namespace Cataclysmic
                 turnSpeed = 500;
                 moveData.maxSpeed = 200;
                 slowRadius = 150;
+
+                Game1.sfx_spin1.Play(Game1.volume, -0.1f + (float) Game1.rand.NextDouble() * 0.2f, 0);
 
                 if (timeToSpin.Done)
                 {

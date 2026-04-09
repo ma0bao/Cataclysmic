@@ -30,8 +30,8 @@ namespace Cataclysmic
 
         public void Start(RenderComponent renderData, MoveComponent moveData)
         {
-            charge = Game1.self.sound_ChargeUp.CreateInstance();
-            charge.Volume = 1f;
+            charge = Game1.sound_ChargeUp.CreateInstance();
+            charge.Volume = Game1.volume;
             charge.Play();        
             done = false;
             shakeOffset = Vector2.Zero;
@@ -70,7 +70,7 @@ namespace Cataclysmic
             {
                 if (charge.State == SoundState.Playing)
                     charge.Stop();
-                Game1.self.sound_whooshDash.Play();
+                Game1.sound_whooshDash.Play(Game1.volume, 0, 0);
                 done = true;
                 moveData.speedModifiers = originalSpeedModifier;
                 renderData.Position += direction * distance * chargeFactor;

@@ -24,7 +24,8 @@ namespace Cataclysmic
                 sandHitbox = CollisionComponent.CreateRect(Position, SIZE, SIZE);
                 renderData = new RenderComponent(Game1.texture_blank, new Rectangle((int)Position.X, (int)Position.Y, SIZE, SIZE));
                 moveData = new MoveComponent(300, 2000, 400 * frictionMultiplier);
-                renderData.color = Color.Red;
+                //renderData.color = Color.Red;
+                renderData.color = new Color(119, 96, 66);
                 moveData.velocity = velocity;
                 randomOffset.X = Game1.rand.Next(-MAX_OFFSET, MAX_OFFSET + 1);
                 randomOffset.Y = Game1.rand.Next(-MAX_OFFSET, MAX_OFFSET + 1);
@@ -35,8 +36,14 @@ namespace Cataclysmic
             public void Update(GameTime gameTime)
             {
                 moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                renderData.color.A = (byte)MathHelper.Lerp(255, 0, death.lerpValue);
-
+                renderData.color.A = (byte)MathHelper.Lerp(255, 200, death.lerpValue);
+                sandHitbox.UpdatePosition(renderData.Position);
+                float depth;
+                Vector2 normal;
+                if (sandHitbox.Intersects(Game1.player.Hitbox, out depth, out normal))
+                {
+                    Game1.player.Damage(null, 5);
+                }
 
                 renderData.Position += moveData.velocity * moveData.deltaTime;
                 moveData.ApplyFriction();
@@ -52,6 +59,7 @@ namespace Cataclysmic
             public void Draw()
             {
                 renderData.DefualtDraw();
+                sandHitbox.DrawDebug();
             }
         }
 
@@ -64,15 +72,19 @@ namespace Cataclysmic
             Run = 4
         }
 
-        Player[] players;
+        Player player;
         Player targetedPlayer;
 
         const int ANGER_DISTANCE = 20;
         const int FOLLOW_DISTANCE = 200;
         const int AGRO_DISTANCE = 300;
-        const float SHAKE_TIME = .7f;
+        const float SHAKE_TIME = 1.4f;
         const float CONE_WIDTH_DEGREES = 30;
         const int PROJECTILES_PER_FRAME = 20;
+        const int MAX_COOLDOWN_FRAMES = 240;
+        const int MIN_COOLDOWN_FRAMES = 60;
+
+        int cooldown_frames;
 
         EventTimer shakeTimer;
 
@@ -88,15 +100,20 @@ namespace Cataclysmic
 
         float frictionMultiplier = 5;
 
-        public ShotgunLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_flyingLamp, destRect)
+        const int WIDTH = 40;
+        const int HEIGHT = 40;
+        const int HITBOX_WIDTH = 40;
+        const int HITBOX_HEIGHT = 40;
+        public ShotgunLamp(Vector2 position) : base(Game1.texture_flyingLamp, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
-            players = targets;
+            player = Game1.player;
             
             SetNewTargetPosition(renderData.GetRandomPoint());
             moveData.maxSpeed = 500;
             moveData.acceleration = 4000f;
             healthData = new HealthComponent(50);
             //slowRadius = 0;
+            cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
         }
         public override void Update(GameTime gameTime)
         {
@@ -106,14 +123,14 @@ namespace Cataclysmic
             {
                 renderData.rotation = renderData.GetRotationToTarget(renderData.Position + moveData.velocity);
                 moveData.maxSpeed = 500f;
-                renderData.color = Color.AliceBlue;
+                //renderData.color = Color.AliceBlue;
                 if (targetPos == Vector2.Zero)
                     SetNewTargetPosition(renderData.GetRandomPoint());
             }
             else if (currentState == AttackState.Follow)
             {
                 moveData.maxSpeed = 500f;
-                renderData.color = Color.Red;
+                //renderData.color = Color.Red;
 
                 float distance = renderData.GetDistanceToTarget(targetedPlayer.renderData.Position);
                 float diffX = renderData.Position.X - targetedPlayer.renderData.Position.X;
@@ -136,6 +153,7 @@ namespace Cataclysmic
 
 
             #region Update Based On State
+            
             if (currentState == AttackState.Run)
             {
                 base.Update(gameTime);
@@ -152,26 +170,25 @@ namespace Cataclysmic
                 {
                     SetNewTargetPosition(renderData.GetRandomPoint());
                 }
-                foreach (Player p in players)
-                {
-                    if (p == null)
-                        continue;
-                    if (renderData.GetDistanceToTarget(p.renderData.Position) < AGRO_DISTANCE)
+                
+                    if (renderData.GetDistanceToTarget(player.renderData.Position) < AGRO_DISTANCE)
                     {
                         currentState = AttackState.Follow;
-                        targetedPlayer = p;
+                        targetedPlayer = player;
                     }
-                }
+                
             }
             else if (currentState == AttackState.Follow)
             {
-                if(renderData.GetDistanceToTarget(targetPos) > distanceToBeAtTarget)
+                cooldown_frames--;
+                if (renderData.GetDistanceToTarget(targetPos) > distanceToBeAtTarget)
                     base.Update(gameTime);
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) < ANGER_DISTANCE)
                     currentState = AttackState.Charge;
-                if (Game1.rand.Next(650) == 0) //Keyboard.GetState().IsKeyDown(Keys.L))
+                if (cooldown_frames <= 0) //Keyboard.GetState().IsKeyDown(Keys.L))
                 {
                     currentState = AttackState.Charge;
+                    cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
                 }
             }
             else if (currentState == AttackState.Charge)
@@ -204,6 +221,7 @@ namespace Cataclysmic
 
                 renderData.Position += shake;
                 UpdatePos(-2);
+                Game1.sfx_sandBurst1.Play(Game1.volume, -0.2f + (float) Game1.rand.NextDouble() * 0.4f, 0);
                 for (int i = 0; i < PROJECTILES_PER_FRAME; i++)
                 {
                     baseVelocity = targetedPlayer.renderData.Position - renderData.Position;
@@ -256,6 +274,10 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
+            if (healthData.invincible)
+            {
+                renderData.DrawFlash();
+            }
             // base.Draw(opacity);
             // Test for Rotation : Game1.self.spriteBatch.DrawString(Game1.font_credits, "" + renderData.rotation, renderData.Position, Color.White);
             if (renderData.rotation > Math.PI || renderData.rotation < 0)
@@ -269,11 +291,13 @@ namespace Cataclysmic
             Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation - MathHelper.ToRadians(90), renderData.origin, renderData.effects, renderData.layerDepth);
             foreach (Sand s in sands)
                 s.Draw();
+            collision.DrawDebug();
+            
         }
 
         public override bool IsAlive()
         {
-            return base.IsAlive() && sands.Count == 0;
+            return base.IsAlive();
         }
     }
 }

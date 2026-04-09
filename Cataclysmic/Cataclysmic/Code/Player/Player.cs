@@ -35,7 +35,7 @@ namespace Cataclysmic
         EventTimer dashCooldown;
 
         //Abilities
-        LinkedList<Ability> abilities;
+        List<Ability> abilities;
         Dictionary<string, EventTimer> abilityCooldowns;
 
         public Player(Rectangle _destRect)
@@ -59,12 +59,13 @@ namespace Cataclysmic
 
             Hitbox = CollisionComponent.CreateRect(renderData.Position, _destRect.Width - 10, _destRect.Height - 30);
 
-            abilities = new LinkedList<Ability>();
+            abilities = new List<Ability>();
 
             // Add abilities here: (start ready to use)
             abilityCooldowns = new Dictionary<string, EventTimer>();
             abilityCooldowns["Revolver"] = new EventTimer(Revolver.COOLDOWN);
             abilityCooldowns["CrackleBurst"] = new EventTimer(CrackleBurst.COOLDOWN);
+            abilityCooldowns["CircleSlash"] = new EventTimer(CircleSlash.COOLDOWN);
             foreach (EventTimer cd in abilityCooldowns.Values) cd.Done = true;
         }
 
@@ -97,8 +98,8 @@ namespace Cataclysmic
             int MouseX = Game1.MS.X;
             int MouseY = Game1.MS.Y;
 
-            float directionX = Game1.self.cursors[0].Position.X - (renderData.Position.X);
-            float directionY = Game1.self.cursors[0].Position.Y - (renderData.Position.Y);
+            float directionX = Game1.self.cursor.Position.X - (renderData.Position.X);
+            float directionY = Game1.self.cursor.Position.Y - (renderData.Position.Y);
             angle = (float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f));
 
             // Collision
@@ -106,27 +107,27 @@ namespace Cataclysmic
             renderData.Position += moveData.velocity * moveData.deltaTime * moveData.speedModifiers;
             //Position = new Vector2(MathHelper.Clamp(Position.X, 0, Game1.WIDTH), MathHelper.Clamp(Position.Y, 0, Game1.HEIGHT));
             float newX = renderData.Position.X;
-            if (renderData.Position.X > Game1.WIDTH - renderData.DestRect.Width / 2)
+            if (renderData.Position.X > Game1.BOUNDS.Right - renderData.DestRect.Width / 2)
             {
                 moveData.velocity.X = -Math.Abs(moveData.velocity.X);
-                newX = Game1.WIDTH - renderData.DestRect.Width / 2;
+                newX = Game1.BOUNDS.Right - renderData.DestRect.Width / 2;
             }
-            else if (renderData.Position.X - renderData.DestRect.Width / 2 < 0)
+            else if (renderData.Position.X - renderData.DestRect.Width / 2 < Game1.BOUNDS.Left)
             {
                 moveData.velocity.X = Math.Abs(moveData.velocity.X);
-                newX = renderData.DestRect.Width / 2;
+                newX = Game1.BOUNDS.Left + renderData.DestRect.Width / 2;
             }
 
             float newY = renderData.Position.Y;
-            if (renderData.Position.Y > Game1.HEIGHT - renderData.DestRect.Height / 2)
+            if (renderData.Position.Y > Game1.BOUNDS.Bottom - renderData.DestRect.Height / 2)
             {
                 moveData.velocity.Y = -Math.Abs(moveData.velocity.Y);
-                newY = Game1.HEIGHT - renderData.DestRect.Height / 2;
+                newY = Game1.BOUNDS.Bottom - renderData.DestRect.Height / 2;
             }
-            else if (renderData.Position.Y - renderData.DestRect.Height / 2 < 0)
+            else if (renderData.Position.Y - renderData.DestRect.Height / 2 < Game1.BOUNDS.Top)
             {
                 moveData.velocity.Y = Math.Abs(moveData.velocity.Y);
-                newY = renderData.DestRect.Height / 2;
+                newY = Game1.BOUNDS.Top + renderData.DestRect.Height / 2;
             }
 
             renderData.Position = new Vector2(newX, newY);
@@ -136,13 +137,19 @@ namespace Cataclysmic
             if (Game1.MS.LeftButton == ButtonState.Pressed)
             {
                 if (TryUseAbility("Revolver"))
-                    abilities.AddFirst(new Revolver(renderData.Position, angle));
+                    abilities.Add(new Revolver(renderData.Position, angle));
             }
 
-            if (Game1.self.KB.IsKeyDown(Keys.Q) && !Game1.self.oldKB.IsKeyDown(Keys.Q))
+            if (Game1.KB.IsKeyDown(Keys.Q) && !Game1.oldKB.IsKeyDown(Keys.Q))
             {
                 if (TryUseAbility("CrackleBurst"))
-                    abilities.AddFirst(new CrackleBurst(renderData.Position, angle));
+                    abilities.Add(new CrackleBurst(renderData.Position, angle));
+            }
+
+            if (Game1.KB.IsKeyDown(Keys.E) && !Game1.oldKB.IsKeyDown(Keys.E))
+            {
+                if (TryUseAbility("CircleSlash"))
+                    abilities.Add(new CircleSlash(renderData.Position));
             }
 
             // Dashes
@@ -164,6 +171,12 @@ namespace Cataclysmic
             foreach (Ability abil in abilities)
             {
                 abil.Update(gameTime);
+            }
+
+            for (int i = abilities.Count - 1; i >= 0; i--)
+            {
+                if (!abilities[i].IsAlive())
+                    abilities.RemoveAt(i);
             }
 
             // switch to walk and idle
@@ -216,10 +229,8 @@ namespace Cataclysmic
         public void GetVelocity(GameTime gameTime, GamePadState gpInput)
         {
             Vector2 input = Vector2.Zero;
-            if (GamePad.GetState(PlayerIndex.One).IsConnected)
+            
                 input = new Vector2(gpInput.ThumbSticks.Left.X, -gpInput.ThumbSticks.Left.Y);
-            else
-            {
                 KeyboardState ks = Keyboard.GetState();
                 if (ks.IsKeyDown(Game1.player1_moveUp))
                     input.Y -= 1;
@@ -229,7 +240,7 @@ namespace Cataclysmic
                     input.X -= 1;
                 if (ks.IsKeyDown(Game1.player1_moveRight))
                     input.X += 1;
-            }
+            
 
             if (input.Length() > 1f)
                 input.Normalize();
@@ -350,7 +361,7 @@ namespace Cataclysmic
 
         public bool ScanDamage()
         {
-            foreach (Enemy e in Game1.enemies)
+            foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies())
             {
                 float pCollisionDepth;
                 Vector2 pCollisionNormal;
@@ -379,5 +390,9 @@ namespace Cataclysmic
             return;
         }
 
+        public override void OnCollision()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

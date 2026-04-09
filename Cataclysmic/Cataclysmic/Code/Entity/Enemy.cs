@@ -27,18 +27,28 @@ namespace Cataclysmic
         public int distanceToBeAtTarget = 30;
 
 
-        public Enemy(Texture2D texture, Rectangle destRect)
+        public Enemy(Texture2D texture, Rectangle destRect, float width, float height)
         {
             renderData = new RenderComponent(texture, destRect);
             moveData = new MoveComponent();
             healthData = new HealthComponent(50);
-            collision = CollisionComponent.CreateRect(new Vector2(destRect.X, destRect.Y), destRect.Width / 2, destRect.Height / 2);
+            collision = CollisionComponent.CreateRect(new Vector2(destRect.X, destRect.Y), width, height);
             
 
         }
+
+        public override string ToString()
+        {
+            return "X: " + (int)renderData.Position.X + " Y: " + (int)renderData.Position.Y + " HP: " + healthData.currentHealth;
+            // return base.ToString();
+        }
         public override void Draw(float opacity)
         {
-            
+            if (healthData.invincible)
+            {
+                renderData.DrawFlash();
+            }
+
             renderData.DefualtDraw();
             collision.DrawDebug();
             
@@ -57,6 +67,7 @@ namespace Cataclysmic
             renderData.ResetHitBox();
             collision.Update(renderData.Position, renderData.rotation);
             healthData.Update();
+            
         }
 
         public virtual void UpdatePos(int ticks)
@@ -151,6 +162,10 @@ namespace Cataclysmic
 
         public virtual void Spawn(Vector2 spawnpoint)
         {
+            throw new NotImplementedException();
+        }
+
+        override public void OnCollision() {
             throw new NotImplementedException();
         }
 

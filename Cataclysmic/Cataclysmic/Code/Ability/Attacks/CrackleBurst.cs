@@ -47,7 +47,7 @@ namespace Cataclysmic
 
             public bool ScanDamage()
             {
-                foreach (Enemy e in Game1.enemies)
+                foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies())
                 {
                     float depth;
                     Vector2 normal;
@@ -63,7 +63,12 @@ namespace Cataclysmic
 
             public void Damage(Enemy enemy, int amount)
             {
+                if (!enemy.healthData.invincible)
+                {
+                    Game1.sfx_hurtSound1.Play(Game1.volume, -0.1f + (float)Game1.rand.NextDouble() * 0.2f, 0);
+                }
                 enemy.healthData.Damage(null, amount);
+                
                 return;
             }
 
@@ -107,7 +112,7 @@ namespace Cataclysmic
 
             color = Color.White;
             timer = 0;
-            Game1.sfx_weapon_singleshot2.Play(Game1.volume, 1, 0);
+            Game1.sfx_weapon_singleshot2.Play(Game1.volume, 0, 0);
         }
 
 
@@ -129,7 +134,7 @@ namespace Cataclysmic
                     crackles.AddFirst(new Crackle(Position, (float)Math.PI * 2 * ((float)i / n)));
                 }
                 
-                Game1.sfx_explosion_short1.Play(Game1.volume, 1, 0);
+                Game1.sfx_explosion_short1.Play(Game1.volume, 0, 0);
 
             }
             else
@@ -163,7 +168,7 @@ namespace Cataclysmic
 
         public bool ScanDamage()
         {
-            foreach (Enemy e in Game1.enemies)
+            foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies())
             {
                 float depth;
                 Vector2 normal;

@@ -30,7 +30,7 @@ namespace Cataclysmic
         Rectangle currentRegion;
         Rectangle oppisiteRegion;
 
-        Player[] players;
+        Player player;
         Player targetedPlayer;
         Player lastTargetedPlayer;
 
@@ -38,11 +38,16 @@ namespace Cataclysmic
 
         const int MAX_SHAKE_AMT = 2;
 
-        public Androsphinx(Rectangle destRect, Player[] targets) : base(Game1.texture_player, destRect)
+        const int WIDTH = 48;
+        const int HEIGHT = 64;
+        const int HITBOX_WIDTH = 48;
+        const int HITBOX_HEIGHT = 64;
+
+        public Androsphinx(Vector2 position) : base(Game1.texture_meatballEgypt, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
             currentRegion = top;
-            players = targets;
-            lastTargetedPlayer = players[0];
+            player = Game1.player;
+            lastTargetedPlayer = player;
             attackCooldown.Unpause();
             moveData.maxSpeed = 500f;
             SetNewTargetPosition(renderData.GetRandomPoint());
@@ -104,18 +109,16 @@ namespace Cataclysmic
             if (currentState == AttackState.Wander)
             {
                 base.Update(gameTime);
-                foreach (Player p in players)
+
+                if (renderData.GetDistanceToTarget(player.renderData.Position) < AGRO_DISTANCE)
                 {
-                    if (p == null)
-                        continue;
-                    if (renderData.GetDistanceToTarget(p.renderData.Position) < AGRO_DISTANCE)
-                    {
-                        targetedPlayer = p;
-                        lastTargetedPlayer = p;
-                        break;
-                    }
+                    targetedPlayer = player;
+                    lastTargetedPlayer = player;
+                }
+                else {
                     targetedPlayer = null;
                 }
+                
 
                 if (targetedPlayer != null && agroCooldown.Done)
                 {
