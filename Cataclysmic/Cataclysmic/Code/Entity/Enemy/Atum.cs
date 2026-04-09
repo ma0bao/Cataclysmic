@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,9 @@ namespace Cataclysmic
         const int ATTACK_RANGE = 100;
         IWeapon weapon;
 
+        //Projectiles
+        List<IProjectile> projectiles = new List<IProjectile>();
+        EventTimer fireTimer;
 
         AttackStates nextAttackState;
 
@@ -62,7 +66,11 @@ namespace Cataclysmic
             TeleportTimer = new EventTimer(2f);
             TeleportTimer.Done = true;
 
-            SetStateToGeyser(75);
+            //Projectiles
+            fireTimer = new EventTimer();
+            fireTimer.Done = true;
+
+            SetStateToCenter();
         }
 
         private void SetStateToCenter()
@@ -116,6 +124,12 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+
+            if (Keyboard.GetState().IsKeyDown(Keys.K))
+            {
+                FireWave();
+            }
+
             #region Get Target Based On State
             if (currentState == AttackStates.Center)
             {
@@ -142,7 +156,7 @@ namespace Cataclysmic
             #endregion
 
             #region Update Based On State
-            if (currentState == AttackStates.Center)
+            if (currentState == AttackStates.Center || currentState == AttackStates.Geyser)
             {
                 renderData.color = Color.Lerp(Color.White, Color.Red, (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 3f) * 0.5f + 0.5f);
 
@@ -153,11 +167,27 @@ namespace Cataclysmic
                 if (AttackTickTimer.Done)
                 {
                     int randChoice = Game1.rand.Next(10);
-                    if (randChoice < 7) // 0, 1, 3, 4, 5, 6
+                    if (randChoice == 0)
                         SetStateToGeyser();
-                    else if (randChoice < 9) //7, 8
+                    else if (randChoice == 1)
                         Teleport();
-                    AttackTickTimer.Restart(Game1.rand.Next(2, 8));
+                    else if (randChoice == 2)
+                        FireWave(8);
+                    else if (randChoice == 3)
+                        FireWave(10);
+                    else if (randChoice == 4)
+                        FireWave(12);
+                    else if (randChoice == 5)
+                        FireCircle(30);
+                    else if (randChoice == 6)
+                        FireCircle(40);
+                    else if (randChoice == 7)
+                        fireTimer.Restart(.2f);
+                    else if (randChoice == 8)
+                        fireTimer.Restart(.4f);
+                    else if (randChoice == 9)
+                        fireTimer.Restart(.6f);
+                    AttackTickTimer.Restart(Game1.rand.Next(1, 4));
                 }
 
                 AttackTickTimer.Update();
@@ -168,9 +198,15 @@ namespace Cataclysmic
                     SwitchState(nextAttackState);
                 cooldownTimer.Update();
             }
-            else if (currentState == AttackStates.Geyser)
+            else if (currentState == AttackStates.Follow)
             {
+                if (renderData.GetDistanceToTarget(targetPos) <= ATTACK_RANGE)
+                    SetStateToSwing();
                 base.Update(gameTime);
+            }
+
+            if (currentState == AttackStates.Geyser)
+            {
                 if (geyserCooldown.Done)
                 {
                     geyserCooldown.Restart();
@@ -182,12 +218,6 @@ namespace Cataclysmic
                     SetStateToCenter();
 
                 geyserCooldown.Update();
-            }
-            else if (currentState == AttackStates.Follow)
-            {
-                if (renderData.GetDistanceToTarget(targetPos) <= ATTACK_RANGE)
-                    SetStateToSwing();
-                base.Update(gameTime);
             }
             #endregion
 
@@ -204,6 +234,99 @@ namespace Cataclysmic
                 weapon.Update(gameTime);
                 if (weapon.IsDone())
                     weapon = null;
+            }
+
+            foreach (IProjectile p in projectiles)
+            {
+                p.Update(gameTime);
+                if (p is WaveShot w)
+                {
+                    if (w.collisionData.Intersects(target.Hitbox, out _, out _))
+                        target.Damage(this, 5);
+                }
+            }
+
+            projectiles.RemoveAll(p => !p.IsAlive());
+
+            if (!fireTimer.Done)
+            {
+                FireSpread();
+                fireTimer.Update();
+            }
+        }
+
+        public void FireWave(float amt = 10)
+        {
+            for (float i = 0; i < amt; i++)
+            {
+                Vector2 direction = renderData.GetDirectionToTarget(target.renderData.Position);
+
+                if (direction.LengthSquared() > 0)
+                    direction.Normalize();
+
+                float coneSize = MathHelper.ToRadians(180);
+
+                float randomAngle = (float)(i / amt * coneSize) - (coneSize / 2f);
+                //float randomAngle = (float)(Game1.rand.NextDouble() * coneSize) - (coneSize / 2f);
+
+                float cos = (float)Math.Cos(randomAngle);
+                float sin = (float)Math.Sin(randomAngle);
+
+                Vector2 rotatedVelocity = new Vector2(
+                    direction.X * cos - direction.Y * sin,
+                    direction.X * sin + direction.Y * cos
+                    );
+                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity));
+            }
+        }
+
+        public void FireCircle(float amt = 50)
+        {
+            for (float i = 0; i < amt; i++)
+            {
+                Vector2 direction = renderData.GetDirectionToTarget(target.renderData.Position);
+
+                if (direction.LengthSquared() > 0)
+                    direction.Normalize();
+
+                float coneSize = MathHelper.ToRadians(360);
+
+                float randomAngle = (float)(i / amt * coneSize) - (coneSize / 2f);
+                //float randomAngle = (float)(Game1.rand.NextDouble() * coneSize) - (coneSize / 2f);
+
+                float cos = (float)Math.Cos(randomAngle);
+                float sin = (float)Math.Sin(randomAngle);
+
+                Vector2 rotatedVelocity = new Vector2(
+                    direction.X * cos - direction.Y * sin,
+                    direction.X * sin + direction.Y * cos
+                    );
+                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity));
+            }
+        }
+
+        public void FireSpread(float amt = 1)
+        {
+            for (float i = 0; i < amt; i++)
+            {
+                Vector2 direction = renderData.GetDirectionToTarget(target.renderData.Position);
+
+                if (direction.LengthSquared() > 0)
+                    direction.Normalize();
+
+                float coneSize = MathHelper.ToRadians(120);
+
+                float randomAngle = (float)(Game1.rand.NextDouble() * coneSize) - (coneSize / 2f);
+                //float randomAngle = (float)(Game1.rand.NextDouble() * coneSize) - (coneSize / 2f);
+
+                float cos = (float)Math.Cos(randomAngle);
+                float sin = (float)Math.Sin(randomAngle);
+
+                Vector2 rotatedVelocity = new Vector2(
+                    direction.X * cos - direction.Y * sin,
+                    direction.X * sin + direction.Y * cos
+                    );
+                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity));
             }
         }
 
@@ -251,6 +374,10 @@ namespace Cataclysmic
         {
             foreach (Geyser g in geysers)
                 g.Draw();
+
+            foreach (IProjectile p in projectiles)
+                p.Draw();
+            
 
             if (!TeleportTimer.Done)
             {
@@ -341,6 +468,46 @@ namespace Cataclysmic
         public bool IsDone()
         {
             return renderData.rotation > 360;
+        }
+    }
+
+    interface IProjectile
+    {
+        bool IsAlive();
+        void Update(GameTime gameTime);
+        void Draw();
+    }
+
+    class WaveShot : IProjectile
+    {
+        public RenderComponent renderData;
+        public MoveComponent moveData;
+        public CollisionComponent collisionData;
+
+        const float SPEED = 400;
+
+        public WaveShot(Vector2 pos, Vector2 direction)
+        {
+            moveData = new MoveComponent();
+            moveData.velocity = direction * SPEED;
+            renderData = new RenderComponent(Game1.texture_player, new Rectangle((int)pos.X, (int)pos.Y, 50, 50));
+            collisionData = CollisionComponent.CreateRect(pos, 50, 50);
+        }
+
+        public bool IsAlive()
+        {
+            return renderData.IsOnScreen();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            renderData.Position += moveData.velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            collisionData.Update(renderData.Position, renderData.rotation);
+        }
+
+        public void Draw()
+        {
+            renderData.DefualtDraw();
         }
     }
 }
