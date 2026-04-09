@@ -27,9 +27,14 @@ namespace Cataclysmic
 
         EventTimer cooldownTimer;
 
-        public Apesh(Rectangle destRect, Player p) : base(Game1.texture_player, destRect, 64, 64)
+        const int WIDTH = 64;
+        const int HEIGHT = 64;
+        const int HITBOX_WIDTH = 64;
+        const int HITBOX_HEIGHT = 64;
+
+        public Apesh(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
-            player = p;
+            player = Game1.player;
             SetNewTargetPosition(player.renderData.Position);
             distanceToBeAtTarget = 100;
             spinTimer = new EventTimer(10);
