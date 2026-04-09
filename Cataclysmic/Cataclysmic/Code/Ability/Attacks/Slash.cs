@@ -15,11 +15,11 @@ namespace Cataclysmic
 {
     public class Slash : Ability
     {
-        public const int HEIGHT = 100;
-        public const int WIDTH = 50;
+        public const int HEIGHT = 47 * 2;
+        public const int WIDTH = 64 * 2;
         public const int RADIUS = 120;
         public const float MANA_COST = 60;
-        public const float COOLDOWN = .2f;
+        public const float COOLDOWN = .5f;
         public const float SPAWN_OFFSET = 50f; // distance from player center to spawn
         public const int DAMAGE = 20;
         public const int PUSH = 2;
@@ -47,7 +47,8 @@ namespace Cataclysmic
         public override void Update(GameTime gameTime)
         {
 
-            Position = Game1.players[0].renderData.Position;
+            Position.X = Game1.players[0].renderData.Position.X + (float)Math.Cos(angle) * SPAWN_OFFSET;
+            Position.Y = Game1.players[0].renderData.Position.Y + (float)Math.Sin(angle) * SPAWN_OFFSET;
             Hitbox.UpdatePosition(Position);
             ScanDamage();
             timer++;
@@ -56,9 +57,11 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
-            int frameX = (int)((timer / 10) % 8 * 24);
 
-            Game1.self.spriteBatch.Draw(Game1.texture_blank, Position, null, color, angle, new Vector2(Game1.texture_blank.Width / 2, Game1.texture_blank.Height / 2), 1f, SpriteEffects.None, 0f);
+            int frameX = (int)((timer / 2) % 3 * 64);
+            int frameY = (int)((timer / 6) % 3 * 47);
+
+            Game1.self.spriteBatch.Draw(Game1.texture_basicSlash, Position, new Rectangle(frameX, frameY, 64, 47), color, angle, new Vector2(64/2, 47/2), 2f, SpriteEffects.None, 0f);
             Hitbox.DrawDebug();
         }
 
@@ -87,7 +90,7 @@ namespace Cataclysmic
         }
         public override bool IsAlive()
         {
-            if (timer > 20)
+            if (timer > 18)
             {
                 return false;
             }

@@ -96,6 +96,7 @@ namespace Cataclysmic
         public static Texture2D texture_flyingLamp;
         public static Texture2D texture_meatballEgypt;
         public static Texture2D texture_clockHand;
+        public static Texture2D texture_basicSlash;
 
 
         //Level Textures
@@ -292,6 +293,7 @@ namespace Cataclysmic
             texture_square = Content.Load<Texture2D>("square");
             texture_flyingLamp = Content.Load<Texture2D>("Sprites/Enemies/FlyingLamp");
             texture_meatballEgypt = Content.Load<Texture2D>("Sprites/Enemies/meatballEgypt");
+            texture_basicSlash = Content.Load<Texture2D>("sprites/Abilities/swordSheet_64x47");
 
             //Effects
             #region
