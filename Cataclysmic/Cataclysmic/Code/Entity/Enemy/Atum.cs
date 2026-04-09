@@ -51,7 +51,7 @@ namespace Cataclysmic
         AttackStates nextAttackState;
 
         
-        public Atum(Rectangle destRect, Player player) : base(Game1.texture_player, destRect)
+        public Atum(Rectangle destRect, Player player) : base(Game1.texture_player, destRect,)
         {
             target = player;
             healthData = new HealthComponent(100);
@@ -110,12 +110,12 @@ namespace Cataclysmic
 
         public void Teleport()
         {
-            teleportPosOne = new RenderComponent(Game1.self.texture_firePortal, new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, 50, 50));
+            teleportPosOne = new RenderComponent(Game1.texture_firePortal, new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, 50, 50));
             Vector2 newPos = target.renderData.Position;
             newPos.X += Game1.rand.Next(-TELEPORT_MAX_DISTANCE, TELEPORT_MAX_DISTANCE);
             newPos.Y += Game1.rand.Next(-TELEPORT_MAX_DISTANCE, TELEPORT_MAX_DISTANCE);
             renderData.Position = newPos;
-            teleportPosTwo = new RenderComponent(Game1.self.texture_firePortal, new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, 50, 50));
+            teleportPosTwo = new RenderComponent(Game1.texture_firePortal, new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, 50, 50));
             collision.Update(renderData.Position, renderData.rotation);
 
             TeleportTimer.Restart();

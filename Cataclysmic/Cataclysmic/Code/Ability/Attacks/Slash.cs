@@ -47,8 +47,8 @@ namespace Cataclysmic
         public override void Update(GameTime gameTime)
         {
 
-            Position.X = Game1.players[0].renderData.Position.X + (float)Math.Cos(angle) * SPAWN_OFFSET;
-            Position.Y = Game1.players[0].renderData.Position.Y + (float)Math.Sin(angle) * SPAWN_OFFSET;
+            Position.X = Game1.player.renderData.Position.X + (float)Math.Cos(angle) * SPAWN_OFFSET;
+            Position.Y = Game1.player.renderData.Position.Y + (float)Math.Sin(angle) * SPAWN_OFFSET;
             Hitbox.UpdatePosition(Position);
             ScanDamage();
             timer++;
@@ -67,7 +67,7 @@ namespace Cataclysmic
 
         public bool ScanDamage()
         {
-            foreach (Enemy e in Game1.enemies)
+            foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies())
             {
                 float depth;
                 Vector2 normal;
