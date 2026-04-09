@@ -25,7 +25,7 @@ namespace Cataclysmic
                 sandHitbox = CollisionComponent.CreateRect(Position, SIZE, SIZE);
                 renderData = new RenderComponent(Game1.texture_blank, new Rectangle((int)Position.X, (int)Position.Y, SIZE, SIZE));
                 moveData = new MoveComponent(300, 2000, 150*frictionMultiplier);
-                renderData.color = Color.Red;
+                renderData.color = new Color(119, 96, 66);
                 moveData.velocity = velocity;
                 randomOffset.X = Game1.rand.Next(-MAX_OFFSET, MAX_OFFSET + 1);
                 randomOffset.Y = Game1.rand.Next(-MAX_OFFSET, MAX_OFFSET + 1);
@@ -46,13 +46,13 @@ namespace Cataclysmic
             public void Update(GameTime gameTime)
             {
                 moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                renderData.color.A = (byte)MathHelper.Lerp(255, 0, death.lerpValue);
+                renderData.color.A = (byte)MathHelper.Lerp(255, 200, death.lerpValue);
                 sandHitbox.UpdatePosition(renderData.Position);
                 float depth;
                 Vector2 normal;
-                if (sandHitbox.Intersects(Game1.players[0].Hitbox, out depth, out normal))
+                if (sandHitbox.Intersects(Game1.player.Hitbox, out depth, out normal))
                 {
-                    Game1.players[0].Damage(null, 5);
+                    Game1.player.Damage(null, 5);
                 }
 
                 renderData.Position += moveData.velocity * moveData.deltaTime;
@@ -82,13 +82,13 @@ namespace Cataclysmic
             Run = 4
         }
 
-        Player[] players;
+        Player player;
         Player targetedPlayer;
 
         const int ANGER_DISTANCE = 50;
         const int FOLLOW_DISTANCE = 300;
         const int AGRO_DISTANCE = 300;
-        const float SHAKE_TIME = .8f;
+        const float SHAKE_TIME = 1.4f;
         const float CONE_WIDTH_DEGREES = 45;
         const int PROJECTILES_PER_FRAME = 5;
         const int MAX_COOLDOWN_FRAMES = 240;
@@ -113,9 +113,14 @@ namespace Cataclysmic
 
         float frictionMultiplier = 1;
 
-        public MagicLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_flyingLamp, destRect)
+        const int WIDTH = 40;
+        const int HEIGHT = 40;
+        const int HITBOX_WIDTH = 40;
+        const int HITBOX_HEIGHT = 40;
+
+        public MagicLamp(Vector2 position) : base(Game1.texture_flyingLamp, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
-            players = targets;
+            player = Game1.player;
             SetNewTargetPosition(renderData.GetRandomPoint());
             moveData.maxSpeed = 500;
             moveData.acceleration = 4000f;
@@ -129,14 +134,14 @@ namespace Cataclysmic
             if (currentState == AttackState.Wander || currentState == AttackState.Run)
             {
                 moveData.maxSpeed = 500f;
-                renderData.color = Color.AliceBlue;
+                //renderData.color = Color.AliceBlue;
                 if (targetPos == Vector2.Zero)
                     SetNewTargetPosition(renderData.GetRandomPoint());
             }
             else if (currentState == AttackState.Follow || currentState == AttackState.Charge)
             {
                 moveData.maxSpeed = 150;
-                renderData.color = Color.Red;
+                //renderData.color = Color.Red;
                 SetNewTargetPosition(targetedPlayer.renderData.Position);
             }
             else if (currentState == AttackState.Spray)
@@ -166,16 +171,13 @@ namespace Cataclysmic
                 {
                     SetNewTargetPosition(renderData.GetRandomPoint());
                 }
-                foreach (Player p in players)
-                {
-                    if (p == null)
-                        continue;
-                    if (renderData.GetDistanceToTarget(p.renderData.Position) < AGRO_DISTANCE)
+                
+                    if (renderData.GetDistanceToTarget(player.renderData.Position) < AGRO_DISTANCE)
                     {
                         currentState = AttackState.Follow;
-                        targetedPlayer = p;
+                        targetedPlayer = player;
                     }
-                }
+                
             }
             else if (currentState == AttackState.Follow)
             {
@@ -286,7 +288,7 @@ namespace Cataclysmic
 
         public override bool IsAlive()
         {
-            return base.IsAlive() && sands.Count == 0;
+            return base.IsAlive() || sands.Count == 0;
         }
     }
 }
