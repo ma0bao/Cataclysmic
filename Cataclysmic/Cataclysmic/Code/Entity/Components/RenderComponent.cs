@@ -135,6 +135,13 @@ namespace Cataclysmic
             hitBox = new Rectangle((DestRect.X - DestRect.Width / 2) + 5, (DestRect.Y - DestRect.Height / 2) + 5, DestRect.Width - 10, DestRect.Height - 10);
         }
 
+        public Vector2 GetDirectionToTarget(Vector2 target)
+        {
+            Vector2 direction = target - Position;
+            direction.Normalize();
+            return direction;
+        }
+
         public float GetRotationToTarget(Vector2 target)
         {
             float directionX = target.X - Position.X;
@@ -176,7 +183,7 @@ namespace Cataclysmic
 
         public void DefualtDraw()
         {
-            Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, rotation, origin, effects, layerDepth);
+            Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, MathHelper.ToRadians(rotation), origin, effects, layerDepth);
         }
 
         public void DrawFlash()

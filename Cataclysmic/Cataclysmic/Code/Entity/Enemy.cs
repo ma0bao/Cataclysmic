@@ -139,6 +139,12 @@ namespace Cataclysmic
             desiredSpeed = moveData.maxSpeed;
         }
 
+        public void SetNewTargetPosition(Point pos)
+        {
+            targetPos = new Vector2(pos.X, pos.Y);
+            desiredSpeed = moveData.maxSpeed;
+        }
+
         public override bool IsAlive()
         {
             return healthData.isAlive;

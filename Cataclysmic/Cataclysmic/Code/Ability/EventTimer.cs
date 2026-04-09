@@ -24,6 +24,7 @@ namespace Cataclysmic
         {
             duration = (int)(seconds * 60);
             countdown = duration;
+            paused = false;
         }
 
         public void Update()

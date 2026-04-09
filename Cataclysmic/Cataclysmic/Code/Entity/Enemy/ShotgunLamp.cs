@@ -33,16 +33,6 @@ namespace Cataclysmic
                     moveData.velocity += randomOffset;
             }
 
-            public void IsColliding() //Will take environment as a parameter
-            {
-                throw new NotImplementedException();
-            }
-
-            public void OnCollision(Entity cause)
-            {
-                throw new NotImplementedException();
-            }
-
             public void Update(GameTime gameTime)
             {
                 moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
