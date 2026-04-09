@@ -172,7 +172,7 @@ namespace Cataclysmic
                     else if (randChoice == 1)
                         Teleport();
                     else if (randChoice == 2)
-                        FireWave(8);
+                        SetStateToGeyser(100);
                     else if (randChoice == 3)
                         FireWave(10);
                     else if (randChoice == 4)
@@ -222,7 +222,14 @@ namespace Cataclysmic
             #endregion
 
             foreach (Geyser g in geysers)
+            {
                 g.Update(gameTime);
+                if (g.life.lerpValue > .8f)
+                {
+                    if (g.collisionData.Intersects(target.Hitbox, out _, out _))
+                        target.Damage(this, 5); 
+                }
+            }
 
             while (geysers.Count > 0 && !geysers.Peek().IsAlive())
             {
@@ -242,7 +249,7 @@ namespace Cataclysmic
                 if (p is WaveShot w)
                 {
                     if (w.collisionData.Intersects(target.Hitbox, out _, out _))
-                        target.Damage(this, 5);
+                        target.Damage(this, 3);
                 }
             }
 
@@ -376,7 +383,11 @@ namespace Cataclysmic
                 g.Draw();
 
             foreach (IProjectile p in projectiles)
+            {
                 p.Draw();
+                if (p is WaveShot w)
+                    w.collisionData.DrawDebug();
+            }
             
 
             if (!TeleportTimer.Done)
@@ -403,7 +414,7 @@ namespace Cataclysmic
         int maxWidth;
         int maxHeight;
 
-        EventTimer life = new EventTimer(3);
+        public EventTimer life = new EventTimer(3);
 
         public Geyser(Rectangle destRect)
         {
@@ -491,7 +502,7 @@ namespace Cataclysmic
             moveData = new MoveComponent();
             moveData.velocity = direction * SPEED;
             renderData = new RenderComponent(Game1.texture_player, new Rectangle((int)pos.X, (int)pos.Y, 50, 50));
-            collisionData = CollisionComponent.CreateRect(pos, 50, 50);
+            collisionData = CollisionComponent.CreateRect(pos, 30, 30);
         }
 
         public bool IsAlive()
