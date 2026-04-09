@@ -108,6 +108,7 @@ namespace Cataclysmic
         public static Texture2D texture_flyingLamp;
         public static Texture2D texture_meatballEgypt;
         public static Texture2D texture_clockHand;
+        public static Texture2D texture_basicSlash;
         public static Texture2D texture_character1;
         public static Texture2D texture_overlay1;
         public static Texture2D texture_environment1;
@@ -270,6 +271,17 @@ namespace Cataclysmic
             music_desert1 = Content.Load<SoundEffect>("Sounds/Music/desert_loops_2").CreateInstance();
             music_desert1.IsLooped = true;
             #endregion
+
+            font_credits = Content.Load<SpriteFont>("Fonts/CreditsFont");
+            texture_player = Content.Load<Texture2D>("Sprites/Player/TestSpritePlayer");
+            texture_playerIdle = Content.Load<Texture2D>("Sprites/Player/Idle");
+            texture_playerWalk = Content.Load<Texture2D>("Sprites/Player/Walk");
+            texture_playerDie = Content.Load<Texture2D>("Sprites/Player/Die");
+            texture_hitBox = Content.Load<Texture2D>("Hitbox");
+            texture_square = Content.Load<Texture2D>("square");
+            texture_flyingLamp = Content.Load<Texture2D>("Sprites/Enemies/FlyingLamp");
+            texture_meatballEgypt = Content.Load<Texture2D>("Sprites/Enemies/meatballEgypt");
+            texture_basicSlash = Content.Load<Texture2D>("sprites/Abilities/swordSheet_64x47");
 
             //Effects
             #region
