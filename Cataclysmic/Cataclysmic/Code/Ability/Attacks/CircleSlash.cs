@@ -29,6 +29,7 @@ namespace Cataclysmic
         public float angle;
         public CircleSlash(Vector2 position)
         {
+            Game1.player.timeEnergy.Decrease(MANA_COST);
             Position = position;
             Hitbox = CollisionComponent.CreateCircle(position, RADIUS);
 
@@ -51,7 +52,7 @@ namespace Cataclysmic
         {
             int frameX = (int)((timer / 10) % 8 * 24);
 
-            Game1.self.spriteBatch.Draw(Game1.texture_clockHand, Position, null, color, MathHelper.ToRadians(angle), new Vector2(Game1.texture_clockHand.Width/2, Game1.texture_clockHand.Height/ 2), 1f, SpriteEffects.None, 0f);
+            Game1.self.spriteBatch.Draw(Game1.texture_clockHand, Position, null, color, MathHelper.ToRadians(angle), new Vector2(Game1.texture_clockHand.Width/2, Game1.texture_clockHand.Height/ 2), 1f, SpriteEffects.None, 1f);
             Hitbox.DrawDebug();
         }
 

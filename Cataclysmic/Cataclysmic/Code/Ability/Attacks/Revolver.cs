@@ -26,6 +26,7 @@ namespace Cataclysmic
         public const float COOLDOWN = 0.5f;
         public Color color;
         long timer;
+        public float energyGain = 2;
 
 
         public Revolver(Vector2 position, float angle)
@@ -75,6 +76,7 @@ namespace Cataclysmic
         {
             if (!enemy.healthData.invincible) {
                 Game1.sfx_hurtSound1.Play(Game1.volume, -0.3f + (float)Game1.rand.NextDouble() * 0.2f, 0);
+                Game1.player.timeEnergy.Add(energyGain);
             }
             enemy.healthData.Damage(null, amount);
             

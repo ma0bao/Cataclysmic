@@ -16,6 +16,7 @@ namespace Cataclysmic
         public MoveComponent moveData;
         public HealthComponent healthData;
         public CollisionComponent Hitbox;
+        public ManaComponent timeEnergy;
         Texture2D Square;
 
         Rectangle staminaBarRect;
@@ -25,6 +26,12 @@ namespace Cataclysmic
         Rectangle healthBarRect;
         Rectangle healthBar;
         int HEALTHWIDTH = 200;
+
+        //TimeEnergy Bar
+        Rectangle manaBarRect;
+        Rectangle manaBar;
+        int MANAWIDTH = 200;
+
 
         float angle;
 
@@ -37,6 +44,7 @@ namespace Cataclysmic
         //Abilities
         List<Ability> abilities;
         Dictionary<string, EventTimer> abilityCooldowns;
+        Dictionary<string, float> abilityCosts;
 
         public Player(Rectangle _destRect)
         {
@@ -44,6 +52,7 @@ namespace Cataclysmic
             renderData = new RenderComponent(Game1.texture_playerIdle, _destRect);
             moveData = new MoveComponent();
             healthData = new HealthComponent(50);
+            timeEnergy = new ManaComponent(100);
 
             // Setup idle animation 32x32 2 frames
             renderData.SetupAnimation(32, 32, 2);
@@ -54,6 +63,8 @@ namespace Cataclysmic
             staminaRect = new Rectangle(5, 5, 1, 15);
             healthBarRect = new Rectangle(305, 5, HEALTHWIDTH, 15);
             healthBar = new Rectangle(305, 5, HEALTHWIDTH, 15);
+            manaBarRect = new Rectangle(605, 5, MANAWIDTH, 15);
+            manaBar = new Rectangle(605, 5, MANAWIDTH, 15);
             dashCooldown.Unpause();
             angle = 0.0f;
 
@@ -68,13 +79,21 @@ namespace Cataclysmic
             abilityCooldowns["CircleSlash"] = new EventTimer(CircleSlash.COOLDOWN);
             abilityCooldowns["Slash"] = new EventTimer(Slash.COOLDOWN);
             foreach (EventTimer cd in abilityCooldowns.Values) cd.Done = true;
+
+            abilityCosts = new Dictionary<string, float>();
+            abilityCosts["Revolver"] = 0;
+            abilityCosts["CrackleBurst"] = CrackleBurst.MANA_COST;
+            abilityCosts["CircleSlash"] = CircleSlash.MANA_COST;
+            abilityCosts["Slash"] = 0;
+
         }
 
         // check if ability is off cooldown, if so, restart cooldown and return true
         public bool TryUseAbility(string abilityName)
         {
             EventTimer timer = abilityCooldowns[abilityName];
-            if (timer.Done)
+            float cost = abilityCosts[abilityName];
+            if (timer.Done && timeEnergy.currentMana >= cost)
             {
                 timer.Restart();
                 return true;
@@ -331,7 +350,7 @@ namespace Cataclysmic
             
 
             
-            Game1.self.spriteBatch.Draw(renderData.texture, renderData._destRect, renderData.sourceRect, color * opacity, rotation, renderData.origin, SpriteEffects.None, 1.0f); 
+            Game1.self.spriteBatch.Draw(renderData.texture, renderData._destRect, renderData.sourceRect, color * opacity, rotation, renderData.origin, SpriteEffects.None, 0f); 
             if (currentDash != null)
                 currentDash.Draw(renderData, moveData);
 
@@ -350,12 +369,16 @@ namespace Cataclysmic
         {
             float percent = dashCooldown.lerpValue;
             staminaRect.Width = (int)(staminaBarRect.Width * percent);
-            Game1.self.spriteBatch.Draw(Square, staminaBarRect, Color.Red * opacity);
-            Game1.self.spriteBatch.Draw(Square, staminaRect, Color.Orange * opacity);
+            Game1.self.spriteBatch.Draw(Square, staminaBarRect, Color.DarkGray* opacity);
+            Game1.self.spriteBatch.Draw(Square, staminaRect, Color.LightGray * opacity);
 
             healthBar.Width = (int) (healthData.lerpValue * HEALTHWIDTH);
             Game1.self.spriteBatch.Draw(Square, healthBarRect, Color.Red * opacity);
             Game1.self.spriteBatch.Draw(Square, healthBar, Color.Green * opacity);
+
+            manaBar.Width = (int)(timeEnergy.lerpValue * MANAWIDTH);
+            Game1.self.spriteBatch.Draw(Square, manaBarRect, Color.OrangeRed* opacity);
+            Game1.self.spriteBatch.Draw(Square, manaBar, Color.Orange * opacity);
 
         }
 
