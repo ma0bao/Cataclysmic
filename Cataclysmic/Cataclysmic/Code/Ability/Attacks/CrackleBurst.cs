@@ -124,6 +124,7 @@ namespace Cataclysmic
                 Position.X += (float)Math.Cos(Angle) * SPEED;
                 Position.Y += (float)Math.Sin(Angle) * SPEED;
                 Hitbox.Update(Position, Angle);
+                ScanDamage();
             }
             else if (timer == FRAMES_TO_BURST)
             {
@@ -145,8 +146,7 @@ namespace Cataclysmic
                 }
             }
 
-
-            ScanDamage();
+            
             timer++;
         }
 
