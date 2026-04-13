@@ -14,8 +14,6 @@ namespace Cataclysmic
         public HealthComponent healthData;
         public CollisionComponent collision;
 
-
-
         //Wandering 
         public Vector2 targetPos;
         public Vector2 targetVelocity;
@@ -28,6 +26,17 @@ namespace Cataclysmic
         //When considered to be at target
         public int distanceToBeAtTarget = 30;
 
+        //Stagger
+        public float staggerResistance = 1.0f;
+        EventTimer staggerTimer;
+
+        public enum EnemyState
+        {
+            Active,
+            Staggered
+        }
+
+        public EnemyState enemyState;
 
         public Enemy(Texture2D texture, Rectangle destRect, float width, float height)
         {
@@ -35,8 +44,16 @@ namespace Cataclysmic
             moveData = new MoveComponent();
             healthData = new HealthComponent(50);
             collision = CollisionComponent.CreateRect(new Vector2(destRect.X, destRect.Y), width, height);
-            
+            staggerTimer = new EventTimer();
+        }
 
+        public void Stagger(float secondsToStagger, bool UseResistance = true)
+        {
+            if (UseResistance)
+                staggerTimer = new EventTimer(secondsToStagger * staggerResistance);
+            else
+                staggerTimer = new EventTimer(secondsToStagger);
+            enemyState = EnemyState.Staggered;
         }
 
         public override string ToString()
@@ -59,6 +76,12 @@ namespace Cataclysmic
         public override void DrawEx(float opacity) { return; } // Extra Renders, such as health bars. These are to be ignored by shaders and render on top of most elements except GUI.
         public override void Update(GameTime gameTime)
         {
+            if (enemyState == EnemyState.Staggered)
+            {
+                renderData.Position += new Vector2(2, 2).GetRandomized();
+                return;
+            }
+
             moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             IncreaseVelocity();
             renderData.Position += moveData.velocity * moveData.deltaTime * moveData.speedModifiers;
@@ -70,6 +93,13 @@ namespace Cataclysmic
             collision.Update(renderData.Position, renderData.rotation);
             healthData.Update();
             
+        }
+
+        public void UpdateTimers()
+        {
+            if (staggerTimer.Done && enemyState == EnemyState.Staggered)
+                enemyState = EnemyState.Active;
+            staggerTimer.Update();
         }
 
         public virtual void UpdatePos(int ticks)

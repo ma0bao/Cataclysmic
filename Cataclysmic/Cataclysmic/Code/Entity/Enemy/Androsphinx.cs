@@ -55,6 +55,7 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
             #region Get Target Based On State
 
             if (currentState == AttackState.Wander)

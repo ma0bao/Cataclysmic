@@ -47,6 +47,7 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
             #region Set Target Based On State
             if (currentState == AttackState.Track || currentState == AttackState.Spin)
             {

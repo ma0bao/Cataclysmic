@@ -161,6 +161,8 @@ namespace Cataclysmic
             for (int i = particles.Count - 1; i >= 0; i--)
                 if (!particles[i].IsAlive())
                     particles.RemoveAt(i);
+
+            
         }
 
         public override bool IsComplete()

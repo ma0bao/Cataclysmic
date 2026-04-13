@@ -12,6 +12,11 @@ namespace Cataclysmic
         {
             return new Point((int)value.X, (int)value.Y);
         }
+        public static Vector2 GetRandomized(this Vector2 value)
+        {
+            Point p = value.ToPoint();
+            return new Vector2(Game1.rand.Next(-p.X, p.X+1), Game1.rand.Next(-p.Y, p.Y+1));
+        }
     }
 
     public static class PointExtensions

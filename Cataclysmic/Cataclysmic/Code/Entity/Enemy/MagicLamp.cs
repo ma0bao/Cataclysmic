@@ -126,9 +126,11 @@ namespace Cataclysmic
             moveData.acceleration = 4000f;
             healthData = new HealthComponent(50);
             cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
+            staggerResistance = .8f;
         }
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
             #region Get Target Position
 
             if (currentState == AttackState.Wander || currentState == AttackState.Run)

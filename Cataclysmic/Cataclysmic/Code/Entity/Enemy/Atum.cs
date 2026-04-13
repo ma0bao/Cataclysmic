@@ -124,11 +124,12 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.K))
-            {
-                FireWave();
-            }
+            //if (Keyboard.GetState().IsKeyDown(Keys.K))
+            //{
+            //    FireWave();
+            //}
 
             #region Get Target Based On State
             if (currentState == AttackStates.Center)
