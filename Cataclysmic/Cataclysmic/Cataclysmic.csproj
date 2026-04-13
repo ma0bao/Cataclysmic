@@ -74,6 +74,7 @@
     <Compile Include="Code\Ability\Ability.cs" />
     <Compile Include="Code\Ability\Attacks\CircleSlash.cs" />
     <Compile Include="Code\Ability\Attacks\CrackleBurst.cs" />
+    <Compile Include="Code\Ability\Attacks\HarmonicStrike.cs" />
     <Compile Include="Code\Ability\Attacks\Revolver.cs" />
     <Compile Include="Code\Ability\Attacks\Slash.cs" />
     <Compile Include="Code\Ability\Dashes\BlinkDash.cs" />

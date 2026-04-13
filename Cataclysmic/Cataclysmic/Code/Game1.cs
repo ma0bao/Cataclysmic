@@ -136,6 +136,10 @@ namespace Cataclysmic
         public static SoundEffect sfx_sandBurst1;
         public static SoundEffect sfx_hurtSound1;
         public static SoundEffect sfx_spin1;
+        public static SoundEffect sfx_punch1;
+        public static SoundEffect sfx_punch2;
+        public static SoundEffect sfx_slash1;
+        public static SoundEffect sfx_hurt1;
         #endregion
 
         // Main Menu
@@ -259,6 +263,10 @@ namespace Cataclysmic
             sfx_sandBurst1 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/sandBurst1");
             sfx_hurtSound1 = Content.Load<SoundEffect>("Sounds/hitHurt");
             sfx_spin1 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/spin3");
+            sfx_slash1 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/slash1");
+            sfx_punch1 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/punch1");
+            sfx_punch2 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/punch2");
+            sfx_hurt1 = Content.Load<SoundEffect>("Sounds/Abilities/hurt1");
 
             sound_Teleport = Content.Load<SoundEffect>("Sounds/Abilities/TeleportSound");
             sound_ChargeUp = Content.Load<SoundEffect>("Sounds/Abilities/Charge");

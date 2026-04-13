@@ -13,15 +13,15 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Cataclysmic
 {
-    public class Slash : Ability
+    public class HarmonicStrike : Ability
     {
         public const int HEIGHT = 47 * 2;
         public const int WIDTH = 64 * 2;
         public const int RADIUS = 120;
         public const float MANA_COST = 60;
-        public const float COOLDOWN = .5f;
+        public const float COOLDOWN = 1.5f;
         public const float SPAWN_OFFSET = 50f; // distance from player center to spawn
-        public const int DAMAGE = 20;
+        public  int DAMAGE = 20;
         public const int PUSH = 2;
 
         public CollisionComponent Hitbox;
@@ -29,7 +29,7 @@ namespace Cataclysmic
         Vector2 Position;
         long timer = 0;
         public float angle;
-        public Slash(Vector2 position, float angle)
+        public HarmonicStrike(Vector2 position, float angle)
         {
             this.angle = angle - (float)Math.PI * 0.5f; // rotate by 90degrees
 
@@ -41,7 +41,6 @@ namespace Cataclysmic
             Hitbox = CollisionComponent.CreateRect(position, WIDTH, HEIGHT);
             Hitbox.Update(Position, this.angle);
             color = Color.Black;
-            Game1.sfx_slash1.Play(Game1.volume, -0.1f + (float)Game1.rand.NextDouble() * 0.2f, 0);
         }
 
 
@@ -51,9 +50,22 @@ namespace Cataclysmic
             Position.X = Game1.player.renderData.Position.X + (float)Math.Cos(angle) * SPAWN_OFFSET;
             Position.Y = Game1.player.renderData.Position.Y + (float)Math.Sin(angle) * SPAWN_OFFSET;
             Hitbox.UpdatePosition(Position);
-            ScanDamage();
+            if (timer > 10 && timer < 20) {
+                if (Game1.MS.RightButton == ButtonState.Pressed && Game1.oldMS.RightButton == ButtonState.Released)
+                {
+                    Game1.sfx_punch2.Play(Game1.volume, -0.1f + (float)Game1.rand.NextDouble() * 0.2f, 0);
+                    DAMAGE *= 2;
+                    timer = 21;
+                }
+            }
+            else if (timer == 20) {
+                Game1.sfx_punch1.Play(Game1.volume, -0.1f + (float)Game1.rand.NextDouble() * 0.2f, 0);
+            }
+            else if (timer > 20) {
+                ScanDamage();
+            }
             timer++;
- 
+
         }
 
         public override void Draw(float opacity)
@@ -62,7 +74,7 @@ namespace Cataclysmic
             int frameX = (int)((timer / 2) % 3 * 64);
             int frameY = (int)((timer / 6) % 3 * 47);
 
-            Game1.self.spriteBatch.Draw(Game1.texture_basicSlash, Position, new Rectangle(frameX, frameY, 64, 47), color, angle, new Vector2(64/2, 47/2), 2f, SpriteEffects.None, 0f);
+            Game1.self.spriteBatch.Draw(Game1.texture_basicSlash, Position, new Rectangle(frameX, frameY, 64, 47), color, angle, new Vector2(64 / 2, 47 / 2), 2f, SpriteEffects.None, 0f);
             Hitbox.DrawDebug();
         }
 
@@ -87,7 +99,8 @@ namespace Cataclysmic
 
         public void Damage(Enemy enemy, int amount)
         {
-            if (!enemy.healthData.invincible) {
+            if (!enemy.healthData.invincible)
+            {
                 Game1.sfx_hurt1.Play(Game1.volume, -0.1f + (float)Game1.rand.NextDouble() * 0.2f, 0);
             }
             enemy.healthData.Damage(null, amount);
@@ -95,7 +108,7 @@ namespace Cataclysmic
         }
         public override bool IsAlive()
         {
-            if (timer > 18)
+            if (timer > 60)
             {
                 return false;
             }
