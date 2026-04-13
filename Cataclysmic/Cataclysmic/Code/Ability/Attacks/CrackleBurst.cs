@@ -93,6 +93,7 @@ namespace Cataclysmic
         public const float COOLDOWN = 1.0f;
         public const int DAMAGE = 20;
 
+
         public CollisionComponent Hitbox;
         public Color color;
         Vector2 Position;
@@ -112,12 +113,15 @@ namespace Cataclysmic
 
             color = Color.White;
             timer = 0;
+
             Game1.sfx_weapon_singleshot2.Play(Game1.volume, 0, 0);
+            
         }
 
 
         public override void Update(GameTime gameTime)
         {
+            
 
             if (timer < FRAMES_TO_BURST)
             {

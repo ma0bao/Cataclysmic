@@ -98,6 +98,7 @@
     <Compile Include="Code\Misc\Environment.cs" />
     <Compile Include="Code\Misc\Environments\EgyptEnvironment.cs" />
     <Compile Include="Code\Misc\Particle.cs" />
+    <Compile Include="Code\Misc\Extensions.cs" />
     <Compile Include="Code\Player\Cursor.cs" />
     <Compile Include="Code\Player\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

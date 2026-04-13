@@ -14,6 +14,8 @@ namespace Cataclysmic
         public HealthComponent healthData;
         public CollisionComponent collision;
 
+
+
         //Wandering 
         public Vector2 targetPos;
         public Vector2 targetVelocity;
