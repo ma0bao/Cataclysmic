@@ -24,6 +24,7 @@ namespace Cataclysmic
         public const int DAMAGE = 20;
         public const int PUSH = 2;
 
+        public float energyGain = 5;
         public CollisionComponent Hitbox;
         public Color color;
         Vector2 Position;
@@ -85,7 +86,12 @@ namespace Cataclysmic
 
         public void Damage(Enemy enemy, int amount)
         {
+            if (!enemy.healthData.invincible)
+            {
+                Game1.player.timeEnergy.Add(energyGain);
+            }
             enemy.healthData.Damage(null, amount);
+            
             return;
         }
         public override bool IsAlive()

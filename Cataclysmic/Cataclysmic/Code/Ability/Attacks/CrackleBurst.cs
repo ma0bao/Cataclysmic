@@ -102,6 +102,7 @@ namespace Cataclysmic
 
         public CrackleBurst(Vector2 position, float angle)
         {
+            Game1.player.timeEnergy.Decrease(MANA_COST);
             Angle = angle - (float)Math.PI * 0.5f;
 
             float spawnAngle = Angle;
