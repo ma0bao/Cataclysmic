@@ -47,7 +47,7 @@ namespace Cataclysmic
 
             public bool ScanDamage()
             {
-                foreach (Enemy e in Game1.enemies)
+                foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies())
                 {
                     float depth;
                     Vector2 normal;
@@ -124,6 +124,7 @@ namespace Cataclysmic
                 Position.X += (float)Math.Cos(Angle) * SPEED;
                 Position.Y += (float)Math.Sin(Angle) * SPEED;
                 Hitbox.Update(Position, Angle);
+                ScanDamage();
             }
             else if (timer == FRAMES_TO_BURST)
             {
@@ -145,8 +146,7 @@ namespace Cataclysmic
                 }
             }
 
-
-            ScanDamage();
+            
             timer++;
         }
 
@@ -168,7 +168,7 @@ namespace Cataclysmic
 
         public bool ScanDamage()
         {
-            foreach (Enemy e in Game1.enemies)
+            foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies())
             {
                 float depth;
                 Vector2 normal;

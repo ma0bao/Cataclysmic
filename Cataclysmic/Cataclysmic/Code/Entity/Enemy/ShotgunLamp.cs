@@ -33,16 +33,6 @@ namespace Cataclysmic
                     moveData.velocity += randomOffset;
             }
 
-            public void IsColliding() //Will take environment as a parameter
-            {
-                throw new NotImplementedException();
-            }
-
-            public void OnCollision(Entity cause)
-            {
-                throw new NotImplementedException();
-            }
-
             public void Update(GameTime gameTime)
             {
                 moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -50,9 +40,9 @@ namespace Cataclysmic
                 sandHitbox.UpdatePosition(renderData.Position);
                 float depth;
                 Vector2 normal;
-                if (sandHitbox.Intersects(Game1.players[0].Hitbox, out depth, out normal))
+                if (sandHitbox.Intersects(Game1.player.Hitbox, out depth, out normal))
                 {
-                    Game1.players[0].Damage(null, 5);
+                    Game1.player.Damage(null, 5);
                 }
 
                 renderData.Position += moveData.velocity * moveData.deltaTime;
@@ -82,7 +72,7 @@ namespace Cataclysmic
             Run = 4
         }
 
-        Player[] players;
+        Player player;
         Player targetedPlayer;
 
         const int ANGER_DISTANCE = 20;
@@ -110,9 +100,13 @@ namespace Cataclysmic
 
         float frictionMultiplier = 5;
 
-        public ShotgunLamp(Rectangle destRect, Player[] targets) : base(Game1.texture_flyingLamp, destRect, 40, 40)
+        const int WIDTH = 40;
+        const int HEIGHT = 40;
+        const int HITBOX_WIDTH = 40;
+        const int HITBOX_HEIGHT = 40;
+        public ShotgunLamp(Vector2 position) : base(Game1.texture_flyingLamp, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
-            players = targets;
+            player = Game1.player;
             
             SetNewTargetPosition(renderData.GetRandomPoint());
             moveData.maxSpeed = 500;
@@ -176,16 +170,13 @@ namespace Cataclysmic
                 {
                     SetNewTargetPosition(renderData.GetRandomPoint());
                 }
-                foreach (Player p in players)
-                {
-                    if (p == null)
-                        continue;
-                    if (renderData.GetDistanceToTarget(p.renderData.Position) < AGRO_DISTANCE)
+                
+                    if (renderData.GetDistanceToTarget(player.renderData.Position) < AGRO_DISTANCE)
                     {
                         currentState = AttackState.Follow;
-                        targetedPlayer = p;
+                        targetedPlayer = player;
                     }
-                }
+                
             }
             else if (currentState == AttackState.Follow)
             {
@@ -306,7 +297,7 @@ namespace Cataclysmic
 
         public override bool IsAlive()
         {
-            return base.IsAlive() && sands.Count == 0;
+            return base.IsAlive();
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Cataclysmic
 {
-    // AI Generated explanation on SAT its 3 am im too tired of commenting
+    // Explanation is AI
     // Polygon-based collision using SAT (Separating Axis Theorem)
     // 
     // HOW IT WORKS:
@@ -60,7 +60,7 @@ namespace Cataclysmic
                 new Vector2(hw, -hh),  // top right
                 new Vector2(hw, hh),   // bottom right
                 new Vector2(-hw, hh)   // bottom left
-            }); //is like this cus up is -y and down is +y
+            }); //is like this bc up is -y and down is +y
         }
 
         // center = center position in world
@@ -107,7 +107,7 @@ namespace Cataclysmic
             UpdateWorldVertices();
         }
 
-        // Transforms LocalVertices to worldVertices by rotating then translating using rotation math i totaly didnt copy:
+        // Transforms LocalVertices to worldVertices by rotating then translating using rotation math:
         // To rotate point (x,y) by angle θ around origin:
         //   newX = x * cos(θ) - y * sin(θ)
         //   newY = x * sin(θ) + y * cos(θ)
@@ -150,7 +150,7 @@ namespace Cataclysmic
         // if (a.Intersects(b, out depth, out normal))
         //     a.Position += normal * depth;  // push a away from b
         //     do whatever else. damage, delete bullet etc.
-        public bool Intersects(CollisionComponent other, out float depth, out Vector2 normal) //out is the most optimized apparantly
+        public bool Intersects(CollisionComponent other, out float depth, out Vector2 normal) //out is the most optimized
         {
             float minDepth = float.MaxValue;  // Track smallest overlap
             Vector2 minNormal = Vector2.Zero; // Track axis with smallest overlap
@@ -174,7 +174,6 @@ namespace Cataclysmic
                     axis /= len;
 
                 // project BOTH polygons onto this axis
-                // cool way i saw to set variables
                 float minA, maxA, minB, maxB;
                 ProjectPolygon(worldVertices, axis, out minA, out maxA);
                 ProjectPolygon(other.worldVertices, axis, out minB, out maxB);

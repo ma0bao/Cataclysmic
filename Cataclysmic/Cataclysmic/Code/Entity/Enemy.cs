@@ -36,6 +36,12 @@ namespace Cataclysmic
             
 
         }
+
+        public override string ToString()
+        {
+            return "X: " + (int)renderData.Position.X + " Y: " + (int)renderData.Position.Y + " HP: " + healthData.currentHealth;
+            // return base.ToString();
+        }
         public override void Draw(float opacity)
         {
             if (healthData.invincible)
@@ -133,6 +139,12 @@ namespace Cataclysmic
             desiredSpeed = moveData.maxSpeed;
         }
 
+        public void SetNewTargetPosition(Point pos)
+        {
+            targetPos = new Vector2(pos.X, pos.Y);
+            desiredSpeed = moveData.maxSpeed;
+        }
+
         public override bool IsAlive()
         {
             return healthData.isAlive;
@@ -150,6 +162,10 @@ namespace Cataclysmic
 
         public virtual void Spawn(Vector2 spawnpoint)
         {
+            throw new NotImplementedException();
+        }
+
+        override public void OnCollision() {
             throw new NotImplementedException();
         }
 

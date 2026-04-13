@@ -66,6 +66,8 @@ namespace Cataclysmic
             abilityCooldowns["Revolver"] = new EventTimer(Revolver.COOLDOWN);
             abilityCooldowns["CrackleBurst"] = new EventTimer(CrackleBurst.COOLDOWN);
             abilityCooldowns["CircleSlash"] = new EventTimer(CircleSlash.COOLDOWN);
+            abilityCooldowns["Slash"] = new EventTimer(Slash.COOLDOWN);
+            abilityCooldowns["HarmonicStrike"] = new EventTimer(HarmonicStrike.COOLDOWN);
             foreach (EventTimer cd in abilityCooldowns.Values) cd.Done = true;
         }
 
@@ -98,8 +100,8 @@ namespace Cataclysmic
             int MouseX = Game1.MS.X;
             int MouseY = Game1.MS.Y;
 
-            float directionX = Game1.self.cursors[0].Position.X - (renderData.Position.X);
-            float directionY = Game1.self.cursors[0].Position.Y - (renderData.Position.Y);
+            float directionX = Game1.self.cursor.Position.X - (renderData.Position.X);
+            float directionY = Game1.self.cursor.Position.Y - (renderData.Position.Y);
             angle = (float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f));
 
             // Collision
@@ -140,6 +142,14 @@ namespace Cataclysmic
                     abilities.Add(new Revolver(renderData.Position, angle));
             }
 
+            if (Game1.MS.RightButton == ButtonState.Pressed)
+            {
+                //if (TryUseAbility("Slash"))
+                    //abilities.Add(new Slash(renderData.Position, angle));
+                if (TryUseAbility("HarmonicStrike"))
+                    abilities.Add(new HarmonicStrike(renderData.Position, angle));
+            }
+            
             if (Game1.KB.IsKeyDown(Keys.Q) && !Game1.oldKB.IsKeyDown(Keys.Q))
             {
                 if (TryUseAbility("CrackleBurst"))
@@ -361,7 +371,7 @@ namespace Cataclysmic
 
         public bool ScanDamage()
         {
-            foreach (Enemy e in Game1.enemies)
+            foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies())
             {
                 float pCollisionDepth;
                 Vector2 pCollisionNormal;
