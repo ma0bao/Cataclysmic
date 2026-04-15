@@ -88,7 +88,7 @@ namespace Cataclysmic
         public const int HITBOX_WIDTH = 50;
         public const float SPEED = 7.0f;
         public const float FRAMES_TO_BURST = 60;
-        public const float MANA_COST = 60;
+        public const float MANA_COST = 30;
         public const float SPAWN_OFFSET = 20f;
         public const float COOLDOWN = 1.0f;
         public const int DAMAGE = 20;

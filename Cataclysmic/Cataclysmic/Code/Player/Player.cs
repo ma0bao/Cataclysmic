@@ -46,11 +46,13 @@ namespace Cataclysmic
         Dictionary<string, EventTimer> abilityCooldowns;
         Dictionary<string, float> abilityCosts;
 
+        public float maxSpeed = 600;
+
         public Player(Rectangle _destRect)
         {
             LoadContent();
             renderData = new RenderComponent(Game1.texture_playerIdle, _destRect);
-            moveData = new MoveComponent();
+            moveData = new MoveComponent(maxSpeed, 2500f, 3000f);
             healthData = new HealthComponent(50);
             timeEnergy = new ManaComponent(100);
 
@@ -129,24 +131,24 @@ namespace Cataclysmic
             float newX = renderData.Position.X;
             if (renderData.Position.X > Game1.BOUNDS.Right - renderData.DestRect.Width / 2)
             {
-                moveData.velocity.X = -Math.Abs(moveData.velocity.X);
+                //moveData.velocity.X = -Math.Abs(moveData.velocity.X);
                 newX = Game1.BOUNDS.Right - renderData.DestRect.Width / 2;
             }
             else if (renderData.Position.X - renderData.DestRect.Width / 2 < Game1.BOUNDS.Left)
             {
-                moveData.velocity.X = Math.Abs(moveData.velocity.X);
+                //moveData.velocity.X = Math.Abs(moveData.velocity.X);
                 newX = Game1.BOUNDS.Left + renderData.DestRect.Width / 2;
             }
 
             float newY = renderData.Position.Y;
             if (renderData.Position.Y > Game1.BOUNDS.Bottom - renderData.DestRect.Height / 2)
             {
-                moveData.velocity.Y = -Math.Abs(moveData.velocity.Y);
+                //moveData.velocity.Y = -Math.Abs(moveData.velocity.Y);
                 newY = Game1.BOUNDS.Bottom - renderData.DestRect.Height / 2;
             }
             else if (renderData.Position.Y - renderData.DestRect.Height / 2 < Game1.BOUNDS.Top)
             {
-                moveData.velocity.Y = Math.Abs(moveData.velocity.Y);
+                //moveData.velocity.Y = Math.Abs(moveData.velocity.Y);
                 newY = Game1.BOUNDS.Top + renderData.DestRect.Height / 2;
             }
 

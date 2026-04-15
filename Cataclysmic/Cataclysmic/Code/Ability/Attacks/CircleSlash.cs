@@ -16,7 +16,7 @@ namespace Cataclysmic
     public class CircleSlash : Ability
     {
         public const int RADIUS = 120;
-        public const float MANA_COST = 60;
+        public const float MANA_COST = 50;
         public const float COOLDOWN = 2f;
         public const int DAMAGE = 20;
         public const int PUSH = 15;
@@ -27,6 +27,7 @@ namespace Cataclysmic
         Vector2 Position;
         long timer = 0;
         public float angle;
+        public float rotateSpeed;
         public CircleSlash(Vector2 position)
         {
             Game1.player.timeEnergy.Decrease(MANA_COST);
@@ -39,13 +40,15 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
-
+            Game1.player.healthData.frames = 100;
+            Game1.player.moveData.maxSpeed += 10;
             Position = Game1.player.renderData.Position;
             Hitbox.Update(Position, angle);
             ScanDamage();
             timer++;
             double x = (double)timer / LIFETIME;
-            angle += 40 * (float) Math.Abs(Math.Pow(x, 5) - Math.Pow(x, 2)) * 3.0f;
+            rotateSpeed += 1;// 40 * (float) Math.Abs(Math.Pow(x, 5) - Math.Pow(x, 2)) * 3.0f;
+            angle += rotateSpeed;
         }
 
         public override void Draw(float opacity)
@@ -83,8 +86,10 @@ namespace Cataclysmic
         {
             if (timer > LIFETIME)
             {
+                Game1.player.moveData.maxSpeed = Game1.player.maxSpeed;
                 return false;
             }
+            
             return true;
         }
     }

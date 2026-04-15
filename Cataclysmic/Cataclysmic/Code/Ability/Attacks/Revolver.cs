@@ -17,7 +17,7 @@ namespace Cataclysmic
     {
         public const int WIDTH = 20;   // bullet thickness (perpendicular to travel direction)
         public const int LENGTH = 40;  // bullet length (along travel direction)
-        public const float SPEED = 20f;
+        public const float SPEED = 30f;
         public const float SPAWN_OFFSET = 20f; // distance from player center to spawn bullet
         public const int DAMAGE = 10;
         Vector2 Position;
@@ -26,7 +26,7 @@ namespace Cataclysmic
         public const float COOLDOWN = 0.5f;
         public Color color;
         long timer;
-        public float energyGain = 2;
+        public float energyGain = 3;
 
 
         public Revolver(Vector2 position, float angle)
