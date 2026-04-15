@@ -310,6 +310,11 @@ namespace Cataclysmic
             renderData.Position += (moveData.velocity * moveData.deltaTime * moveData.speedModifiers) * ticks;
         }
 
+        public Vector2 GetUpdatedPosition(int ticks)
+        {
+            return renderData.Position + (moveData.velocity * moveData.deltaTime * moveData.speedModifiers) * ticks;
+        }
+
         public Vector2 GetDirection()
         {
             Vector2 direction;
@@ -350,7 +355,6 @@ namespace Cataclysmic
 
             float rotation = GetAngleToMouse();
             
-
             
             Game1.self.spriteBatch.Draw(renderData.texture, renderData._destRect, renderData.sourceRect, color * opacity, rotation, renderData.origin, SpriteEffects.None, 0f); 
             if (currentDash != null)

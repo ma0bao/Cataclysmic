@@ -26,7 +26,7 @@ namespace Cataclysmic
         public const float COOLDOWN = 0.5f;
         public Color color;
         long timer;
-        public float energyGain = 3;
+        public float energyGain = 5;
 
 
         public Revolver(Vector2 position, float angle)
@@ -43,7 +43,7 @@ namespace Cataclysmic
             Hitbox = CollisionComponent.CreateRect(Position, LENGTH, WIDTH);
             Hitbox.UpdateRotation(this.angle);
 
-            color = Color.White;
+            color = Color.Blue;
             timer = 0;
             Game1.sfx_weapon_singleshot2.Play(Game1.volume, 0, 0);
         }
