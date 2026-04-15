@@ -55,6 +55,12 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
+            if (enemyState == EnemyState.Staggered)
+            {
+                
+            }
+
             #region Get Target Based On State
 
             if (currentState == AttackState.Wander)
@@ -191,6 +197,12 @@ namespace Cataclysmic
             #endregion
             //ADD SHAKE
             agroCooldown.Update();
+        }
+
+        public override void Stagger(float secondsToStagger, bool UseResistance = true)
+        {
+            if (currentState == AttackState.Shake || currentState == AttackState.Dash || currentState == AttackState.Swipe) currentState = AttackState.Wander;
+            base.Stagger(secondsToStagger, UseResistance);
         }
 
         public override void Draw(float opacity)
