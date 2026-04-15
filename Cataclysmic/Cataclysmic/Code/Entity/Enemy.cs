@@ -47,7 +47,7 @@ namespace Cataclysmic
             staggerTimer = new EventTimer();
         }
 
-        public void Stagger(float secondsToStagger, bool UseResistance = true)
+        public virtual void Stagger(float secondsToStagger, bool UseResistance = true)
         {
             if (UseResistance)
                 staggerTimer = new EventTimer(secondsToStagger * staggerResistance);
@@ -78,7 +78,7 @@ namespace Cataclysmic
         {
             if (enemyState == EnemyState.Staggered)
             {
-                renderData.Position += new Vector2(2, 2).GetRandomized();
+                renderData.Position += new Vector2(1, 1).GetRandomized();
                 return;
             }
 

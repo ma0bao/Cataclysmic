@@ -43,6 +43,8 @@ namespace Cataclysmic
             turnSpeed = 500;
             moveData.maxSpeed = 200;
             spinTimer.Unpause();
+
+            staggerResistance = .30f;
         }
 
         public override void Update(GameTime gameTime)
@@ -117,6 +119,12 @@ namespace Cataclysmic
 
         }
 
+        public override void Stagger(float secondsToStagger, bool UseResistance = true)
+        {
+            if (currentState == AttackState.Cooldown || currentState == AttackState.Spin || currentState == AttackState.Slam) currentState = AttackState.Track;
+            base.Stagger(secondsToStagger, UseResistance);
+        }
+
         public override void Draw(float opacity)
         {
             if(currentState != AttackState.Spin)
@@ -126,7 +134,10 @@ namespace Cataclysmic
 
         public void Slam()
         {
-            //Make Slam
+            CollisionComponent SlamHitbox = CollisionComponent.CreateCircle(renderData.Position, 10, 12);
+
+            if (SlamHitbox.Intersects(player.Hitbox))
+                player.Damage(this, 3);
         }
 
 
