@@ -413,20 +413,20 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
-    <ItemGroup>
-		<Compile Include="Sprites\Abilities\swordSheet_64x47.png">
-			<Name>swordSheet_64x47</Name>
-			<Importer>TextureImporter</Importer>
-			<Processor>TextureProcessor</Processor>
-		</Compile>
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="Sounds\Music\VampPiano.wav">
-			<Name>VampPiano</Name>
-			<Importer>WavImporter</Importer>
-			<Processor>SoundEffectProcessor</Processor>
-		</Compile>
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Abilities\swordSheet_64x47.png">
+      <Name>swordSheet_64x47</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\Music\VampPiano.wav">
+      <Name>VampPiano</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Sprites\GUI\MainCharacter1.png">
       <Name>MainCharacter1</Name>
@@ -505,6 +505,13 @@
   <ItemGroup>
     <Compile Include="Sprites\GUI\MainCharacter3.png">
       <Name>MainCharacter3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\GUI\PauseMenuText.png">
+      <Name>PauseMenuText</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
