@@ -310,6 +310,11 @@ namespace Cataclysmic
             renderData.Position += (moveData.velocity * moveData.deltaTime * moveData.speedModifiers) * ticks;
         }
 
+        public Vector2 GetUpdatedPosition(int ticks)
+        {
+            return renderData.Position + (moveData.velocity * moveData.deltaTime * moveData.speedModifiers) * ticks;
+        }
+
         public Vector2 GetDirection()
         {
             Vector2 direction;
@@ -362,6 +367,10 @@ namespace Cataclysmic
                     abil.Draw(1.0f);
             }
 
+            if (currentDash is SpeedDash && !currentDash.IsFinished)
+            {
+                renderData.DrawAt(GetUpdatedPosition(-1).ToPoint(), 150);
+            }
 
             Hitbox.DrawDebug();
 
