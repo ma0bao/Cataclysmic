@@ -15,8 +15,9 @@ namespace Cataclysmic
 {
     public class Slash : Ability
     {
-        public const int HEIGHT = 47 * 2;
-        public const int WIDTH = 64 * 2;
+        // 1 = height * 2, width * 2.  2 = height * 3, width * 2.  3 = height * 3, width * 2.5
+        public const float HEIGHT = 47 * 3;
+        public const float WIDTH = 64 * 2.5f;
         public const int RADIUS = 120;
         public const float COOLDOWN = .5f;
         public const float SPAWN_OFFSET = 50f; // distance from player center to spawn
@@ -61,7 +62,7 @@ namespace Cataclysmic
             int frameX = (int)((timer / 2) % 3 * 64);
             int frameY = (int)((timer / 6) % 3 * 47);
 
-            Game1.self.spriteBatch.Draw(Game1.texture_basicSlash, Position, new Rectangle(frameX, frameY, 64, 47), color, angle, new Vector2(64/2, 47/2), 2f, SpriteEffects.None, 0f);
+            Game1.self.spriteBatch.Draw(Game1.texture_basicSlash, Position, new Rectangle(frameX, frameY, 64, 47), color, angle, new Vector2(64/2, 47/2 - 5), new Vector2(3f, 4f), SpriteEffects.None, 0f);
             Hitbox.DrawDebug();
         }
 
@@ -74,7 +75,8 @@ namespace Cataclysmic
                 if (Hitbox.Intersects(e.collision, out depth, out normal))
                 {
                     Damage(e, DAMAGE);
-                    e.renderData.Position += normal * PUSH;
+                    //e.renderData.Position += normal * PUSH;
+                    e.Stagger(.1f, false);
                     return true;
                 }
 

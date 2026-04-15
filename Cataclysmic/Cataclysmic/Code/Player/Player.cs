@@ -354,17 +354,18 @@ namespace Cataclysmic
             
 
             float rotation = GetAngleToMouse();
-            
-            
-            Game1.self.spriteBatch.Draw(renderData.texture, renderData._destRect, renderData.sourceRect, color * opacity, rotation, renderData.origin, SpriteEffects.None, 0f); 
-            if (currentDash != null)
-                currentDash.Draw(renderData, moveData);
 
             foreach (Ability abil in abilities)
             {
                 if (abil != null)
                     abil.Draw(1.0f);
             }
+
+            Game1.self.spriteBatch.Draw(renderData.texture, renderData._destRect, renderData.sourceRect, color * opacity, rotation, renderData.origin, SpriteEffects.None, 0f); 
+            if (currentDash != null)
+                currentDash.Draw(renderData, moveData);
+
+            
 
 
             Hitbox.DrawDebug();
