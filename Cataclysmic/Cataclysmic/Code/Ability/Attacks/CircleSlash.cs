@@ -68,7 +68,9 @@ namespace Cataclysmic
                 if (Hitbox.Intersects(e.collision, out depth, out normal))
                 {
                     Damage(e, DAMAGE);
-                    e.renderData.Position += normal * PUSH;
+                    e.Stagger(.1f, true);
+                    e.moveData.velocity = Game1.player.moveData.velocity;
+                    e.UpdatePos(2);
                     return true;
                 }
                 
