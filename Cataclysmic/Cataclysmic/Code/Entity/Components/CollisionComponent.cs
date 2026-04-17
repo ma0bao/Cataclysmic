@@ -242,6 +242,100 @@ namespace Cataclysmic
             return true;
         }
 
+        public bool Intersects(CollisionComponent other) //out is the most optimized
+        {
+            float depth = 0;
+            Vector2 normal = Vector2.Zero;
+            float minDepth = float.MaxValue;  // Track smallest overlap
+            Vector2 minNormal = Vector2.Zero; // Track axis with smallest overlap
+
+            //Check all axes from THIS shape edges
+            for (int i = 0; i < worldVertices.Length; i++)
+            {
+                // wrap around
+                int next = i + 1;
+                if (next >= worldVertices.Length)
+                    next = 0;
+
+                Vector2 edge = worldVertices[next] - worldVertices[i];
+
+                // perpendicular axis (normal to edge)
+                Vector2 axis = new Vector2(-edge.Y, edge.X);
+
+                // have to normalize axis length so calculation works 
+                float len = axis.Length();
+                if (len > 0)
+                    axis /= len;
+
+                // project BOTH polygons onto this axis
+                float minA, maxA, minB, maxB;
+                ProjectPolygon(worldVertices, axis, out minA, out maxA);
+                ProjectPolygon(other.worldVertices, axis, out minB, out maxB);
+
+                // Check for gap between shadows
+                if (maxA < minB || maxB < minA)
+                {
+                    // if gap found, no collision
+                    depth = 0;
+                    normal = Vector2.Zero;
+                    return false;
+                }
+
+                // Calculate how much the shadows overlap. get min overlap
+                float overlap = Math.Min(maxA - minB, maxB - minA);
+                if (overlap < minDepth)
+                {
+                    minDepth = overlap;
+                    minNormal = axis;
+                }
+                //minNormal * minDepth is the shortest path allegedly
+            }
+
+            //now check from other shape
+            for (int i = 0; i < other.worldVertices.Length; i++)
+            {
+                int next = i + 1;
+                if (next >= other.worldVertices.Length)
+                    next = 0;
+
+                Vector2 edge = other.worldVertices[next] - other.worldVertices[i];
+                Vector2 axis = new Vector2(-edge.Y, edge.X);
+
+                float len = axis.Length();
+                if (len > 0)
+                    axis /= len;
+
+
+                float minA, maxA, minB, maxB;
+                ProjectPolygon(worldVertices, axis, out minA, out maxA);
+                ProjectPolygon(other.worldVertices, axis, out minB, out maxB);
+
+                if (maxA < minB || maxB < minA)
+                {
+                    depth = 0;
+                    normal = Vector2.Zero;
+                    return false;
+                }
+
+                float overlap = Math.Min(maxA - minB, maxB - minA);
+                if (overlap < minDepth)
+                {
+                    minDepth = overlap;
+                    minNormal = axis;
+                }
+            }
+
+            // must be a collision now i hope
+            // make sure normal points from this to the other object. uses Dot() to check if pointing correct way (my new fav method)
+            Vector2 direction = other.Center - Center;
+            if (Vector2.Dot(direction, minNormal) < 0)
+                minNormal = -minNormal;
+
+            depth = minDepth;
+            normal = minNormal;
+            return true;
+        }
+
         // project polygon onto an axis and gets the shadow
         private void ProjectPolygon(Vector2[] poly, Vector2 axis, out float min, out float max)
         {

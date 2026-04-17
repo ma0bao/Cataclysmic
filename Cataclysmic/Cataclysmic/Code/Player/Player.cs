@@ -46,11 +46,13 @@ namespace Cataclysmic
         Dictionary<string, EventTimer> abilityCooldowns;
         Dictionary<string, float> abilityCosts;
 
+        public float maxSpeed = 500;
+
         public Player(Rectangle _destRect)
         {
             LoadContent();
             renderData = new RenderComponent(Game1.texture_playerIdle, _destRect);
-            moveData = new MoveComponent();
+            moveData = new MoveComponent(maxSpeed, 2000f, 3000f);
             healthData = new HealthComponent(50);
             timeEnergy = new ManaComponent(100);
 
@@ -129,24 +131,24 @@ namespace Cataclysmic
             float newX = renderData.Position.X;
             if (renderData.Position.X > Game1.BOUNDS.Right - renderData.DestRect.Width / 2)
             {
-                moveData.velocity.X = -Math.Abs(moveData.velocity.X);
+                //moveData.velocity.X = -Math.Abs(moveData.velocity.X);
                 newX = Game1.BOUNDS.Right - renderData.DestRect.Width / 2;
             }
             else if (renderData.Position.X - renderData.DestRect.Width / 2 < Game1.BOUNDS.Left)
             {
-                moveData.velocity.X = Math.Abs(moveData.velocity.X);
+                //moveData.velocity.X = Math.Abs(moveData.velocity.X);
                 newX = Game1.BOUNDS.Left + renderData.DestRect.Width / 2;
             }
 
             float newY = renderData.Position.Y;
             if (renderData.Position.Y > Game1.BOUNDS.Bottom - renderData.DestRect.Height / 2)
             {
-                moveData.velocity.Y = -Math.Abs(moveData.velocity.Y);
+                //moveData.velocity.Y = -Math.Abs(moveData.velocity.Y);
                 newY = Game1.BOUNDS.Bottom - renderData.DestRect.Height / 2;
             }
             else if (renderData.Position.Y - renderData.DestRect.Height / 2 < Game1.BOUNDS.Top)
             {
-                moveData.velocity.Y = Math.Abs(moveData.velocity.Y);
+                //moveData.velocity.Y = Math.Abs(moveData.velocity.Y);
                 newY = Game1.BOUNDS.Top + renderData.DestRect.Height / 2;
             }
 
@@ -308,6 +310,11 @@ namespace Cataclysmic
             renderData.Position += (moveData.velocity * moveData.deltaTime * moveData.speedModifiers) * ticks;
         }
 
+        public Vector2 GetUpdatedPosition(int ticks)
+        {
+            return renderData.Position + (moveData.velocity * moveData.deltaTime * moveData.speedModifiers) * ticks;
+        }
+
         public Vector2 GetDirection()
         {
             Vector2 direction;
@@ -334,7 +341,7 @@ namespace Cataclysmic
             float directionX = MouseX - renderData.Position.X;
             float directionY = MouseY - renderData.Position.Y;
 
-            return (float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f));
+            return MathHelper.ToDegrees((float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f)));
         }
 
 
@@ -343,14 +350,20 @@ namespace Cataclysmic
             if (!isVisible)
                 return;
 
-            Color color = Color.White;
+            renderData.color = Color.White;
             
 
-            float rotation = GetAngleToMouse();
+             renderData.rotation = GetAngleToMouse();
             
 
             
-            Game1.self.spriteBatch.Draw(renderData.texture, renderData._destRect, renderData.sourceRect, color * opacity, rotation, renderData.origin, SpriteEffects.None, 0f); 
+            Game1.self.spriteBatch.Draw(renderData.texture, renderData._destRect, renderData.sourceRect, renderData.color * opacity, MathHelper.ToRadians(renderData.rotation), renderData.origin, SpriteEffects.None, 0f);
+            if (currentDash is SpeedDash && !currentDash.IsFinished)
+            {
+                renderData.DrawAt(GetUpdatedPosition(-1).ToPoint(), 150);
+                renderData.DrawAt(GetUpdatedPosition(-2).ToPoint(), 150);
+            }
+
             if (currentDash != null)
                 currentDash.Draw(renderData, moveData);
 
@@ -360,6 +373,7 @@ namespace Cataclysmic
                     abil.Draw(1.0f);
             }
 
+            
 
             Hitbox.DrawDebug();
 

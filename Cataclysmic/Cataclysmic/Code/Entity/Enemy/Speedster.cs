@@ -73,6 +73,8 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
+
             moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             //Get Target Position

@@ -50,7 +50,6 @@ namespace Cataclysmic
 
         AttackStates nextAttackState;
 
-        
         public Atum(Rectangle destRect, Player player) : base(Game1.texture_player, destRect, destRect.Width, destRect.Height)
         {
             target = player;
@@ -71,6 +70,12 @@ namespace Cataclysmic
             fireTimer.Done = true;
 
             SetStateToCenter();
+        }
+
+        public override void Stagger(float secondsToStagger, bool UseResistance = true)
+        {
+            if (currentState == AttackStates.Follow || currentState == AttackStates.Teleport) currentState = AttackStates.Center;
+            base.Stagger(secondsToStagger, UseResistance);
         }
 
         private void SetStateToCenter()
@@ -124,11 +129,12 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.K))
-            {
-                FireWave();
-            }
+            //if (Keyboard.GetState().IsKeyDown(Keys.K))
+            //{
+            //    FireWave();
+            //}
 
             #region Get Target Based On State
             if (currentState == AttackStates.Center)

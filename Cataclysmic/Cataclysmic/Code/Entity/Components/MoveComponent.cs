@@ -27,6 +27,7 @@ namespace Cataclysmic
             deltaTime = 1;
         }
 
+
         public Vector2 GetDirection()
         {
             Vector2 direction;

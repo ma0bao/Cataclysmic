@@ -56,7 +56,7 @@ namespace Cataclysmic
         public void Set(float newMax, float newCurrent)
         {
             currentMana = newCurrent;
-            newMax = newMax;
+            maxMana = newMax;
         }
 
         public void Update()

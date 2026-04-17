@@ -9,7 +9,7 @@ namespace Cataclysmic
     {
         float duration = 0.5f;
         float timer;
-        float multiplier = 3.5f;
+        float multiplier = 2.5f;
         public bool IsFinished => timer <= 0;
 
         public void Start(RenderComponent renderData, MoveComponent moveData)

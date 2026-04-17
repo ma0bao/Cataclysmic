@@ -78,7 +78,7 @@ namespace Cataclysmic
         const int ANGER_DISTANCE = 20;
         const int FOLLOW_DISTANCE = 200;
         const int AGRO_DISTANCE = 300;
-        const float SHAKE_TIME = 1.4f;
+        const float SHAKE_TIME = .5f;
         const float CONE_WIDTH_DEGREES = 30;
         const int PROJECTILES_PER_FRAME = 20;
         const int MAX_COOLDOWN_FRAMES = 240;
@@ -114,9 +114,18 @@ namespace Cataclysmic
             healthData = new HealthComponent(50);
             //slowRadius = 0;
             cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
+            staggerResistance = 0.3f;
+        }
+
+        public override void Stagger(float secondsToStagger, bool UseResistance = true)
+        {
+            if (currentState == AttackState.Charge || currentState == AttackState.Spray ) currentState = AttackState.Wander;
+            base.Stagger(secondsToStagger, UseResistance);
         }
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
+
             #region Get Target Position
 
             if (currentState == AttackState.Wander || currentState == AttackState.Run)
@@ -144,10 +153,10 @@ namespace Cataclysmic
                 SetNewTargetPosition(new Vector2(targetedPlayer.renderData.Position.X + newDiffX, targetedPlayer.renderData.Position.Y + newDiffY));
                 renderData.rotation = renderData.GetRotationToTarget(targetedPlayer.renderData.Position);
             }
-            else if (currentState == AttackState.Spray || currentState == AttackState.Charge)
-            {
-                SetNewTargetPosition(targetedPlayer.renderData.Position);
-            }
+            //else if (currentState == AttackState.Spray || currentState == AttackState.Charge)
+            //{
+            //    SetNewTargetPosition(targetedPlayer.renderData.Position);
+            //}
 
             #endregion
 
@@ -184,11 +193,15 @@ namespace Cataclysmic
                 if (renderData.GetDistanceToTarget(targetPos) > distanceToBeAtTarget)
                     base.Update(gameTime);
                 if (renderData.GetDistanceToTarget(targetedPlayer.renderData.Position) < ANGER_DISTANCE)
+                {
                     currentState = AttackState.Charge;
+                    SetNewTargetPosition(targetedPlayer.renderData.Position);
+                }
                 if (cooldown_frames <= 0) //Keyboard.GetState().IsKeyDown(Keys.L))
                 {
                     currentState = AttackState.Charge;
                     cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
+                    SetNewTargetPosition(targetedPlayer.renderData.Position);
                 }
             }
             else if (currentState == AttackState.Charge)
@@ -224,7 +237,7 @@ namespace Cataclysmic
                 Game1.sfx_sandBurst1.Play(Game1.volume, -0.2f + (float) Game1.rand.NextDouble() * 0.4f, 0);
                 for (int i = 0; i < PROJECTILES_PER_FRAME; i++)
                 {
-                    baseVelocity = targetedPlayer.renderData.Position - renderData.Position;
+                    baseVelocity = targetPos - renderData.Position;
 
                     if (baseVelocity.LengthSquared() > 0)
                         baseVelocity.Normalize();
