@@ -46,6 +46,8 @@ namespace Cataclysmic
         Dictionary<string, EventTimer> abilityCooldowns;
         Dictionary<string, float> abilityCosts;
 
+        public AbilityWrapper[] Abilities;
+
         public float maxSpeed = 500;
 
         public Player(Rectangle _destRect)
@@ -59,6 +61,11 @@ namespace Cataclysmic
             // Setup idle animation 32x32 2 frames
             renderData.SetupAnimation(32, 32, 2);
             renderData.Play();
+
+            Abilities = new AbilityWrapper[4];
+            for (int i = 0; i < Abilities.Length; i++) {
+                Abilities[i] = new RevolverWrapper();
+            }
 
             dashCooldown = new EventTimer(.5f);
             staminaBarRect = new Rectangle(5, 5, 200, 15);

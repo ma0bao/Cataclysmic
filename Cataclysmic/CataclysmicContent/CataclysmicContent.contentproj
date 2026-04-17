@@ -78,6 +78,11 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
+    <Compile Include="Fonts\BlackadderITC.spritefont">
+      <Name>BlackadderITC</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <None Include="Sprites\GUI\CataclysmicIcon.ico">
       <Name>CataclysmicIcon</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -65,6 +65,9 @@ namespace Cataclysmic
         int particleCooldown;
         bool paused;
 
+        // Ability Stuff
+        AbilityWrapper[][] AbilityPool;
+
         // Keyboard Controls
         #region
         public static Keys player1_moveRight = Keys.D;
@@ -81,6 +84,7 @@ namespace Cataclysmic
         // Fonts
         #region
         public static SpriteFont font_credits;
+        public static SpriteFont font_blackadder;
         #endregion
 
         // Textures
@@ -194,7 +198,11 @@ namespace Cataclysmic
             sceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             sceneTargetCRT = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
-            
+            AbilityPool = new AbilityWrapper[5][];
+            for (int i = 0; i < AbilityPool.Length; i++) {
+                AbilityPool[i] = new AbilityWrapper[];
+            }
+
             // Rectangles
             #region
             rect_screen = new Rectangle(0, 0, WIDTH, HEIGHT);
@@ -296,6 +304,7 @@ namespace Cataclysmic
 
 
             font_credits = Content.Load<SpriteFont>("Fonts/CreditsFont");
+            font_blackadder = Content.Load<SpriteFont>("Fonts/BlackadderITC");
 
             player = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             environments = new Environment[]{ new EgyptEnvironment() };
@@ -874,6 +883,15 @@ namespace Cataclysmic
                 spriteBatch.Draw(texture_star, newRectangle(1100, 50, starSize * 0.8f), null, Color.White, (float)Math.PI / 8 + (float)Math.Cos(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(texture_star, newRectangle(1100, 300, starSize * 0.5f), null, Color.White, (float)Math.PI / 8 + (float)Math.Sin(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(texture_star, newRectangle(1850, 1000, starSize * 1.0f), null, Color.White, (float)Math.PI / 8 + (float)Math.Sin(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
+
+                int pointer = 0;
+                foreach (AbilityWrapper AbilWrap in player.Abilities) {
+                    spriteBatch.Draw(texture_blank, new Rectangle(163 + 170 * pointer, 72, 160, 160), Color.Black);
+                    spriteBatch.Draw(AbilWrap.GetTexture(), new Rectangle(168 + 170*pointer, 75, 150, 150), Color.White);
+
+                    AbilWrap.DrawDescription(spriteBatch);
+                    pointer++;
+                }
 
                 spriteBatch.End();
 
