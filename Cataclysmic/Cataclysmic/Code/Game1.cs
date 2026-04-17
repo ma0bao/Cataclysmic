@@ -52,8 +52,8 @@ namespace Cataclysmic
         long score;
         public static float volume;
         public static float intensityOfCRT;
-        public const float MAX_INTENSITY = 0.5f;
-        public const float INTENSITY_INCREMENTER = 0.01f;
+        public const int MAX_INTENSITY = 50;
+        public const int INTENSITY_INCREMENTER = 1;
         public Cursor cursor;
         public static Player player;
 
@@ -121,7 +121,7 @@ namespace Cataclysmic
         public static Texture2D texture_star;
         public static Texture2D texture_firePortal;
         public static Texture2D texture_pauseMenuText;
-        
+        public static Texture2D texture_abilitiesMenu;
 
         #endregion
 
@@ -189,7 +189,7 @@ namespace Cataclysmic
 
             optionPointer = 0;
             particleCooldown = 0;
-            intensityOfCRT = 0.08f;
+            intensityOfCRT = 4;
             cursor = new Cursor(Content);
             sceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             sceneTargetCRT = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
@@ -253,7 +253,8 @@ namespace Cataclysmic
             texture_star = Content.Load<Texture2D>("Sprites/GUI/Star");
             texture_border = Content.Load<Texture2D>("Sprites/GUI/Border");
             texture_pauseMenuText = Content.Load<Texture2D>("Sprites/GUI/PauseMenuText");
-            texture_basicSlash = Content.Load<Texture2D>("sprites/Abilities/swordSheet_64x47");
+            texture_basicSlash = Content.Load<Texture2D>("Sprites/Abilities/swordSheet_64x47");
+            texture_abilitiesMenu = Content.Load<Texture2D>("Sprites/GUI/AbilitiesMenu");
             #endregion
 
             //Sounds
@@ -290,7 +291,7 @@ namespace Cataclysmic
             crtEffect.Parameters["LightPosition"].SetValue(new Vector2(WIDTH / 2, HEIGHT / 2));
             crtEffect.Parameters["LightRadius"].SetValue(1500f);
             crtEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
-            crtEffect.Parameters["Intensity"].SetValue(intensityOfCRT); 
+            crtEffect.Parameters["Intensity"].SetValue(0.5f * intensityOfCRT / MAX_INTENSITY); 
             #endregion
 
 
@@ -521,9 +522,9 @@ namespace Cataclysmic
                 { // Intensity
                     if (KB.IsKeyDown(Keys.Left) && timer % 3 == 0 || GS.DPad.Left == ButtonState.Pressed && timer % 3 == 0)
                     {
-                        if (intensityOfCRT - INTENSITY_INCREMENTER > 0)
+                        if (intensityOfCRT - INTENSITY_INCREMENTER >= 0)
                         {
-                            intensityOfCRT = intensityOfCRT - INTENSITY_INCREMENTER;
+                            intensityOfCRT = Math.Max(intensityOfCRT - INTENSITY_INCREMENTER, 0);
                         }
                     }
 
@@ -646,7 +647,7 @@ namespace Cataclysmic
             GraphicsDevice.Clear(Color.Black);
             //crtEffect.Parameters["LightPosition"].SetValue(new Vector2(players[0].renderData.Position.X + players[0].renderData.DestRect.Width / 2, players[0].renderData.Position.Y + players[0].renderData.DestRect.Height / 2)); // Center
             crtEffect.Parameters["timer"].SetValue(timer);
-            crtEffect.Parameters["Intensity"].SetValue(intensityOfCRT);
+            crtEffect.Parameters["Intensity"].SetValue(0.5f * intensityOfCRT / MAX_INTENSITY);
             // Mouse Coordinates Clamps to the Screen
             int MCX = Math.Min(Math.Max(0, MS.X), WIDTH) + (int)(Math.Cos(timer / 60.0) * 300.0f);
             int MCY = Math.Min(Math.Max(0, MS.Y), HEIGHT) + (int)(Math.Sin(timer / 60.0) * 300.0f);
@@ -657,20 +658,21 @@ namespace Cataclysmic
                 GraphicsDevice.SetRenderTarget(sceneTarget);
                 GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                if (timer > FADE_IN_START_FRAME) {
+                if (timer > FADE_IN_START_FRAME)
+                {
                     foreach (Particle p in menu_particles)
                     {
                         float offsetX = (MCX - p.Position.X);
                         float offsetY = (MCY - p.Position.X);
                         float factor = (float)Math.Sin((1 - (double)p.Lifetime / p.startLifetime) * Math.PI);
-                        Game1.self.spriteBatch.Draw(p.Texture, 
+                        Game1.self.spriteBatch.Draw(p.Texture,
                             new Rectangle(
-                                p.DestRect.X + (int)(offsetX * 0.000001f * p.DestRect.Width * p.DestRect.Width), 
-                                p.DestRect.Y + (int)(offsetY * 0.000001f * p.DestRect.Width * p.DestRect.Width), 
-                                p.DestRect.Width, 
+                                p.DestRect.X + (int)(offsetX * 0.000001f * p.DestRect.Width * p.DestRect.Width),
+                                p.DestRect.Y + (int)(offsetY * 0.000001f * p.DestRect.Width * p.DestRect.Width),
+                                p.DestRect.Width,
                                 p.DestRect.Height
                                 ),
-                            p.SourceRect, 
+                            p.SourceRect,
                             Color.White * p.Opacity * factor,
                             p.Angle,
                             p.Origin,
@@ -679,8 +681,8 @@ namespace Cataclysmic
                     }
 
                     spriteBatch.Draw(texture_border, new Vector2(0, 0), Color.White * 0.3f);
-                    spriteBatch.Draw(texture_border, new Vector2(WIDTH/2, 0), Color.White * 0.3f);
-                    
+                    spriteBatch.Draw(texture_border, new Vector2(WIDTH / 2, 0), Color.White * 0.3f);
+
 
 
                     spriteBatch.Draw(texture_enochianChain_2, chain2R, Color.White * 0.7f);
@@ -690,19 +692,21 @@ namespace Cataclysmic
                     spriteBatch.Draw(texture_enochianChain_1, chain3R, Color.White * 0.5f);
                     spriteBatch.Draw(texture_enochianChain_1, chain3RC, Color.White * 0.5f);
 
-                    spriteBatch.Draw(texture_border, new Vector2(0, 0), Color.White*0.01f);
+                    spriteBatch.Draw(texture_border, new Vector2(0, 0), Color.White * 0.01f);
 
                     spriteBatch.Draw(texture_menuSpriteSheet, new Rectangle(50 - 42, 430 + 135 * index, 334, 60), new Rectangle(0, 1250, 843, 344), Color.White);
-                    for (int i = 0; i < 4; i++) {
-                        
+                    for (int i = 0; i < 4; i++)
+                    {
+
                         if (i != index)
                         {
                             spriteBatch.Draw(texture_menuSpriteSheet, new Rectangle(50, 400 + 125 * i, 250, 125), new Rectangle(0, 300 * i, 600, 300), Color.DimGray);
                         }
-                        else {
+                        else
+                        {
                             spriteBatch.Draw(texture_menuSpriteSheet, new Rectangle(30, 380 + 125 * i, 290, 165), new Rectangle(0, 300 * i, 600, 300), Color.White);
                         }
-                        
+
                     }
 
                     spriteBatch.Draw(texture_character1,
@@ -710,12 +714,12 @@ namespace Cataclysmic
                         Color.White);
 
 
-                    spriteBatch.Draw(texture_title,new Vector2(-20,100), Color.White);
+                    spriteBatch.Draw(texture_title, new Vector2(-20, 100), Color.White);
                 }
                 if (timer > FADE_IN_START_FRAME && timer < FADE_IN_START_FRAME + FADE_IN_TIME)
                 {
                     spriteBatch.Draw(texture_blank, rect_screen, null, Color.Black * (float)(1 - ((timer - FADE_IN_START_FRAME) / (float)FADE_IN_TIME)), 0, Vector2.Zero, SpriteEffects.None, 1);
-                    
+
                 }
 
                 spriteBatch.End();
@@ -756,13 +760,13 @@ namespace Cataclysmic
                 spriteBatch.Draw(texture_settings, new Vector2(WIDTH / 2 - texture_credits.Width / 2, 10), Color.White);
 
                 spriteBatch.DrawString(font_credits, "Volume >>> ", new Vector2(50, 300), Color.White);
-                spriteBatch.DrawString(font_credits, ""+Math.Round(volume*100)+"%", new Vector2(300, 300), Color.White);
+                spriteBatch.DrawString(font_credits, "" + Math.Round(volume * 100) + "%", new Vector2(300, 300), Color.White);
 
                 spriteBatch.DrawString(font_credits, "Show Debug >>> ", new Vector2(50, 350), Color.White);
                 spriteBatch.DrawString(font_credits, "" + debugMode, new Vector2(300, 350), Color.White);
 
                 spriteBatch.DrawString(font_credits, "CRT Intensity >>> ", new Vector2(50, 400), Color.White);
-                spriteBatch.DrawString(font_credits, "" + intensityOfCRT, new Vector2(300, 400), Color.White);
+                spriteBatch.DrawString(font_credits, "" + Math.Round(intensityOfCRT/MAX_INTENSITY*100) + "%", new Vector2(300, 400), Color.White);
 
                 spriteBatch.DrawString(font_credits, "Fullscreen >>> ", new Vector2(50, 450), Color.White);
                 spriteBatch.DrawString(font_credits, "" + graphics.IsFullScreen, new Vector2(300, 450), Color.White);
@@ -794,7 +798,7 @@ namespace Cataclysmic
                 timeEffect.Parameters["Intensity"].SetValue(1.0f);
                 timeEffect.Parameters["timer"].SetValue(timer);
 
-                
+
 
 
                 GraphicsDevice.SetRenderTarget(sceneTarget);
@@ -809,7 +813,7 @@ namespace Cataclysmic
                 player.Draw(1.0f);
                 currentEnvironment.Draw();
                 //foreach(Enemy e in enemies)
-                    //e.Draw(1.0f);
+                //e.Draw(1.0f);
 
 
                 // End of shader section
@@ -820,7 +824,7 @@ namespace Cataclysmic
                 spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
                 spriteBatch.End();
 
-                
+
                 spriteBatch.Begin();
                 spriteBatch.Draw(texture_overlay1, new Vector2(0, 0), Color.White);
                 player.DrawEx(1.0f);
@@ -831,22 +835,52 @@ namespace Cataclysmic
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
                 spriteBatch.Draw(sceneTargetCRT, Vector2.Zero, Color.White);
                 currentEnvironment.DrawEx();
-                if (debugMode) {
+                if (debugMode)
+                {
                     int incrementer = 0;
-                    foreach (Enemy e in currentEnvironment.GetEnemies()) {
-                        spriteBatch.DrawString(font_credits, ""+e, new Vector2(10, 10 + 30 * incrementer), Color.White);
+                    foreach (Enemy e in currentEnvironment.GetEnemies())
+                    {
+                        spriteBatch.DrawString(font_credits, "" + e, new Vector2(10, 10 + 30 * incrementer), Color.White);
                         incrementer++;
                     }
-                    spriteBatch.DrawString(font_credits, "Wave: "+currentEnvironment.GetCooldown(), new Vector2(10, 10+30*incrementer), Color.White);
+                    spriteBatch.DrawString(font_credits, "Wave: " + currentEnvironment.GetCooldown(), new Vector2(10, 10 + 30 * incrementer), Color.White);
                 }
-                
-                
-                if (paused) {
-                    for (int i = 0; i < 5; i++) {
-                        spriteBatch.Draw(texture_pauseMenuText, new Vector2(100, 100 + 132 * i), new Rectangle(((pauseMenuPointer == i) ? 268 : 0),  132 * i, 268, 132), Color.White);
+
+
+                if (paused)
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        spriteBatch.Draw(texture_pauseMenuText, new Vector2(100, 100 + 132 * i), new Rectangle(((pauseMenuPointer == i) ? 268 : 0), 132 * i, 268, 132), Color.White);
                     }
                 }
 
+                spriteBatch.End();
+            }
+            else if (gameState.Equals(GameState.Abilities)) {
+                GraphicsDevice.SetRenderTarget(sceneTarget);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin();
+
+                spriteBatch.Draw(texture_border, new Vector2(0, 0), Color.White * 0.6f);
+                spriteBatch.Draw(texture_border, new Vector2(927, 0), Color.White * 0.6f);
+                spriteBatch.Draw(texture_border, new Vector2(1854, 0), Color.White * 0.6f);
+
+                spriteBatch.Draw(texture_abilitiesMenu, Vector2.Zero, Color.White);
+
+                Vector2 starSize = new Vector2(151, 180);
+                spriteBatch.Draw(texture_star, newRectangle(100, 50, starSize * 0.6f), null, Color.White, (float) -Math.PI/8 + (float) Math.Sin(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(texture_star, newRectangle(100, 1000, starSize * 0.7f), null, Color.White, (float)-Math.PI / 8 + (float)Math.Cos(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(texture_star, newRectangle(1100, 50, starSize * 0.8f), null, Color.White, (float)Math.PI / 8 + (float)Math.Cos(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(texture_star, newRectangle(1100, 300, starSize * 0.5f), null, Color.White, (float)Math.PI / 8 + (float)Math.Sin(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(texture_star, newRectangle(1850, 1000, starSize * 1.0f), null, Color.White, (float)Math.PI / 8 + (float)Math.Sin(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
+
+                spriteBatch.End();
+
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
+                spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
                 spriteBatch.End();
             }
             else if (gameState.Equals(GameState.End))
@@ -863,6 +897,9 @@ namespace Cataclysmic
             base.Draw(gameTime);
         }
 
+        private Rectangle newRectangle(int x, int y, Vector2 size) {
+            return new Rectangle(x, y, (int) size.X, (int) size.Y);
+        }
         
     }
 }
