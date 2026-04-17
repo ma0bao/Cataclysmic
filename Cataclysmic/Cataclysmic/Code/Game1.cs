@@ -322,8 +322,38 @@ namespace Cataclysmic
             }
             if (gameState.Equals(GameState.Menu))
             {
+
+
+                bool clicked = false;
+                Rectangle[] buttons = new Rectangle[4];
+                for (int i = 0; i < buttons.Length; i++)
+                {
+                    buttons[i] = new Rectangle(50, 400 + 125 * i, 250, 125);
+                    if (buttons[i].Contains(MS.X, MS.Y))
+                    {
+                        if (MS.LeftButton == ButtonState.Pressed)
+                        {
+                            clicked = true;
+                        }
+
+                        if (oldMS.X == MS.X && oldMS.Y == MS.Y)
+                        {
+                            break;
+                        }
+
+                        if (index != i)
+                        {
+                            index = i;
+                            sound_click.Play(volume, -0.25f + (float)rand.NextDouble() * 0.5f, 0);
+                        }
+
+                    }
+                }
+
                 if ((KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter))
-                    || (GS.Buttons.A == ButtonState.Pressed && oldGS.Buttons.A == ButtonState.Released)) {
+                    || (GS.Buttons.A == ButtonState.Pressed && oldGS.Buttons.A == ButtonState.Released)
+                    || clicked)
+                {
                     if (index == 0)
                     {
                         previousState = gameState;
@@ -341,14 +371,16 @@ namespace Cataclysmic
                         previousState = gameState;
                         gameState = GameState.Options;
                     }
-                    else if (index == 3) {
+                    else if (index == 3)
+                    {
                         this.Exit();
                     }
-
-
+                    goto EndStatements;
                 }
 
-                if (timer == FADE_IN_START_FRAME) {
+
+                if (timer == FADE_IN_START_FRAME)
+                {
                     music_menu1.Volume = 0;
                     music_menu1.IsLooped = true;
                     music_menu1.Play();
@@ -357,23 +389,25 @@ namespace Cataclysmic
                 {
                     music_menu1.Volume = timer / (float)(FADE_IN_START_FRAME + FADE_IN_TIME) * volume;
                 }
-                else if (timer > FADE_IN_START_FRAME) {
+                else if (timer > FADE_IN_START_FRAME)
+                {
                     music_menu1.Volume = volume;
                 }
 
                 if ((KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down)) ||
                     (KB.IsKeyDown(Keys.S) && oldKB.IsKeyUp(Keys.S)) ||
-                    (GS.DPad.Down == ButtonState.Pressed && oldGS.DPad.Down == ButtonState.Released)) {
+                    (GS.DPad.Down == ButtonState.Pressed && oldGS.DPad.Down == ButtonState.Released))
+                {
                     index = index + 1;
                     index %= 4;
-                    sound_click.Play(volume, -0.25f + (float) rand.NextDouble() * 0.5f, 0);
+                    sound_click.Play(volume, -0.25f + (float)rand.NextDouble() * 0.5f, 0);
                 }
                 if ((KB.IsKeyDown(Keys.Up) && oldKB.IsKeyUp(Keys.Up)) ||
                     (KB.IsKeyDown(Keys.W) && oldKB.IsKeyUp(Keys.W)) ||
                     (GS.DPad.Up == ButtonState.Pressed && oldGS.DPad.Up == ButtonState.Released))
                 {
                     index = index - 1;
-                    sound_click.Play(volume,  -0.25f + (float)rand.NextDouble() * 0.5f, 0);
+                    sound_click.Play(volume, -0.25f + (float)rand.NextDouble() * 0.5f, 0);
                     if (index < 0) index = 3;
                 }
 
@@ -384,30 +418,33 @@ namespace Cataclysmic
                 chain3R.Y = (int)(timer + 1024) % 2048;
                 chain3RC.Y = -2048 + (int)(timer + 1024) % 2048;
 
-                foreach (Particle p in menu_particles) {
+                foreach (Particle p in menu_particles)
+                {
                     p.Update();
                 }
-                for (int i = menu_particles.Count - 1; i >= 0; i--) {
-                    if (!menu_particles[i].IsAlive()) {
+                for (int i = menu_particles.Count - 1; i >= 0; i--)
+                {
+                    if (!menu_particles[i].IsAlive())
+                    {
                         menu_particles.RemoveAt(i);
                     }
-                        
+
 
                 }
                 int size = rand.Next(4, 20);
                 if (timer % 20 == 0)
                     menu_particles.Add(
                         new Particle(
-                            new Vector2(rand.Next(100, WIDTH-100), rand.Next(50, HEIGHT-50)), 
-                            texture_star, 
-                            new Rectangle(0, 0, texture_star.Width, texture_star.Height), 
-                            size * 5, 
-                            size * 7, 
+                            new Vector2(rand.Next(100, WIDTH - 100), rand.Next(50, HEIGHT - 50)),
+                            texture_star,
+                            new Rectangle(0, 0, texture_star.Width, texture_star.Height),
+                            size * 5,
+                            size * 7,
                             240
-                        ) 
-                        { 
-                        fadeInfadeOut = true,
-                        Opacity = 0.5f
+                        )
+                        {
+                            fadeInfadeOut = true,
+                            Opacity = 0.5f
                         }
                         );
 
@@ -499,7 +536,8 @@ namespace Cataclysmic
                     }
 
                 }
-                else if (optionPointer == 3) {
+                else if (optionPointer == 3)
+                {
                     if ((KB.IsKeyDown(Keys.Left) && oldKB.IsKeyUp(Keys.Left)) || (GS.DPad.Left == ButtonState.Pressed && oldGS.DPad.Left == ButtonState.Released))
                     {
                         if (graphics.IsFullScreen) graphics.ToggleFullScreen();
@@ -512,19 +550,21 @@ namespace Cataclysmic
                     {
                         graphics.ToggleFullScreen();
                     }
-                    
+
                 }
 
             }
             else if (gameState.Equals(GameState.Game))
             {
-                if (KB.IsKeyDown(menu_pause) && oldKB.IsKeyUp(menu_pause)) {
+                if (KB.IsKeyDown(menu_pause) && oldKB.IsKeyUp(menu_pause))
+                {
                     paused = !paused;
                 }
 
                 if (paused)
                 {
-                    if (KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down)) { 
+                    if (KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down))
+                    {
                         pauseMenuPointer = (pauseMenuPointer + 1) % 5;
                     }
                     if (KB.IsKeyDown(Keys.Up) && oldKB.IsKeyUp(Keys.Up))
@@ -532,10 +572,12 @@ namespace Cataclysmic
                         pauseMenuPointer = (pauseMenuPointer - 1);
                         if (pauseMenuPointer < 0) pauseMenuPointer = 4;
                     }
-                    if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter)) {
+                    if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter))
+                    {
                         if (pauseMenuPointer == 0)
                             paused = false;
-                        else if (pauseMenuPointer == 1) {
+                        else if (pauseMenuPointer == 1)
+                        {
                             previousState = gameState;
                             gameState = GameState.Abilities;
                         }
@@ -557,7 +599,8 @@ namespace Cataclysmic
 
                     }
                 }
-                else {
+                else
+                {
                     if (currentEnvironment.IsComplete())
                     {
                         if (environmentPointer + 1 >= environments.Length - 1)
@@ -567,17 +610,28 @@ namespace Cataclysmic
                         }
                         currentEnvironment = environments[++environmentPointer];
                     }
-                    JumpOut:
+                JumpOut:
                     player.Update(gameTime);
                     currentEnvironment.Update(gameTime);
                 }
-                
+
             }
-            else if (gameState.Equals(GameState.End)) 
-            { 
-                
+            else if (gameState.Equals(GameState.Abilities)) {
+                if ((KB.IsKeyDown(Keys.Back) && oldKB.IsKeyUp(Keys.Back)) ||
+                    (GS.Buttons.X == ButtonState.Pressed && oldGS.Buttons.X == ButtonState.Released))
+                {
+                    gameState = previousState;
+                }
+
+
+            }
+            else if (gameState.Equals(GameState.End))
+            {
+
             }
 
+
+            EndStatements:
             cursor.Update();
             timer++;
             oldMS = MS;
@@ -638,8 +692,18 @@ namespace Cataclysmic
 
                     spriteBatch.Draw(texture_border, new Vector2(0, 0), Color.White*0.01f);
 
-                    spriteBatch.Draw(texture_menuSpriteSheet, new Rectangle(50 - 42, 400 - 42 + 130 * index, 334, 209), new Rectangle(0, 1250, 843, 344), Color.White);
-                    spriteBatch.Draw(texture_menuSpriteSheet, new Rectangle(50, 400, 250, 500), new Rectangle(0, 0, 600, 1200), Color.White);
+                    spriteBatch.Draw(texture_menuSpriteSheet, new Rectangle(50 - 42, 430 + 135 * index, 334, 60), new Rectangle(0, 1250, 843, 344), Color.White);
+                    for (int i = 0; i < 4; i++) {
+                        
+                        if (i != index)
+                        {
+                            spriteBatch.Draw(texture_menuSpriteSheet, new Rectangle(50, 400 + 125 * i, 250, 125), new Rectangle(0, 300 * i, 600, 300), Color.DimGray);
+                        }
+                        else {
+                            spriteBatch.Draw(texture_menuSpriteSheet, new Rectangle(30, 380 + 125 * i, 290, 165), new Rectangle(0, 300 * i, 600, 300), Color.White);
+                        }
+                        
+                    }
 
                     spriteBatch.Draw(texture_character1,
                         new Vector2((MCX - 1500) * 0.015f, (MCY - 600) * 0.015f + 100),
