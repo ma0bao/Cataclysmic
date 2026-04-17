@@ -189,7 +189,7 @@ namespace Cataclysmic
 
             optionPointer = 0;
             particleCooldown = 0;
-            intensityOfCRT = 0.08f;
+            intensityOfCRT = 0.04f;
             cursor = new Cursor(Content);
             sceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             sceneTargetCRT = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
