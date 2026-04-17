@@ -46,6 +46,7 @@ namespace Cataclysmic
         Dictionary<string, EventTimer> abilityCooldowns;
         Dictionary<string, float> abilityCosts;
 
+
         public float maxSpeed = 500;
 
         public Player(Rectangle _destRect)
@@ -164,8 +165,9 @@ namespace Cataclysmic
 
             if (Game1.MS.RightButton == ButtonState.Pressed)
             {
+                
                 if (TryUseAbility("Slash"))
-                    abilities.Add(new Slash(renderData.Position, angle));
+                    abilities.Add(new Slash(renderData.Position, angle, true));
             }
             
             if (Game1.KB.IsKeyDown(Keys.Q) && !Game1.oldKB.IsKeyDown(Keys.Q))
