@@ -37,7 +37,7 @@ namespace Cataclysmic
             player = Game1.player;
             SetNewTargetPosition(player.renderData.Position);
             distanceToBeAtTarget = 100;
-            spinTimer = new EventTimer(10);
+            spinTimer = new EventTimer(3);
             cooldownTimer = new EventTimer(.4f);
             timeToSpin = new EventTimer(1.5f);
             turnSpeed = 500;
@@ -68,7 +68,6 @@ namespace Cataclysmic
                 }
                 if (spinTimer.Done)
                 {
-                    spinTimer.Restart();
                     currentState = AttackState.Spin;
                 }
                 spinTimer.Update();
@@ -87,10 +86,10 @@ namespace Cataclysmic
             }
             else if (currentState == AttackState.Spin)
             {
-                turnSpeed = 1600f;
-                moveData.maxSpeed = 700f;
+                turnSpeed = 1800f;
+                moveData.maxSpeed = 900f;
                 slowRadius = 0;
-                renderData.rotation += 2; //MAKE SPIN TRIGGERED 
+                renderData.rotation += 8;  
                 base.Update(gameTime);
                 turnSpeed = 500;
                 moveData.maxSpeed = 200;
@@ -102,6 +101,8 @@ namespace Cataclysmic
                 {
                     SetNewTargetPosition(renderData.GetRandomPoint());
                     currentState = AttackState.Run;
+                    spinTimer.Restart();
+                    timeToSpin.Restart();
                 }
 
                 timeToSpin.Update();
@@ -136,8 +137,13 @@ namespace Cataclysmic
         {
             CollisionComponent SlamHitbox = CollisionComponent.CreateCircle(renderData.Position, 10, 12);
 
+            
+            
+           
+
             if (SlamHitbox.Intersects(player.Hitbox))
                 player.Damage(this, 3);
+
         }
 
 
