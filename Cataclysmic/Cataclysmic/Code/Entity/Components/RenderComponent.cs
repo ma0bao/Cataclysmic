@@ -170,16 +170,16 @@ namespace Cataclysmic
 
         public Vector2 GetRandomPoint()
         {
-            float x = Game1.rand.Next(Game1.BOUNDS.X, Game1.BOUNDS.Width);
-            float y = Game1.rand.Next(Game1.BOUNDS.Y, Game1.BOUNDS.Height);
+            float x = Game1.rand.Next(Game1.BOUNDS.Left, Game1.BOUNDS.Right);
+            float y = Game1.rand.Next(Game1.BOUNDS.Top, Game1.BOUNDS.Bottom);
 
             return new Vector2(x, y);
         }
 
         public Vector2 GetRandomPoint(Rectangle bound)
         {
-            float x = Game1.rand.Next(bound.X, bound.Width);
-            float y = Game1.rand.Next(bound.Y, bound.Height);
+            float x = Game1.rand.Next(bound.Left, bound.Right);
+            float y = Game1.rand.Next(bound.Top, bound.Bottom);
 
             return new Vector2(x, y);
         }

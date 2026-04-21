@@ -57,7 +57,8 @@ namespace Cataclysmic
 
             //Test wave DELETE AFTER
             new Enemy[]{
-                new Atum(new Vector2(Game1.BOUNDS.Center.X, Game1.BOUNDS.Center.Y))
+                new Atum(new Vector2(Game1.BOUNDS.Center.X, Game1.BOUNDS.Center.Y)),
+                new Sun(new Vector2(100, 100))
             },
 
             // Wave 1

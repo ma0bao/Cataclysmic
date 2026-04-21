@@ -388,8 +388,6 @@ namespace Cataclysmic
             foreach (IProjectile p in projectiles)
             {
                 p.Draw();
-                if (p is WaveShot w)
-                    w.collisionData.DrawDebug();
             }
             
 
@@ -498,7 +496,7 @@ namespace Cataclysmic
         public MoveComponent moveData;
         public CollisionComponent collisionData;
 
-        const float SPEED = 400;
+        float SPEED = 400;
 
         public WaveShot(Vector2 pos, Vector2 direction)
         {
@@ -506,6 +504,15 @@ namespace Cataclysmic
             moveData.velocity = direction * SPEED;
             renderData = new RenderComponent(Game1.texture_player, new Rectangle((int)pos.X, (int)pos.Y, 50, 50));
             collisionData = CollisionComponent.CreateRect(pos, 30, 30);
+        }
+
+        public WaveShot(Vector2 pos, Vector2 direction, float speed)
+        {
+            moveData = new MoveComponent();
+            moveData.velocity = direction * SPEED;
+            renderData = new RenderComponent(Game1.texture_player, new Rectangle((int)pos.X, (int)pos.Y, 50, 50));
+            collisionData = CollisionComponent.CreateRect(pos, 30, 30);
+            SPEED = speed;
         }
 
         public bool IsAlive()
