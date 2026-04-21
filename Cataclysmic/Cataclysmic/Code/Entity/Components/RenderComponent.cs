@@ -194,6 +194,13 @@ namespace Cataclysmic
             Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, MathHelper.ToRadians(rotation), origin, effects, layerDepth);
         }
 
+        public void DrawAt(Point pos, byte opacity = 255)
+        {
+            Color newColor = color;
+            newColor.A = opacity;
+            Game1.self.spriteBatch.Draw(texture, new Rectangle(pos.X, pos.Y, _destRect.Width, _destRect.Height), sourceRect, newColor, MathHelper.ToRadians(rotation), origin, effects, layerDepth);
+        }
+
         public void DrawFlash()
         {
             Game1.self.spriteBatch.Draw(Game1.texture_blank, DestRect, sourceRect, Color.White, rotation, origin, effects, layerDepth);

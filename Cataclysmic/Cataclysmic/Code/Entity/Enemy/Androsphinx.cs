@@ -55,6 +55,8 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
+
             #region Get Target Based On State
 
             if (currentState == AttackState.Wander)
@@ -166,7 +168,7 @@ namespace Cataclysmic
             else if (currentState == AttackState.Dash)
             {
                 if (lastTargetedPlayer.renderData.hitBox.Intersects(Swipe()))
-                    lastTargetedPlayer.healthData.Damage(this, 3);
+                    lastTargetedPlayer.healthData.Damage(this, 15);
                 base.Update(gameTime);
             }
             else if (currentState == AttackState.Shake)
@@ -193,16 +195,22 @@ namespace Cataclysmic
             agroCooldown.Update();
         }
 
+        public override void Stagger(float secondsToStagger, bool UseResistance = true)
+        {
+            if (currentState == AttackState.Shake || currentState == AttackState.Dash || currentState == AttackState.Swipe) currentState = AttackState.Wander;
+            base.Stagger(secondsToStagger, UseResistance);
+        }
+
         public override void Draw(float opacity)
         {
-            //if(currentState == AttackState.Swipe)
-                //Game1.self.spriteBatch.Draw(Game1.texture_blank, Swipe(), Color.Red);
+            if(currentState == AttackState.Swipe)
+                Game1.self.spriteBatch.Draw(Game1.texture_blank, Swipe(), Color.Red); //REPLACE WITH ATTACK ANIMATION WHEN WE HAVE ART
             base.Draw(opacity);
         }
 
         public Rectangle Swipe()
         {
-            return new Rectangle(renderData.hitBox.X-20, renderData.hitBox.Y-20, renderData.hitBox.Width+40, renderData.hitBox.Height + 40 );
+            return new Rectangle(renderData.hitBox.X-25, renderData.hitBox.Y-25, renderData.hitBox.Width+45, renderData.hitBox.Height + 45 );
         }
     }
 

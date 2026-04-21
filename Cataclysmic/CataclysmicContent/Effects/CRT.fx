@@ -32,8 +32,6 @@ float2 rand_2_0004(in float2 uv)
 
 float4 PixelShaderFunction(float2 texCoord : TEXCOORD0) : COLOR0
 {
-    
-
     // Convert texCoord (0..1) into coordinates
     float2 pixelPos = texCoord * ScreenSize;
 
@@ -42,6 +40,9 @@ float4 PixelShaderFunction(float2 texCoord : TEXCOORD0) : COLOR0
     pixelPos.y = pixelPos.y - 100 + (200.0*rand_2_10(pixelPos.x));
 
     float4 color = tex2D(TextureSampler, texCoord);
+    if (Intensity <= 0) {
+        return float4(color.rgb, color.a);
+    }
     if (sinn < 0) {
         color *= 1 - Intensity;
     }

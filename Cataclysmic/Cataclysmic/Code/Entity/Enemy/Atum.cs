@@ -76,6 +76,12 @@ namespace Cataclysmic
             SetStateToCenter();
         }
 
+        public override void Stagger(float secondsToStagger, bool UseResistance = true)
+        {
+            if (currentState == AttackStates.Follow || currentState == AttackStates.Teleport) currentState = AttackStates.Center;
+            base.Stagger(secondsToStagger, UseResistance);
+        }
+
         private void SetStateToCenter()
         {
             currentState = AttackStates.Center;
@@ -127,11 +133,12 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.K))
-            {
-                FireWave();
-            }
+            //if (Keyboard.GetState().IsKeyDown(Keys.K))
+            //{
+            //    FireWave();
+            //}
 
             #region Get Target Based On State
             if (currentState == AttackStates.Center)

@@ -64,9 +64,9 @@ namespace Cataclysmic
             // Wave 1
             new Enemy[]{ new ShotgunLamp(new Vector2(-400, 400)),
                 new ShotgunLamp(new Vector2(Game1.WIDTH + 400, 400)),
-                new ShotgunLamp(new Vector2(Game1.WIDTH/2, -1000)),
-                new ShotgunLamp(new Vector2(Game1.WIDTH + 400, 400)),
-                new ShotgunLamp(new Vector2(-400, -1000)),
+                new MagicLamp(new Vector2(Game1.WIDTH/2, -1000)),
+                new Androsphinx(new Vector2(Game1.WIDTH + 400, 400)),
+                new Apesh(new Vector2(-400, -1000)),
                 new ShotgunLamp(new Vector2(Game1.WIDTH + 400, -1000))
             },
 
@@ -168,6 +168,14 @@ namespace Cataclysmic
             for (int i = particles.Count - 1; i >= 0; i--)
                 if (!particles[i].IsAlive())
                     particles.RemoveAt(i);
+            if (Game1.KB.IsKeyDown(Keys.K) && Game1.oldKB.IsKeyDown(Keys.K))
+            {
+                foreach (Enemy e in currentEnemies)
+                {
+                    e.Stagger(5f);
+                }
+            }
+            
         }
 
         public override bool IsComplete()

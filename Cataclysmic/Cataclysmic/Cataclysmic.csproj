@@ -75,12 +75,13 @@
     <Compile Include="Code\Ability\Attacks\CircleSlash.cs" />
     <Compile Include="Code\Ability\Attacks\CrackleBurst.cs" />
     <Compile Include="Code\Ability\Attacks\Revolver.cs" />
+    <Compile Include="Code\Ability\Attacks\Slash.cs" />
     <Compile Include="Code\Ability\Dashes\BlinkDash.cs" />
     <Compile Include="Code\Ability\Dashes\ChargeUpDash.cs" />
     <Compile Include="Code\Ability\Dashes\IDash.cs" />
-    <Compile Include="Code\Entity\Components\AITargetComponent.cs" />
     <Compile Include="Code\Entity\Components\CollisionComponent.cs" />
     <Compile Include="Code\Entity\Components\HealthComponent.cs" />
+    <Compile Include="Code\Entity\Components\ManaComponent.cs" />
     <Compile Include="Code\Entity\Components\RenderComponent.cs" />
     <Compile Include="Code\Entity\Enemy.cs" />
     <Compile Include="Code\Entity\Enemy\Androsphinx.cs" />
@@ -98,7 +99,7 @@
     <Compile Include="Code\Misc\Environment.cs" />
     <Compile Include="Code\Misc\Environments\EgyptEnvironment.cs" />
     <Compile Include="Code\Misc\Particle.cs" />
-    <Compile Include="Code\Misc\PointExtension.cs" />
+    <Compile Include="Code\Misc\Extensions.cs" />
     <Compile Include="Code\Player\Cursor.cs" />
     <Compile Include="Code\Player\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

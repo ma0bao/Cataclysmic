@@ -88,10 +88,11 @@ namespace Cataclysmic
         public const int HITBOX_WIDTH = 50;
         public const float SPEED = 7.0f;
         public const float FRAMES_TO_BURST = 60;
-        public const float MANA_COST = 60;
+        public const float MANA_COST = 30;
         public const float SPAWN_OFFSET = 20f;
         public const float COOLDOWN = 1.0f;
         public const int DAMAGE = 20;
+
 
         public CollisionComponent Hitbox;
         public Color color;
@@ -102,6 +103,7 @@ namespace Cataclysmic
 
         public CrackleBurst(Vector2 position, float angle)
         {
+            Game1.player.timeEnergy.Decrease(MANA_COST);
             Angle = angle - (float)Math.PI * 0.5f;
 
             float spawnAngle = Angle;
@@ -112,18 +114,22 @@ namespace Cataclysmic
 
             color = Color.White;
             timer = 0;
+
             Game1.sfx_weapon_singleshot2.Play(Game1.volume, 0, 0);
+            
         }
 
 
         public override void Update(GameTime gameTime)
         {
+            
 
             if (timer < FRAMES_TO_BURST)
             {
                 Position.X += (float)Math.Cos(Angle) * SPEED;
                 Position.Y += (float)Math.Sin(Angle) * SPEED;
                 Hitbox.Update(Position, Angle);
+                ScanDamage();
             }
             else if (timer == FRAMES_TO_BURST)
             {
@@ -145,8 +151,7 @@ namespace Cataclysmic
                 }
             }
 
-
-            ScanDamage();
+            
             timer++;
         }
 

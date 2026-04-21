@@ -18,7 +18,12 @@ namespace Cataclysmic
         public bool Done;
 
 
-        public EventTimer() { }
+        public EventTimer()
+        {
+            duration = 0;
+            countdown = 0;
+            Done = true;
+        }
 
         public EventTimer(float seconds)
         {
