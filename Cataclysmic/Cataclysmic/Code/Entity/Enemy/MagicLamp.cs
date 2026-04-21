@@ -31,6 +31,7 @@ namespace Cataclysmic
                 randomOffset.Y = Game1.rand.Next(-MAX_OFFSET, MAX_OFFSET + 1);
                 if (moveData.velocity.Length() > 10)
                     moveData.velocity += randomOffset;
+
             }
 
             public void IsColliding() //Will take environment as a parameter

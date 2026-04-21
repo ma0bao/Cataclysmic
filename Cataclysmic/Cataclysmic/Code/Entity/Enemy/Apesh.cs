@@ -34,6 +34,7 @@ namespace Cataclysmic
 
         public Apesh(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
+            staggerResistance = 0.1f;
             player = Game1.player;
             SetNewTargetPosition(player.renderData.Position);
             distanceToBeAtTarget = 100;

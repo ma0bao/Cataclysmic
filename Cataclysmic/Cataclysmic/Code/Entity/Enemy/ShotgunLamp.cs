@@ -114,7 +114,7 @@ namespace Cataclysmic
             healthData = new HealthComponent(50);
             //slowRadius = 0;
             cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
-            staggerResistance = 0.3f;
+            staggerResistance = 0.8f;
         }
 
         public override void Stagger(float secondsToStagger, bool UseResistance = true)
