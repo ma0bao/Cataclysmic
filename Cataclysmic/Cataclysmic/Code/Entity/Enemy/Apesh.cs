@@ -27,10 +27,15 @@ namespace Cataclysmic
 
         EventTimer cooldownTimer;
 
+        EventTimer CrackTimer;
+        Rectangle crackRect;
+
         const int WIDTH = 64;
         const int HEIGHT = 64;
         const int HITBOX_WIDTH = 64;
         const int HITBOX_HEIGHT = 64;
+
+        CollisionComponent SlamHitbox;
 
         public Apesh(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
@@ -46,6 +51,10 @@ namespace Cataclysmic
             spinTimer.Unpause();
 
             staggerResistance = .30f;
+
+            CrackTimer = new EventTimer(2f);
+            CrackTimer.Done = true;
+            
         }
 
         public override void Update(GameTime gameTime)
@@ -131,14 +140,24 @@ namespace Cataclysmic
         {
             if(currentState != AttackState.Spin)
             renderData.rotation = renderData.GetRotationToTarget(player.renderData.Position);
+
+            if (!CrackTimer.Done)
+            {
+                Game1.self.spriteBatch.Draw(Game1.texture_crack, crackRect, Color.White);
+                SlamHitbox.DrawDebug();
+                CrackTimer.Update();
+            }
+
+            collision.DrawDebug();
+
             base.Draw(opacity);
         }
 
         public void Slam()
         {
-            CollisionComponent SlamHitbox = CollisionComponent.CreateCircle(renderData.Position, 10, 12);
-
-            
+            SlamHitbox = CollisionComponent.CreateRect(renderData.Position, 200, 200);
+            CrackTimer.Restart();
+            crackRect = new Rectangle(renderData.hitBox.X-75, renderData.hitBox.Y-75, 200, 200);
             
            
 

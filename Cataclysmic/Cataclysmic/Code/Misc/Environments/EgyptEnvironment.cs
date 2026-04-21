@@ -55,20 +55,20 @@ namespace Cataclysmic
         };
         Enemy[][] enemies = {
 
-            //Test wave DELETE AFTER
-            new Enemy[]{
-                new Atum(new Vector2(Game1.BOUNDS.Center.X, Game1.BOUNDS.Center.Y)),
-                new Sun(new Vector2(100, 100))
-            },
+            ////Test wave DELETE AFTER
+            //new Enemy[]{
+            //    new Atum(new Vector2(Game1.BOUNDS.Center.X, Game1.BOUNDS.Center.Y)),
+            //    new Sun(new Vector2(100, 100))
+            //},
 
-            // Wave 1
-            new Enemy[]{ new ShotgunLamp(new Vector2(-400, 400)),
-                new ShotgunLamp(new Vector2(Game1.WIDTH + 400, 400)),
-                new MagicLamp(new Vector2(Game1.WIDTH/2, -1000)),
-                new Androsphinx(new Vector2(Game1.WIDTH + 400, 400)),
-                new Apesh(new Vector2(-400, -1000)),
-                new ShotgunLamp(new Vector2(Game1.WIDTH + 400, -1000))
-            },
+            //// Wave 1
+            //new Enemy[]{ new ShotgunLamp(new Vector2(-400, 400)),
+            //    new ShotgunLamp(new Vector2(Game1.WIDTH + 400, 400)),
+            //    new MagicLamp(new Vector2(Game1.WIDTH/2, -1000)),
+            //    new Androsphinx(new Vector2(Game1.WIDTH + 400, 400)),
+            //    new Apesh(new Vector2(-400, -1000)),
+            //    new ShotgunLamp(new Vector2(Game1.WIDTH + 400, -1000))
+            //},
 
             // Wave 2
             new Enemy[]{ new Apesh(new Vector2(-400, 400)),
