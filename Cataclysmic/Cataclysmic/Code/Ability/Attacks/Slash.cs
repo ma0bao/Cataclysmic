@@ -20,7 +20,7 @@ namespace Cataclysmic
         public const float WIDTH = 64 * 2;
         public const float COOLDOWN = .5f;
         public const float SPAWN_OFFSET = 50f; // distance from player center to spawn
-        public const int DAMAGE = 20;
+        public const int DAMAGE = 10;
         public const int PUSH = 2;
 
         public float energyGain = 10;
