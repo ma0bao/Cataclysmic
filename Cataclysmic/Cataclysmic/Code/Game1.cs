@@ -122,6 +122,7 @@ namespace Cataclysmic
         public static Texture2D texture_firePortal;
         public static Texture2D texture_pauseMenuText;
         public static Texture2D texture_abilitiesMenu;
+        public static Texture2D texture_crack;
 
         #endregion
 
@@ -255,6 +256,7 @@ namespace Cataclysmic
             texture_pauseMenuText = Content.Load<Texture2D>("Sprites/GUI/PauseMenuText");
             texture_basicSlash = Content.Load<Texture2D>("Sprites/Abilities/swordSheet_64x47");
             texture_abilitiesMenu = Content.Load<Texture2D>("Sprites/GUI/AbilitiesMenu");
+            texture_crack = Content.Load<Texture2D>("Sprites/Abilities/cracks");
             #endregion
 
             //Sounds
