@@ -166,7 +166,8 @@ namespace Cataclysmic
             if (Game1.MS.LeftButton == ButtonState.Pressed)
             {
                 if (TryUseAbility("Revolver"))
-                    abilities.Add(new Revolver(renderData.Position, angle));
+                    abilities.Add(Abilities[0].GetAbilityInstance(renderData.Position, angle));
+                    //abilities.Add(new Revolver(renderData.Position, angle));
             }
 
             if (Game1.MS.RightButton == ButtonState.Pressed)

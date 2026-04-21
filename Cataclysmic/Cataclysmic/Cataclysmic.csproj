@@ -81,6 +81,7 @@
     <Compile Include="Code\Ability\Dashes\ChargeUpDash.cs" />
     <Compile Include="Code\Ability\Dashes\IDash.cs" />
     <Compile Include="Code\Ability\Wrappers\RevolverWrapper.cs" />
+    <Compile Include="Code\Ability\Wrappers\SlashWrapper.cs" />
     <Compile Include="Code\Entity\Components\CollisionComponent.cs" />
     <Compile Include="Code\Entity\Components\HealthComponent.cs" />
     <Compile Include="Code\Entity\Components\ManaComponent.cs" />

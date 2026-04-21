@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Cataclysmic
 {
-    class RevolverWrapper : AbilityWrapper
+    class SlashWrapper : AbilityWrapper
     {
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
@@ -16,12 +16,12 @@ namespace Cataclysmic
 
         public override Cataclysmic.Ability GetAbilityInstance(Vector2 Position, float angle)
         {
-            return new Revolver(Position, angle);
+            return new Slash(Position, angle);
         }
 
         public override Texture2D GetTexture()
         {
-            return Game1.texture_revolverWrapper;
+            return Game1.texture_slashWrapper;
         }
     }
 }
