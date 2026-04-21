@@ -46,6 +46,7 @@ namespace Cataclysmic
 
         public Sun(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), WIDTH, HEIGHT)
         {
+            staggerResistance = 0.0f;
             healthData = new HealthComponent(200);
             target = Game1.player;
             AttackCooldown = new EventTimer(6);
@@ -91,6 +92,8 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
+            UpdateTimers();
+
             #region Update Target Based On State
             if (currentState == AttackState.Wander)
             {

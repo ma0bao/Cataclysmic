@@ -45,6 +45,7 @@ namespace Cataclysmic
 
         public Androsphinx(Vector2 position) : base(Game1.texture_meatballEgypt, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
+            staggerResistance = .8f;
             currentRegion = top;
             player = Game1.player;
             lastTargetedPlayer = player;

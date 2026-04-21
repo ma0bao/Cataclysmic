@@ -74,6 +74,7 @@ namespace Cataclysmic
             fireTimer.Done = true;
 
             SetStateToCenter();
+            staggerResistance = 0.0f;
         }
 
         public override void Stagger(float secondsToStagger, bool UseResistance = true)
