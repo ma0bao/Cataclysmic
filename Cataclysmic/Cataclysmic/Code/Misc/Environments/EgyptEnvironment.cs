@@ -21,9 +21,9 @@ namespace Cataclysmic
         bool started = false;
         int timer;
 
-        public int wavePointer;
-        public int enemyPointer;
-        const int MAX_ENEMIES = 4;
+        public int  wavePointer;
+        public int  enemyPointer;
+        const int   MAX_ENEMIES = 4;
 
         int cooldown;
         const int MAX_COOLDOWN_FRAMES = 300;
@@ -54,6 +54,13 @@ namespace Cataclysmic
             "Wave 10"
         };
         Enemy[][] enemies = {
+
+            //Test wave DELETE AFTER
+            new Enemy[]{
+                new Atum(new Vector2(Game1.BOUNDS.Center.X, Game1.BOUNDS.Center.Y)),
+                new Sun(new Vector2(100, 100))
+            },
+
             // Wave 1
             new Enemy[]{ new ShotgunLamp(new Vector2(-400, 400)),
                 new ShotgunLamp(new Vector2(Game1.WIDTH + 400, 400)),

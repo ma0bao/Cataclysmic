@@ -87,7 +87,7 @@ namespace Cataclysmic
             renderData.Position += moveData.velocity * moveData.deltaTime * moveData.speedModifiers;
             //Clamp movement 
             renderData.SetX(MathHelper.Clamp(renderData.Position.X, Game1.BOUNDS.Left, Game1.BOUNDS.Right));
-            renderData.SetY(MathHelper.Clamp(renderData.Position.Y, Game1.BOUNDS.Top, Game1.BOUNDS.Height));
+            renderData.SetY(MathHelper.Clamp(renderData.Position.Y, Game1.BOUNDS.Top, Game1.BOUNDS.Bottom));
 
             renderData.ResetHitBox();
             collision.Update(renderData.Position, renderData.rotation);
