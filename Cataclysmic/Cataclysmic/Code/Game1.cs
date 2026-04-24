@@ -136,6 +136,8 @@ namespace Cataclysmic
         public static Texture2D texture_abilitiesMenu;
         public static Texture2D texture_revolverWrapper;
         public static Texture2D texture_slashWrapper;
+        public static Texture2D texture_circleSlashWrapper;
+        public static Texture2D texture_crackleBurstWrapper;
         #endregion
 
         // SoundEffects
@@ -279,6 +281,8 @@ namespace Cataclysmic
             texture_abilitiesMenu = Content.Load<Texture2D>("Sprites/GUI/AbilitiesMenu");
             texture_revolverWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/RevolverImage");
             texture_slashWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/SlashImage");
+            texture_circleSlashWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/CircleSlashImage");
+            texture_crackleBurstWrapper= Content.Load<Texture2D>("Sprites/Abilities/Wrappers/CrackleBurstImage");
             #endregion
 
             //Sounds
