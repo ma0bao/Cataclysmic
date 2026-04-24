@@ -47,12 +47,15 @@ namespace Cataclysmic
                 frames = MAXIFRAMES;
                 if (currentHealth - _damage > 0)
                 {
+                    
                     currentHealth -= _damage;
+                    
                     return true;
                 }
 
                 if (currentHealth - _damage <= 0)
                 {
+                    
                     currentHealth = 0;
                     isAlive = false;
 
@@ -62,6 +65,7 @@ namespace Cataclysmic
             
             return false;
         }
-        
+
+
     }
 }

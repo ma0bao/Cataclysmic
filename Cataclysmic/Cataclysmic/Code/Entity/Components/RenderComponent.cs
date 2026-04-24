@@ -206,6 +206,8 @@ namespace Cataclysmic
             Game1.self.spriteBatch.Draw(Game1.texture_blank, DestRect, sourceRect, Color.White, rotation, origin, effects, layerDepth);
         }
 
+        
+
         public void SetupAnimation(int width, int height, int frames, float secondsPerFrame = 0.1f) // 0.1 is 10 fps animation, could be changed
         {
             frameWidth = width;

@@ -98,7 +98,7 @@ namespace Cataclysmic
             {
                 Game1.player.timeEnergy.Add(energyGain);
             }
-            enemy.healthData.Damage(null, amount);
+            enemy.Damage(null, amount);
             
             return;
         }
