@@ -105,7 +105,7 @@ namespace Cataclysmic
         };
 
         List<Enemy> currentEnemies;
-        List<Particle> particles;
+        public static List<Particle> particles;
         public EgyptEnvironment() {
             cooldown = MAX_COOLDOWN_FRAMES;
             currentEnemies = new List<Enemy>();

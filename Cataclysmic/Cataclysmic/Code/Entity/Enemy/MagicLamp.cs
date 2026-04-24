@@ -278,6 +278,7 @@ namespace Cataclysmic
             if (healthData.invincible)
             {
                 renderData.DrawFlash();
+                base.SpewBlood(5);
             }
             if (renderData.rotation > Math.PI || renderData.rotation < 0)
             {

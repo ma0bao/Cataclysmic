@@ -66,6 +66,7 @@ namespace Cataclysmic
             if (healthData.invincible)
             {
                 renderData.DrawFlash();
+                
             }
 
             renderData.DefualtDraw();
@@ -95,6 +96,29 @@ namespace Cataclysmic
             
         }
 
+        public void SpewBlood(int amount)
+        {
+            Random rand = new Random();
+            for (int i = 0; i < amount; i++)
+            {
+                float angle = MathHelper.ToRadians(rand.Next(360));
+                float speed = rand.Next(10);
+                Vector2 velocity = new Vector2(speed * (float)Math.Cos(angle), speed * (float)Math.Sin(angle));
+                
+                Particle p = new Particle(collision.Center, Game1.texture_meatballEgypt, new Rectangle(5, 5, 5, 5), 20, 20, 100);
+                //p.Angle = angle;
+                p.Velocity = velocity;
+                p.drag = 0.97f;
+                if (rand.NextDouble() < 0.3)
+                {
+                    p.Lifetime = 1000;
+                }
+                    //p.Angle = angle;
+                    EgyptEnvironment.particles.Add(p);
+                
+            }
+        }
+
         public void UpdateTimers()
         {
             if (staggerTimer.Done && enemyState == EnemyState.Staggered)
@@ -116,7 +140,11 @@ namespace Cataclysmic
 
         public override void Damage(Entity cause, int amount)
         {
-            healthData.isAlive = healthData.Damage(cause, amount);
+            SpewBlood(5);
+
+            
+            //healthData.isAlive = healthData.Damage(cause, amount);
+            healthData.Damage(cause, amount);
         }
 
         public virtual void IncreaseVelocity()

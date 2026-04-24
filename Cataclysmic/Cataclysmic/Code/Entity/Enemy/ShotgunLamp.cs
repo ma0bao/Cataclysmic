@@ -290,6 +290,7 @@ namespace Cataclysmic
             if (healthData.invincible)
             {
                 renderData.DrawFlash();
+                base.SpewBlood(5);
             }
             // base.Draw(opacity);
             // Test for Rotation : Game1.self.spriteBatch.DrawString(Game1.font_credits, "" + renderData.rotation, renderData.Position, Color.White);
