@@ -26,6 +26,10 @@ namespace Cataclysmic
                 moveData.speedModifiers /= multiplier;
         }
 
-        public void Draw(RenderComponent renderData, MoveComponent moveData) { }
+        public void Draw(RenderComponent renderData, MoveComponent moveData) 
+        {
+            renderData.DrawAt(moveData.GetUpdatedPosition(renderData.Position, -1).ToPoint(), 150);
+            renderData.DrawAt(moveData.GetUpdatedPosition(renderData.Position, -2).ToPoint(), 150);
+        }
     }
 }

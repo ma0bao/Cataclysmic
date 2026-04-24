@@ -360,11 +360,6 @@ namespace Cataclysmic
 
             
             Game1.self.spriteBatch.Draw(renderData.texture, renderData._destRect, renderData.sourceRect, renderData.color * opacity, MathHelper.ToRadians(renderData.rotation), renderData.origin, SpriteEffects.None, 0f);
-            if (currentDash is SpeedDash && !currentDash.IsFinished)
-            {
-                renderData.DrawAt(GetUpdatedPosition(-1).ToPoint(), 150);
-                renderData.DrawAt(GetUpdatedPosition(-2).ToPoint(), 150);
-            }
 
             if (currentDash != null)
                 currentDash.Draw(renderData, moveData);

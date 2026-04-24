@@ -50,6 +50,7 @@ namespace Cataclysmic
         }
         public Vector2 _position;
 
+
         public Rectangle sourceRect, hitBox;
 
         public Vector2 origin;

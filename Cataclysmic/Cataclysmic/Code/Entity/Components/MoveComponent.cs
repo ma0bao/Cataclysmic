@@ -63,5 +63,10 @@ namespace Cataclysmic
                 velocity += frictionForce;
         }
 
+       public Vector2 GetUpdatedPosition(Vector2 position, int ticks)
+       {
+          return position + (velocity * deltaTime * speedModifiers) * ticks;
+       }
+
     }
 }
