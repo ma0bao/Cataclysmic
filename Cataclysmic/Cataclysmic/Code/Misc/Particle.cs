@@ -20,6 +20,7 @@ namespace Cataclysmic
         public float AngularVelocity;
         public Vector2 Acceleration;
         public float AngularAcceleration;
+        public float drag;
 
         public Texture2D Texture;
         public Rectangle DestRect;
@@ -41,6 +42,8 @@ namespace Cataclysmic
             Acceleration = Vector2.Zero;
             AngularAcceleration = 0;
 
+           
+
             Texture = _Texture;
             SourceRect = _SourceRect;
             Origin = new Vector2(Texture.Width/2, Texture.Height/2);
@@ -55,9 +58,11 @@ namespace Cataclysmic
             Angle = (Angle + AngularVelocity) % 360;
             AngularVelocity = (AngularVelocity + AngularAcceleration) % 360;
 
+            //Position += Velocity;
+            Velocity *= drag;
             Position += Velocity;
-            Velocity += Acceleration;
-
+            DestRect.X = (int)Position.X;
+            DestRect.Y = (int)Position.Y;
             Lifetime--;
         }
 
@@ -65,7 +70,7 @@ namespace Cataclysmic
             if (fadeInfadeOut)
             {
                 float factor = (float) Math.Sin((1 - (double)Lifetime/startLifetime) * Math.PI);
-                Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color.White * Opacity * factor, Angle, Origin, SpriteEffects.None, 1.0f);
+                Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color.White * Opacity * factor, rotation: Angle, origin: Origin, SpriteEffects.None, 1.0f);
             }
             else {
                 Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color.White * Opacity, Angle, Origin, SpriteEffects.None, 1.0f);

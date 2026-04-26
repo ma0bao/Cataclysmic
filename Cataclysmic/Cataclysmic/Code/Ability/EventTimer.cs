@@ -30,6 +30,8 @@ namespace Cataclysmic
             duration = (int)(seconds * 60);
             countdown = duration;
             paused = false;
+            if (duration <= 0)
+                Done = true;
         }
 
         public void Update()
@@ -38,12 +40,10 @@ namespace Cataclysmic
                 return;
 
             Done = false;
+
+
             countdown--;
-            if (countdown == -1)
-                countdown = duration - 1;
-
-
-            if (countdown == 0)
+            if (countdown <= 0)
             {
                 Done = true;
                 if (!loop)

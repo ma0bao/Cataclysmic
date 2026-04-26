@@ -81,7 +81,7 @@ namespace Cataclysmic
 
         public void Damage(Enemy enemy, int amount)
         {
-            enemy.healthData.Damage(null, amount);
+            enemy.Damage(null, amount);
             return;
         }
         public override bool IsAlive()

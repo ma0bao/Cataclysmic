@@ -27,17 +27,23 @@ namespace Cataclysmic
 
         EventTimer cooldownTimer;
 
+        EventTimer CrackTimer;
+        Rectangle crackRect;
+
         const int WIDTH = 64;
         const int HEIGHT = 64;
         const int HITBOX_WIDTH = 64;
         const int HITBOX_HEIGHT = 64;
 
+        CollisionComponent SlamHitbox;
+
         public Apesh(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
+            staggerResistance = 0.1f;
             player = Game1.player;
             SetNewTargetPosition(player.renderData.Position);
             distanceToBeAtTarget = 100;
-            spinTimer = new EventTimer(10);
+            spinTimer = new EventTimer(3);
             cooldownTimer = new EventTimer(.4f);
             timeToSpin = new EventTimer(1.5f);
             turnSpeed = 500;
@@ -45,6 +51,10 @@ namespace Cataclysmic
             spinTimer.Unpause();
 
             staggerResistance = .30f;
+
+            CrackTimer = new EventTimer(2f);
+            CrackTimer.Done = true;
+            
         }
 
         public override void Update(GameTime gameTime)
@@ -68,7 +78,6 @@ namespace Cataclysmic
                 }
                 if (spinTimer.Done)
                 {
-                    spinTimer.Restart();
                     currentState = AttackState.Spin;
                 }
                 spinTimer.Update();
@@ -87,10 +96,10 @@ namespace Cataclysmic
             }
             else if (currentState == AttackState.Spin)
             {
-                turnSpeed = 1600f;
-                moveData.maxSpeed = 700f;
+                turnSpeed = 1800f;
+                moveData.maxSpeed = 900f;
                 slowRadius = 0;
-                renderData.rotation += 2; //MAKE SPIN TRIGGERED 
+                renderData.rotation += 8;  
                 base.Update(gameTime);
                 turnSpeed = 500;
                 moveData.maxSpeed = 200;
@@ -102,6 +111,8 @@ namespace Cataclysmic
                 {
                     SetNewTargetPosition(renderData.GetRandomPoint());
                     currentState = AttackState.Run;
+                    spinTimer.Restart();
+                    timeToSpin.Restart();
                 }
 
                 timeToSpin.Update();
@@ -129,15 +140,30 @@ namespace Cataclysmic
         {
             if(currentState != AttackState.Spin)
             renderData.rotation = renderData.GetRotationToTarget(player.renderData.Position);
+
+            if (!CrackTimer.Done)
+            {
+                Game1.self.spriteBatch.Draw(Game1.texture_crack, crackRect, Color.White);
+                SlamHitbox.DrawDebug();
+                CrackTimer.Update();
+            }
+
+            collision.DrawDebug();
+
             base.Draw(opacity);
         }
 
         public void Slam()
         {
-            CollisionComponent SlamHitbox = CollisionComponent.CreateCircle(renderData.Position, 10, 12);
+            SlamHitbox = CollisionComponent.CreateRect(renderData.Position, 200, 200);
+            CrackTimer.Restart();
+            crackRect = new Rectangle(renderData.hitBox.X-75, renderData.hitBox.Y-75, 200, 200);
+            
+           
 
             if (SlamHitbox.Intersects(player.Hitbox))
                 player.Damage(this, 3);
+
         }
 
 

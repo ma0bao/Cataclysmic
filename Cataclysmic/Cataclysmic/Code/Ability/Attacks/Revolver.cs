@@ -79,7 +79,7 @@ namespace Cataclysmic
                 Game1.sfx_hurtSound1.Play(Game1.volume, -0.3f + (float)Game1.rand.NextDouble() * 0.2f, 0);
                 Game1.player.timeEnergy.Add(energyGain);
             }
-            enemy.healthData.Damage(null, amount);
+            enemy.Damage(null, amount);
             
             return;
         }

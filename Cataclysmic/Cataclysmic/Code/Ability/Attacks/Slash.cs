@@ -31,10 +31,11 @@ namespace Cataclysmic
         Vector2 Position;
         long timer = 0;
         public float angle;
-        public Slash(Vector2 position, float angle)
+        bool slashRight = true;
+        public Slash(Vector2 position, float angle, bool _slashRight)
         {
             this.angle = angle - (float)Math.PI * 0.5f; // rotate by 90degrees
-
+            slashRight = _slashRight;
             float spawnAngle = this.angle;
             Position = new Vector2(
                 position.X + (float)Math.Cos(spawnAngle) * SPAWN_OFFSET,
@@ -48,7 +49,7 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
-
+            
             Position.X = Game1.player.renderData.Position.X + (float)Math.Cos(angle) * SPAWN_OFFSET;
             Position.Y = Game1.player.renderData.Position.Y + (float)Math.Sin(angle) * SPAWN_OFFSET;
             Hitbox.UpdatePosition(Position);
@@ -59,11 +60,18 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
-
-            int frameX = (int)((timer / 2) % 3 * 64);
-            int frameY = (int)((timer / 6) % 3 * 47);
-
-            Game1.self.spriteBatch.Draw(Game1.texture_basicSlash, Position, new Rectangle(frameX, frameY, 64, 47), color, angle, new Vector2(64/2, 47/2 - 5), new Vector2(3f, 4f), SpriteEffects.None, 0f);
+            int frameX;
+            int frameY;
+            if (slashRight)
+            {
+                frameX = (int)((timer / 2) % 3 * 64);
+                frameY = (int)((timer / 6) % 3 * 47);
+            } else
+            {
+                frameX = (int)((timer / 2) % 3);
+                frameY = (int)((timer / 6) % 3);
+            }
+            Game1.self.spriteBatch.Draw(Game1.texture_basicSlash, Position, new Rectangle(frameX, frameY, 64, 47), color, angle, new Vector2(64/2, 47/2 - 5), new Vector2(2f, 2.5f), SpriteEffects.None, 0f);
             Hitbox.DrawDebug();
         }
 
@@ -92,7 +100,7 @@ namespace Cataclysmic
             {
                 Game1.player.timeEnergy.Add(energyGain);
             }
-            enemy.healthData.Damage(null, amount);
+            enemy.Damage(null, amount);
             
             return;
         }

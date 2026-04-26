@@ -12,6 +12,9 @@ namespace Cataclysmic
 
         Player target;
 
+        const int WIDTH = 150;
+        const int HEIGHT = 250;
+
         //States
         enum AttackStates
         {
@@ -50,10 +53,11 @@ namespace Cataclysmic
 
         AttackStates nextAttackState;
 
-        public Atum(Rectangle destRect, Player player) : base(Game1.texture_player, destRect, destRect.Width, destRect.Height)
+        
+        public Atum(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), WIDTH, HEIGHT)
         {
-            target = player;
-            healthData = new HealthComponent(100);
+            target = Game1.player;
+            healthData = new HealthComponent(250);
 
             //Geyser
             geyserCooldown = new EventTimer(.2f);
@@ -70,6 +74,7 @@ namespace Cataclysmic
             fireTimer.Done = true;
 
             SetStateToCenter();
+            staggerResistance = 0.0f;
         }
 
         public override void Stagger(float secondsToStagger, bool UseResistance = true)
@@ -391,8 +396,6 @@ namespace Cataclysmic
             foreach (IProjectile p in projectiles)
             {
                 p.Draw();
-                if (p is WaveShot w)
-                    w.collisionData.DrawDebug();
             }
             
 
@@ -501,7 +504,7 @@ namespace Cataclysmic
         public MoveComponent moveData;
         public CollisionComponent collisionData;
 
-        const float SPEED = 400;
+        float SPEED = 400;
 
         public WaveShot(Vector2 pos, Vector2 direction)
         {
@@ -509,6 +512,15 @@ namespace Cataclysmic
             moveData.velocity = direction * SPEED;
             renderData = new RenderComponent(Game1.texture_player, new Rectangle((int)pos.X, (int)pos.Y, 50, 50));
             collisionData = CollisionComponent.CreateRect(pos, 30, 30);
+        }
+
+        public WaveShot(Vector2 pos, Vector2 direction, float speed)
+        {
+            moveData = new MoveComponent();
+            moveData.velocity = direction * SPEED;
+            renderData = new RenderComponent(Game1.texture_player, new Rectangle((int)pos.X, (int)pos.Y, 50, 50));
+            collisionData = CollisionComponent.CreateRect(pos, 30, 30);
+            SPEED = speed;
         }
 
         public bool IsAlive()

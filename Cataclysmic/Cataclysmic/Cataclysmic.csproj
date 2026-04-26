@@ -99,6 +99,7 @@
     <Compile Include="Code\Entity\Enemy\Speedster.cs" />
     <Compile Include="Code\Ability\EventTimer.cs" />
     <Compile Include="Code\Ability\Dashes\SpeedDash.cs" />
+    <Compile Include="Code\Entity\Enemy\Sun.cs" />
     <Compile Include="Code\Entity\Entity.cs" />
     <Compile Include="Code\Entity\Components\MoveComponent.cs" />
     <Compile Include="Code\Misc\Effect.cs" />

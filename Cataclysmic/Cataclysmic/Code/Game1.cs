@@ -140,6 +140,8 @@ namespace Cataclysmic
         public static Texture2D texture_circleSlashWrapper;
         public static Texture2D texture_crackleBurstWrapper;
         public static Texture2D texture_emptyWrapper;
+        public static Texture2D texture_crack;
+
         #endregion
 
         // SoundEffects
@@ -290,6 +292,7 @@ namespace Cataclysmic
             texture_circleSlashWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/CircleSlashImage");
             texture_crackleBurstWrapper= Content.Load<Texture2D>("Sprites/Abilities/Wrappers/CrackleBurstImage");
             texture_emptyWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/EmptyImage");
+            texture_crack = Content.Load<Texture2D>("Sprites/Abilities/cracks");
             #endregion
 
             //Sounds

@@ -67,7 +67,7 @@ namespace Cataclysmic
                 {
                     Game1.sfx_hurtSound1.Play(Game1.volume, -0.1f + (float)Game1.rand.NextDouble() * 0.2f, 0);
                 }
-                enemy.healthData.Damage(null, amount);
+                enemy.Damage(null, amount);
                 
                 return;
             }
@@ -189,7 +189,7 @@ namespace Cataclysmic
 
         public void Damage(Enemy enemy, int amount)
         {
-            enemy.healthData.Damage(null, amount);
+            enemy.Damage(null, amount);
             return;
         }
         public override bool IsAlive()

@@ -31,6 +31,7 @@ namespace Cataclysmic
                 randomOffset.Y = Game1.rand.Next(-MAX_OFFSET, MAX_OFFSET + 1);
                 if (moveData.velocity.Length() > 10)
                     moveData.velocity += randomOffset;
+
             }
 
             public void IsColliding() //Will take environment as a parameter
@@ -277,6 +278,7 @@ namespace Cataclysmic
             if (healthData.invincible)
             {
                 renderData.DrawFlash();
+                base.SpewBlood(5);
             }
             if (renderData.rotation > Math.PI || renderData.rotation < 0)
             {
