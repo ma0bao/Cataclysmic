@@ -46,6 +46,7 @@ namespace Cataclysmic
         Dictionary<string, EventTimer> abilityCooldowns;
         Dictionary<string, float> abilityCosts;
 
+        public AbilityWrapper[] Abilities;
 
         public float maxSpeed = 500;
 
@@ -60,6 +61,11 @@ namespace Cataclysmic
             // Setup idle animation 32x32 2 frames
             renderData.SetupAnimation(32, 32, 2);
             renderData.Play();
+
+            Abilities = new AbilityWrapper[4];
+            for (int i = 0; i < Abilities.Length; i++) {
+                Abilities[i] = new RevolverWrapper();
+            }
 
             dashCooldown = new EventTimer(.5f);
             staminaBarRect = new Rectangle(5, 5, 200, 15);
@@ -159,27 +165,29 @@ namespace Cataclysmic
             // Attacks/Abilities
             if (Game1.MS.LeftButton == ButtonState.Pressed)
             {
-                if (TryUseAbility("Revolver"))
-                    abilities.Add(new Revolver(renderData.Position, angle));
+                if (Abilities[0].UseAbility())
+                    abilities.Add(Abilities[0].GetAbilityInstance(renderData.Position, angle));
             }
 
             if (Game1.MS.RightButton == ButtonState.Pressed)
             {
-                
-                if (TryUseAbility("Slash"))
-                    abilities.Add(new Slash(renderData.Position, angle, true));
+                if (Abilities[1].UseAbility())
+                    abilities.Add(Abilities[1].GetAbilityInstance(renderData.Position, angle));
             }
             
             if (Game1.KB.IsKeyDown(Keys.Q) && !Game1.oldKB.IsKeyDown(Keys.Q))
             {
-                if (TryUseAbility("CrackleBurst"))
-                    abilities.Add(new CrackleBurst(renderData.Position, angle));
+                if (Abilities[2].UseAbility())
+                    abilities.Add(Abilities[2].GetAbilityInstance(renderData.Position, angle));
             }
 
             if (Game1.KB.IsKeyDown(Keys.E) && !Game1.oldKB.IsKeyDown(Keys.E))
             {
-                if (TryUseAbility("CircleSlash"))
-                    abilities.Add(new CircleSlash(renderData.Position));
+                if (Abilities[3].UseAbility())
+                    abilities.Add(Abilities[3].GetAbilityInstance(renderData.Position, angle));
+            }
+            foreach (AbilityWrapper abilWrap in Abilities) {
+                abilWrap.Update();
             }
 
             // Dashes

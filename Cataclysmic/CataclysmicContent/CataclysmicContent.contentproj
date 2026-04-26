@@ -78,6 +78,11 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
+    <Compile Include="Fonts\BlackadderITC.spritefont">
+      <Name>BlackadderITC</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <None Include="Sprites\GUI\CataclysmicIcon.ico">
       <Name>CataclysmicIcon</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -531,6 +536,34 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sprites\Abilities\Wrappers\RevolverImage.png">
+      <Name>RevolverImage</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Abilities\Wrappers\SlashImage.png">
+      <Name>SlashImage</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Abilities\Wrappers\CircleSlashImage.png">
+      <Name>CircleSlashImage</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Abilities\Wrappers\CrackleBurstImage.png">
+      <Name>CrackleBurstImage</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Abilities\Wrappers\EmptyImage.png">
+      <Name>EmptyImage</Name>
     <Compile Include="Sprites\Abilities\cracks.png">
       <Name>cracks</Name>
       <Importer>TextureImporter</Importer>

@@ -20,6 +20,7 @@ namespace Cataclysmic
         public const float SPEED = 30f;
         public const float SPAWN_OFFSET = 20f; // distance from player center to spawn bullet
         public const int DAMAGE = 10;
+        public const int MANA_COST = 0;
         Vector2 Position;
         public CollisionComponent Hitbox;
         public float angle;
