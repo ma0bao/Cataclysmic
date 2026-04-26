@@ -4,23 +4,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-namespace Cataclysmic.Code.Ability.Wrappers
+namespace Cataclysmic
 {
     class CircleSlashWrapper : AbilityWrapper
     {
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(Game1.font_blackadder, "Not Yet Implemented", new Vector2(1600, 100), Color.Black);
+            spriteBatch.DrawString(Game1.font_blackadder, "The Sweep Hand", new Vector2(1500, 100), Color.Black);
+            spriteBatch.DrawString(Game1.font_gabriola, "Damage:     "+CircleSlash.DAMAGE, new Vector2(1500, 200), Color.Black);
+            spriteBatch.DrawString(Game1.font_gabriola, "Cost:           " + CircleSlash.MANA_COST, new Vector2(1500, 250), Color.Black);
+            spriteBatch.DrawString(Game1.font_gabriola, "Cooldown:  " + CircleSlash.COOLDOWN, new Vector2(1500, 300), Color.Black);
+
+            String desc = "This mighty sword requires great strength to wield.\nUse time energy to propel it in a deadly circle around you,\n pushing back any enemies near.";
+            spriteBatch.DrawString(Game1.font_gabriola, desc, new Vector2(1200, 400), Color.Black);
+            
+            spriteBatch.Draw(Game1.texture_circleSlashWrapper, new Rectangle(1210, 90, 270, 270), new Color(64, 44, 28));
+            spriteBatch.Draw(Game1.texture_circleSlashWrapper, new Rectangle(1220, 100, 250, 250), Color.White);
         }
 
         public override Cataclysmic.Ability GetAbilityInstance(Vector2 Position, float angle)
         {
-            return new CircleSlash(Position, angle);
+            return new CircleSlash(Position);
         }
 
         public override Texture2D GetTexture()
         {
-            return Game1.texture_revolverWrapper;
+            return Game1.texture_circleSlashWrapper;
+        }
+
+        public override bool UseAbility()
+        {
+            if (cooldownFrames <= 0) {
+                cooldownFrames = (int)(CircleSlash.COOLDOWN * 60);
+                return true;
+            }
+            return false;
+        }
+
+        public override void Update()
+        {
+            cooldownFrames--;
         }
     }
 }

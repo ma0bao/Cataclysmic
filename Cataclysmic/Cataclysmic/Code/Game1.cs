@@ -93,6 +93,7 @@ namespace Cataclysmic
         #region
         public static SpriteFont font_credits;
         public static SpriteFont font_blackadder;
+        public static SpriteFont font_gabriola;
         #endregion
 
         // Textures
@@ -138,6 +139,7 @@ namespace Cataclysmic
         public static Texture2D texture_slashWrapper;
         public static Texture2D texture_circleSlashWrapper;
         public static Texture2D texture_crackleBurstWrapper;
+        public static Texture2D texture_emptyWrapper;
         #endregion
 
         // SoundEffects
@@ -212,12 +214,16 @@ namespace Cataclysmic
             AbilityPool = new AbilityWrapper[3][];
             for (int i = 0; i < AbilityPool.Length; i++) {
                 AbilityPool[i] = new AbilityWrapper[7];
-                for (int c = 0; c < AbilityPool[i].Length; c++) {
-                    AbilityPool[i][c] = new RevolverWrapper();
-                    if (c > AbilityPool[i].Length / 2)
-                        AbilityPool[i][c] = new SlashWrapper();
+                for (int c = 0; c < AbilityPool[i].Length; c++)
+                {
+                    AbilityPool[i][c] = new EmptyWrapper();
                 }
             }
+
+            AbilityPool[0][0] = new RevolverWrapper();
+            AbilityPool[0][1] = new SlashWrapper();
+            AbilityPool[0][2] = new CircleSlashWrapper();
+            AbilityPool[0][3] = new CrackleBurstWrapper();
 
             // Rectangles
             #region
@@ -283,6 +289,7 @@ namespace Cataclysmic
             texture_slashWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/SlashImage");
             texture_circleSlashWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/CircleSlashImage");
             texture_crackleBurstWrapper= Content.Load<Texture2D>("Sprites/Abilities/Wrappers/CrackleBurstImage");
+            texture_emptyWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/EmptyImage");
             #endregion
 
             //Sounds
@@ -325,6 +332,7 @@ namespace Cataclysmic
 
             font_credits = Content.Load<SpriteFont>("Fonts/CreditsFont");
             font_blackadder = Content.Load<SpriteFont>("Fonts/BlackadderITC");
+            font_gabriola = Content.Load<SpriteFont>("Fonts/Fancy Font");
 
             player = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             environments = new Environment[]{ new EgyptEnvironment() };
@@ -374,7 +382,7 @@ namespace Cataclysmic
                         if (index != i)
                         {
                             index = i;
-                            sound_click.Play(volume, -0.25f + (float)rand.NextDouble() * 0.5f, 0);
+                            sound_click.Play(volume*0.4f, -0.25f + (float)rand.NextDouble() * 0.5f, 0);
                         }
 
                     }
@@ -388,7 +396,7 @@ namespace Cataclysmic
                     {
                         previousState = gameState;
                         gameState = GameState.Game;
-                        sound_HeavyStart.Play(volume, 0, 0);
+                        sound_HeavyStart.Play(volume*0.95f, 0, 0);
                         music_menu1.Stop();
                     }
                     else if (index == 1)
@@ -531,6 +539,7 @@ namespace Cataclysmic
                         }
                     }
                     music_menu1.Volume = volume;
+                    music_desert1.Volume = volume;
                 }
                 else if (optionPointer == 1)
                 {
@@ -629,7 +638,7 @@ namespace Cataclysmic
 
                     }
                 }
-                else
+                else // Not paused
                 {
                     if (currentEnvironment.IsComplete())
                     {
@@ -640,10 +649,12 @@ namespace Cataclysmic
                         }
                         currentEnvironment = environments[++environmentPointer];
                     }
-                JumpOut:
+                    JumpOut:
                     player.Update(gameTime);
                     currentEnvironment.Update(gameTime);
                 }
+
+
 
             }
             else if (gameState.Equals(GameState.Abilities)) {
@@ -696,8 +707,10 @@ namespace Cataclysmic
                     }
                     else if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter))
                     {
-                        pointerState = AbilityPointerState.TopRow;
-                        player.Abilities[topColPointer] = AbilityPool[abilityRowPointer][abilityColPointer];
+                        if (!(AbilityPool[abilityRowPointer][abilityColPointer] is EmptyWrapper)) {
+                            pointerState = AbilityPointerState.TopRow;
+                            player.Abilities[topColPointer] = AbilityPool[abilityRowPointer][abilityColPointer];
+                        }
                     }
                 }
                 else if (pointerState == AbilityPointerState.SelectingDash) { 
@@ -959,8 +972,22 @@ namespace Cataclysmic
                     spriteBatch.Draw(texture_blank, new Rectangle(163 + 170 * pointer, 72, 160, 160), temp);
                     spriteBatch.Draw(AbilWrap.GetTexture(), new Rectangle(168 + 170*pointer, 75, 150, 150), Color.White);
 
-                    AbilWrap.DrawDescription(spriteBatch);
+                    //AbilWrap.DrawDescription(spriteBatch);
                     pointer++;
+                }
+
+                if (pointerState == AbilityPointerState.TopRow)
+                {
+                    if (topColPointer != 4)
+                        player.Abilities[topColPointer].DrawDescription(spriteBatch);
+                }
+                else if (pointerState == AbilityPointerState.SelectingAbility)
+                {
+                    AbilityPool[abilityRowPointer][abilityColPointer].DrawDescription(spriteBatch);
+                }
+                else if (pointerState == AbilityPointerState.SelectingDash)
+                {
+                    // Implement Later
                 }
 
                 for (int r = 0; r < AbilityPool.Length; r++) {

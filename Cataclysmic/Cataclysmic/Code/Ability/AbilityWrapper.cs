@@ -14,10 +14,16 @@ namespace Cataclysmic
 {
     public abstract class AbilityWrapper
     {
+        public int cooldownFrames = 0;
+
         public abstract Ability GetAbilityInstance(Vector2 Position, float angle);
 
         public abstract Texture2D GetTexture();
 
+        public abstract void Update();
+
         public abstract void DrawDescription(SpriteBatch spriteBatch);
+
+        public abstract bool UseAbility();
     }
 }

@@ -19,6 +19,7 @@ namespace Cataclysmic
         public const float HEIGHT = 47 * 3;
         public const float WIDTH = 64 * 2.5f;
         public const int RADIUS = 120;
+        public const int MANA_COST = 0;
         public const float COOLDOWN = .5f;
         public const float SPAWN_OFFSET = 50f; // distance from player center to spawn
         public const int DAMAGE = 20;
