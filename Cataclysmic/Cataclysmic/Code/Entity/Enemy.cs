@@ -112,7 +112,7 @@ namespace Cataclysmic
                 p.Velocity = velocity;
                 p.drag = 0.95f;
                     //p.Angle = angle;
-                    EgyptEnvironment.particles.Add(p);
+                    Game1.self.currentEnvironment.GetParticles().Add(p);
                 
             }
         }
