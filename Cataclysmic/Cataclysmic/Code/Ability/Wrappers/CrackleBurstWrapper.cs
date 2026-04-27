@@ -19,7 +19,7 @@ namespace Cataclysmic
             String desc = "Shoot out a very festive firework!\nLodging this into an enemy does some damage,\nbut not hitting an enemy will cause it to explode!";
             spriteBatch.DrawString(Game1.font_gabriola, desc, new Vector2(1200, 400), Color.Black);
 
-            spriteBatch.Draw(Game1.texture_crackleBurstWrapper, new Rectangle(1210, 90, 270, 270), new Color(64, 44, 28));
+            spriteBatch.Draw(Game1.texture_blank, new Rectangle(1210, 90, 270, 270), new Color(64, 44, 28));
             spriteBatch.Draw(Game1.texture_crackleBurstWrapper, new Rectangle(1220, 100, 250, 250), Color.White);
         }
 

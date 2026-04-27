@@ -22,7 +22,7 @@ namespace Cataclysmic
 
             spriteBatch.DrawString(Game1.font_gabriola, desc, new Vector2(1200, 400), Color.Black);
 
-            spriteBatch.Draw(Game1.texture_revolverWrapper, new Rectangle(1210, 90, 270, 270), new Color(64, 44, 28));
+            spriteBatch.Draw(Game1.texture_blank, new Rectangle(1210, 90, 270, 270), new Color(64, 44, 28));
             spriteBatch.Draw(Game1.texture_revolverWrapper, new Rectangle(1220, 100, 250, 250), Color.White);
         }
 
