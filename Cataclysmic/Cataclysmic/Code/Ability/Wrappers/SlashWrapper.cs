@@ -26,7 +26,7 @@ namespace Cataclysmic
 
         public override Cataclysmic.Ability GetAbilityInstance(Vector2 Position, float angle)
         {
-            return new Slash(Position, angle);
+            return new Slash(Position, angle, true);
         }
 
         public override Texture2D GetTexture()

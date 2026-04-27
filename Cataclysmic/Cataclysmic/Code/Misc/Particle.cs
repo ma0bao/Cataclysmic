@@ -70,10 +70,10 @@ namespace Cataclysmic
             if (fadeInfadeOut)
             {
                 float factor = (float) Math.Sin((1 - (double)Lifetime/startLifetime) * Math.PI);
-                Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color.White * Opacity * factor, rotation: Angle, origin: Origin, SpriteEffects.None, 1.0f);
+                Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color * Opacity * factor, rotation: Angle, origin: Origin, SpriteEffects.None, 1.0f);
             }
             else {
-                Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color.White * Opacity, Angle, Origin, SpriteEffects.None, 1.0f);
+                Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color * Opacity, Angle, Origin, SpriteEffects.None, 1.0f);
             }
             
         }

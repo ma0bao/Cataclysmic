@@ -11,7 +11,7 @@ namespace Cataclysmic
     {
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(Game1.font_blackadder, "This ability is not yet implemented.. sorry ):", new Vector2(1400, 100), Color.Black);
+            spriteBatch.DrawString(Game1.font_blackadder, "This ability is not yet implemented.. sorry ):", new Vector2(1200, 100), Color.Black);
         }
 
         public override Cataclysmic.Ability GetAbilityInstance(Vector2 Position, float angle)

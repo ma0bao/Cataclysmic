@@ -564,8 +564,25 @@
   <ItemGroup>
     <Compile Include="Sprites\Abilities\Wrappers\EmptyImage.png">
       <Name>EmptyImage</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Sprites\Abilities\cracks.png">
       <Name>cracks</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Abilities\Bullets\BulletTestOne.png">
+      <Name>BulletTestOne</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Enemies\ApeshV1.png">
+      <Name>ApeshV1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

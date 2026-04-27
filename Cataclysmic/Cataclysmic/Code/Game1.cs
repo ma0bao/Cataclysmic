@@ -141,6 +141,8 @@ namespace Cataclysmic
         public static Texture2D texture_crackleBurstWrapper;
         public static Texture2D texture_emptyWrapper;
         public static Texture2D texture_crack;
+        public static Texture2D texture_bulletString1;
+        public static Texture2D texture_apesh;
 
         #endregion
 
@@ -293,6 +295,8 @@ namespace Cataclysmic
             texture_crackleBurstWrapper= Content.Load<Texture2D>("Sprites/Abilities/Wrappers/CrackleBurstImage");
             texture_emptyWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/EmptyImage");
             texture_crack = Content.Load<Texture2D>("Sprites/Abilities/cracks");
+            texture_bulletString1 = Content.Load<Texture2D>("Sprites/Abilities/Bullets/BulletTestOne");
+            texture_apesh = Content.Load<Texture2D>("Sprites/Enemies/ApeshV1");
             #endregion
 
             //Sounds

@@ -37,7 +37,7 @@ namespace Cataclysmic
 
         CollisionComponent SlamHitbox;
 
-        public Apesh(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
+        public Apesh(Vector2 position) : base(Game1.texture_apesh, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
             staggerResistance = 0.1f;
             player = Game1.player;
@@ -46,7 +46,7 @@ namespace Cataclysmic
             spinTimer = new EventTimer(3);
             cooldownTimer = new EventTimer(.4f);
             timeToSpin = new EventTimer(1.5f);
-            turnSpeed = 500;
+            turnSpeed = 1000;
             moveData.maxSpeed = 200;
             spinTimer.Unpause();
 
@@ -139,7 +139,7 @@ namespace Cataclysmic
         public override void Draw(float opacity)
         {
             if(currentState != AttackState.Spin)
-            renderData.rotation = renderData.GetRotationToTarget(player.renderData.Position);
+                renderData.rotation = renderData.GetRotationToTarget(player.renderData.Position);
 
             if (!CrackTimer.Done)
             {
@@ -151,6 +151,7 @@ namespace Cataclysmic
             collision.DrawDebug();
 
             base.Draw(opacity);
+            //Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation, renderData.origin, renderData.effects, renderData.layerDepth);
         }
 
         public void Slam()
