@@ -86,9 +86,9 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
-            int frameX = (int)((timer / 10) % 8 * 24);
+            int frameY = (int)((timer / 10) % 3 * 2);
 
-            Game1.self.spriteBatch.Draw(Game1.texture_bullets3C, Position, new Rectangle(frameX, 48, 24, 24), this.color, angle, new Vector2(12, 12), 1f, SpriteEffects.None, 1);
+            Game1.self.spriteBatch.Draw(Game1.texture_bulletString1, Position, new Rectangle(0, frameY, 24, 2), this.color, angle, new Vector2(1, 12), 1f, SpriteEffects.None, 1);
 
             // Debug, draw rotated hitbox
             Hitbox.DrawDebug();

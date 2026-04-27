@@ -74,8 +74,8 @@ namespace Cataclysmic
             new Enemy[]{ new Apesh(new Vector2(-400, 400)),
                 new Apesh(new Vector2(Game1.WIDTH + 400, 400)),
                 new Apesh(new Vector2(Game1.WIDTH/2, -1000)),
-                new Apesh(new Vector2(Game1.WIDTH + 400, 400)),
-                new Apesh(new Vector2(-400, -1000)),
+                new MagicLamp(new Vector2(Game1.WIDTH + 600, 400)),
+                new ShotgunLamp(new Vector2(-400, -1000)),
                 new Apesh(new Vector2(Game1.WIDTH + 400, -1000))
             },
 
@@ -120,7 +120,7 @@ namespace Cataclysmic
             return currentEnemies;
         }
         override public List<Particle> GetParticles() {
-            return null;
+            return particles;
         }
 
         private void Populate() {
@@ -181,7 +181,8 @@ namespace Cataclysmic
         public override bool IsComplete()
         {
             if (wavePointer == enemies.Length - 1 && currentEnemies.Count == 0) {
-                tracks[wavePointer].Stop();
+                if (tracks[wavePointer-1] != null)
+                    tracks[wavePointer-1].Stop();
                 return true;
             }
             return false;
@@ -192,12 +193,13 @@ namespace Cataclysmic
             spriteBatch.Draw(background, Vector2.Zero, Color.White);
         }
         override public void Draw() {
-            foreach (Enemy e in currentEnemies) {
-                e.Draw(1.0f);
+            foreach (Particle p in particles)
+            {
+                p.Draw();
             }
 
-            foreach (Particle p in particles) {
-                p.Draw();
+            foreach (Enemy e in currentEnemies) {
+                e.Draw(1.0f);
             }
         }
         override public void DrawEx() {

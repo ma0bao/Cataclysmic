@@ -78,6 +78,7 @@
     <Compile Include="Code\Ability\Attacks\NothingBurger.cs" />
     <Compile Include="Code\Ability\Attacks\Revolver.cs" />
     <Compile Include="Code\Ability\Attacks\Slash.cs" />
+    <Compile Include="Code\Ability\Attacks\Swap.cs" />
     <Compile Include="Code\Ability\Dashes\BlinkDash.cs" />
     <Compile Include="Code\Ability\Dashes\ChargeUpDash.cs" />
     <Compile Include="Code\Ability\Dashes\IDash.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Code\Ability\Wrappers\EmptyWrapper.cs" />
     <Compile Include="Code\Ability\Wrappers\RevolverWrapper.cs" />
     <Compile Include="Code\Ability\Wrappers\SlashWrapper.cs" />
+    <Compile Include="Code\Ability\Wrappers\SwapWrapper.cs" />
     <Compile Include="Code\Entity\Components\CollisionComponent.cs" />
     <Compile Include="Code\Entity\Components\HealthComponent.cs" />
     <Compile Include="Code\Entity\Components\ManaComponent.cs" />

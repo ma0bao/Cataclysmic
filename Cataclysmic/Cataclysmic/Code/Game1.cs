@@ -139,8 +139,11 @@ namespace Cataclysmic
         public static Texture2D texture_slashWrapper;
         public static Texture2D texture_circleSlashWrapper;
         public static Texture2D texture_crackleBurstWrapper;
+        public static Texture2D texture_swapWrapper;
         public static Texture2D texture_emptyWrapper;
         public static Texture2D texture_crack;
+        public static Texture2D texture_bulletString1;
+        public static Texture2D texture_apesh;
 
         #endregion
 
@@ -226,6 +229,7 @@ namespace Cataclysmic
             AbilityPool[0][1] = new SlashWrapper();
             AbilityPool[0][2] = new CircleSlashWrapper();
             AbilityPool[0][3] = new CrackleBurstWrapper();
+            AbilityPool[0][4] = new SwapWrapper();
 
             // Rectangles
             #region
@@ -293,6 +297,9 @@ namespace Cataclysmic
             texture_crackleBurstWrapper= Content.Load<Texture2D>("Sprites/Abilities/Wrappers/CrackleBurstImage");
             texture_emptyWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/EmptyImage");
             texture_crack = Content.Load<Texture2D>("Sprites/Abilities/cracks");
+            texture_bulletString1 = Content.Load<Texture2D>("Sprites/Abilities/Bullets/BulletTestOne");
+            texture_apesh = Content.Load<Texture2D>("Sprites/Enemies/ApeshV1");
+            texture_swapWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/SwapImage");
             #endregion
 
             //Sounds
@@ -880,10 +887,10 @@ namespace Cataclysmic
             else if (gameState.Equals(GameState.Game))
             {
                 lightEffect.Parameters["LightPosition"].SetValue(new Vector2(player.renderData.Position.X + player.renderData.DestRect.Width / 2, player.renderData.Position.Y + player.renderData.DestRect.Height / 2)); // Center
-                lightEffect.Parameters["LightRadius"].SetValue(1300f);
+                lightEffect.Parameters["LightRadius"].SetValue(2000f);
                 lightEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
                 lightEffect.Parameters["LightColor"].SetValue(new Vector3(1.1f, 1.1f, 1.1f)); // Warm yellow
-                lightEffect.Parameters["Intensity"].SetValue(1.1f);
+                lightEffect.Parameters["Intensity"].SetValue(1.0f);
 
                 timeEffect.Parameters["LightPosition"].SetValue(new Vector2(player.renderData.Position.X + player.renderData.DestRect.Width / 2, player.renderData.Position.Y + player.renderData.DestRect.Height / 2)); // Center
                 timeEffect.Parameters["LightRadius"].SetValue(700f);

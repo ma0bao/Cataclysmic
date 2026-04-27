@@ -63,15 +63,15 @@ namespace Cataclysmic
         }
         public override void Draw(float opacity)
         {
-            if (healthData.invincible)
-            {
-                renderData.DrawFlash();
-                
-            }
+            
 
             renderData.DefualtDraw();
             collision.DrawDebug();
-            
+
+            if (healthData.invincible)
+            {
+                renderData.DrawFlash();
+            }
         }
 
         public override void DrawEx(float opacity) { return; } // Extra Renders, such as health bars. These are to be ignored by shaders and render on top of most elements except GUI.
@@ -104,17 +104,15 @@ namespace Cataclysmic
                 float angle = MathHelper.ToRadians(rand.Next(360));
                 float speed = rand.Next(10);
                 Vector2 velocity = new Vector2(speed * (float)Math.Cos(angle), speed * (float)Math.Sin(angle));
-                
-                Particle p = new Particle(collision.Center, Game1.texture_meatballEgypt, new Rectangle(5, 5, 5, 5), 20, 20, 100);
+
+                int size = Game1.rand.Next(4, 10);
+                Particle p = new Particle(collision.Center, Game1.texture_blank, new Rectangle(0, 0, 1, 1), size, size, Game1.rand.Next(15, 50));
+                p.Color = new Color(142, 27, 27);
                 //p.Angle = angle;
                 p.Velocity = velocity;
-                p.drag = 0.97f;
-                if (rand.NextDouble() < 0.3)
-                {
-                    p.Lifetime = 1000;
-                }
+                p.drag = 0.95f;
                     //p.Angle = angle;
-                    EgyptEnvironment.particles.Add(p);
+                    Game1.self.currentEnvironment.GetParticles().Add(p);
                 
             }
         }
