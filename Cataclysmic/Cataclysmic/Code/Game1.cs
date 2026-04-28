@@ -932,6 +932,7 @@ namespace Cataclysmic
 
                 spriteBatch.Begin();
                 spriteBatch.Draw(texture_overlay1, new Vector2(0, 0), Color.White);
+                
                 player.DrawEx(1.0f);
                 spriteBatch.End();
 

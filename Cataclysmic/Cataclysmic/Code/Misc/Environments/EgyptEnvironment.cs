@@ -61,10 +61,6 @@ namespace Cataclysmic
             //    new Sun(new Vector2(100, 100))
             //},
 
-            new Enemy[]{
-                new Speedster(new Vector2(-400, 400))
-            },
-
             // Wave 1
             new Enemy[]{ new ShotgunLamp(new Vector2(-400, 400)),
                 new ShotgunLamp(new Vector2(Game1.WIDTH + 400, 400)),

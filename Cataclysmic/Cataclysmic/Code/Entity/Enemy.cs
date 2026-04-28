@@ -76,7 +76,18 @@ namespace Cataclysmic
             }
         }
 
-        public override void DrawEx(float opacity) { return; } // Extra Renders, such as health bars. These are to be ignored by shaders and render on top of most elements except GUI.
+        public override void DrawEx(float opacity) {
+            if (!Game1.BOUNDS.Contains(renderData.hitBox)) {
+                Rectangle rect = new Rectangle(
+                    (int)MathHelper.Clamp(renderData.Position.X, Game1.BOUNDS.Left, Game1.BOUNDS.Right),
+                    (int)MathHelper.Clamp(renderData.Position.Y, Game1.BOUNDS.Top, Game1.BOUNDS.Bottom),
+                    10,
+                    10
+                );
+                Game1.self.spriteBatch.Draw(Game1.texture_blank, rect, Color.Red);
+            }
+
+        } 
         public override void Update(GameTime gameTime)
         {
             if (enemyState == EnemyState.Staggered)

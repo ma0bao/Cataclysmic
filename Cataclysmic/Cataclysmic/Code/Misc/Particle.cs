@@ -41,6 +41,7 @@ namespace Cataclysmic
             AngularVelocity = 0;
             Acceleration = Vector2.Zero;
             AngularAcceleration = 0;
+            drag = 1.0f;
 
            
 

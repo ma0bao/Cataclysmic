@@ -40,8 +40,8 @@ namespace Cataclysmic
                 if (Game1.rand.Next(5) == 1) {
                     Particle p = new Particle(Position, Game1.texture_blank, new Rectangle(0, 0, 1, 1), 3, 3, Game1.rand.Next(50, 120));
                     p.Color = colors[Game1.rand.Next(3)];
-                    float halfSpeed = 20.0f;
-                    p.Velocity = new Vector2(20, 20);// halfSpeed*((float)Game1.rand.NextDouble() - 0.5f);
+                    float speed = 1.0f;
+                    p.Velocity = new Vector2(speed * ((float)Game1.rand.NextDouble() - 0.5f), speed * ((float)Game1.rand.NextDouble() - 0.5f));// halfSpeed*((float)Game1.rand.NextDouble() - 0.5f);
                     Game1.self.currentEnvironment.GetParticles().Add(p);
                 }
                 Hitbox.UpdatePosition(Position);
@@ -101,6 +101,7 @@ namespace Cataclysmic
         public const float SPAWN_OFFSET = 20f;
         public const float COOLDOWN = 1.0f;
         public const int DAMAGE = 20;
+        static Color[] trailColors = { Color.White, Color.Red, Color.Blue };
         public static readonly BloodHit BLOOD = new BloodHit
         {
             Count = 20,
@@ -155,14 +156,28 @@ namespace Cataclysmic
                 Position.Y += (float)Math.Sin(Angle) * SPEED;
                 Hitbox.Update(Position, Angle);
                 ScanDamage();
+
+                // Trail Particles
+                float angleOfProjectile = Angle + (float)Math.Cos(timer / 10.0) * 0.3f;
+                if (Game1.rand.Next(1) == 0)
+                {
+                    Particle p = new Particle(Position, Game1.texture_blank, new Rectangle(0, 0, 1, 1), 3, 3, Game1.rand.Next(50, 120));
+                    p.Color = trailColors[Game1.rand.Next(3)];
+                    float speed = 1.0f;
+                    p.Velocity = new Vector2(speed * ((float)Game1.rand.NextDouble() - 0.5f), speed * ((float)Game1.rand.NextDouble() - 0.5f));// halfSpeed*((float)Game1.rand.NextDouble() - 0.5f);
+                    Game1.self.currentEnvironment.GetParticles().Add(p);
+                }
+
             }
             else if (timer == FRAMES_TO_BURST)
             {
                 crackles = new LinkedList<Crackle>();
-                int n = 10;
+                int n = 15;
                 for (int i = 0; i < n; i++)
                 {
-                    crackles.AddFirst(new Crackle(Position, (float)Math.PI * 2 * ((float)i / n)));
+                    float angleOfTraj = (float)Math.PI * 2 * ((float)i / n);
+                    angleOfTraj += ((float)Game1.rand.NextDouble() - 0.5f) * angleOfTraj*2/n;
+                    crackles.AddFirst(new Crackle(Position, angleOfTraj));
                 }
                 
                 Game1.sfx_explosion_short1.Play(Game1.volume, 0, 0);
@@ -186,7 +201,7 @@ namespace Cataclysmic
 
             if (timer <= FRAMES_TO_BURST)
             {
-                Game1.self.spriteBatch.Draw(Game1.texture_crackleBurstMissile, new Rectangle((int)Position.X, (int)Position.Y, 48, 26), new Rectangle(0, 0, 24, 13), this.color, Angle, new Vector2(12, 6.5f), SpriteEffects.None, 1.0f);
+                Game1.self.spriteBatch.Draw(Game1.texture_crackleBurstMissile, new Rectangle((int)Position.X, (int)Position.Y, 48, 26), new Rectangle(0, 0, 24, 13), this.color, Angle+(float)Math.Cos(timer / 10.0) * 0.2f, new Vector2(12, 6.5f), SpriteEffects.None, 1.0f);
                 Hitbox.DrawDebug();
             }
             else
