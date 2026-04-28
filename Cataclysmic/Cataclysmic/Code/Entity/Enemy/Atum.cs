@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using System.Text;
 
@@ -517,9 +518,18 @@ namespace Cataclysmic
         public WaveShot(Vector2 pos, Vector2 direction, float speed)
         {
             moveData = new MoveComponent();
-            moveData.velocity = direction * SPEED;
+            moveData.velocity = direction * speed;
             renderData = new RenderComponent(Game1.texture_player, new Rectangle((int)pos.X, (int)pos.Y, 50, 50));
             collisionData = CollisionComponent.CreateRect(pos, 30, 30);
+            SPEED = speed;
+        }
+
+        public WaveShot(Vector2 pos, Vector2 direction, float speed, Texture2D texture, Point scale)
+        {
+            moveData = new MoveComponent();
+            moveData.velocity = direction * speed;
+            renderData = new RenderComponent(texture, new Rectangle((int)pos.X, (int)pos.Y, scale.X, scale.Y));
+            collisionData = CollisionComponent.CreateRect(pos, scale.X, scale.Y);
             SPEED = speed;
         }
 
@@ -536,6 +546,7 @@ namespace Cataclysmic
 
         public void Draw()
         {
+            collisionData.DrawDebug();
             renderData.DefualtDraw();
         }
     }

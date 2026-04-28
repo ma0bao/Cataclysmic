@@ -29,7 +29,8 @@ namespace Cataclysmic
         public void Draw(RenderComponent renderData, MoveComponent moveData) 
         {
             renderData.DrawAt(moveData.GetUpdatedPosition(renderData.Position, -1).ToPoint(), 150);
-            renderData.DrawAt(moveData.GetUpdatedPosition(renderData.Position, -2).ToPoint(), 150);
+            renderData.DrawAt(moveData.GetUpdatedPosition(renderData.Position, -2).ToPoint(), 125);
+            renderData.DrawAt(moveData.GetUpdatedPosition(renderData.Position, -3).ToPoint(), 100);
         }
     }
 }

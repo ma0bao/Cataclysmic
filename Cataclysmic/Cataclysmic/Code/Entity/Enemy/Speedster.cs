@@ -12,6 +12,11 @@ namespace Cataclysmic
 
         Player player;
 
+        public bool HasSpear = true;
+
+        WaveShot spear;
+        EventTimer spearCooldown;
+
         //Dash
         IDash currentDash;
         EventTimer dashTimer;
@@ -28,35 +33,56 @@ namespace Cataclysmic
             Melee = 2
         }
 
-        AttackState currentState = AttackState.Wander;
+        AttackState currentState;
         public Speedster(Vector2 position) : base(Game1.texture_player, new Rectangle(position.ToPoint().X, position.ToPoint().Y, 50, 50), 32, 32)
         {
             //Components
             player = Game1.player;
             moveData = new MoveComponent(_maxSpeed: 500, _acceleration: 1200);
+            spear = new WaveShot(
+                pos: new Vector2(renderData.Position.X+20, renderData.Position.Y),
+                direction: Vector2.Zero,
+                speed: 0f,
+                texture: Game1.texture_player,
+                scale: new Point(200, 20)
+                );
 
             //Speeds
             turnSpeed = 1200;
             targetPos = renderData.GetRandomPoint();
 
             //Cooldowns
+            spearCooldown = new EventTimer(7);
+            spearCooldown.Done = true;
+            spearCooldown.Pause();
             abilities = new LinkedList<Ability>();
             dashTimer = new EventTimer(.5f);
-            chaseTimer = new EventTimer(8f);
+            chaseTimer = new EventTimer(6f);
             chaseTimer.Pause();
             dashTimer.Unpause();
             renderData.color = Color.White;
+
+            SetStateToWander();
         }
+
+        public override string ToString()
+        {
+            return base.ToString() + " "+currentState + "\n\nMax Speed: "+moveData.maxSpeed +"\nCurrentSpeed"+moveData.velocity.Length();
+        }
+
         public override void Draw(float opacity)
         {
             //Set rotation to look at where he is going next
-            renderData.rotation = MathHelper.ToDegrees(renderData.GetRotationToVelocity(moveData.velocity));
+            //renderData.rotation = MathHelper.ToDegrees(renderData.GetRotationToVelocity(moveData.velocity));
 
 
             //Draw
             base.Draw(opacity);
 
-            Game1.self.spriteBatch.Draw(renderData.texture, targetPos, Color.Red);
+            if (HasSpear)
+                renderData.color = Color.Red;
+            else
+                renderData.color = Color.Blue;
 
             //Draw abilities 
             foreach (Ability abil in abilities)
@@ -68,10 +94,15 @@ namespace Cataclysmic
             //Draw dashes
             if (currentDash != null)
                 currentDash.Draw(renderData, moveData);
+
+            if (spear != null)
+            {
+                spear.Draw();
+            }
         }
 
         public void SetStateToWander()
-        {
+        { 
             moveData.maxSpeed = 500;
             turnSpeed = 1200;
             slowRadius = 150;
@@ -90,13 +121,13 @@ namespace Cataclysmic
 
         public void SetStateToMelee()
         {
-            if (renderData.GetDistanceToTarget(player.renderData.Position) > 500)
+            if (renderData.GetDistanceToTarget(player.renderData.Position) > 400)
             {
                 currentDash = new SpeedDash();
                 currentDash.Start(renderData, moveData);
             }
-            moveData.maxSpeed = 520;
-            slowRadius = 10;
+            moveData.maxSpeed = 600;
+            slowRadius = 2;
             SetNewTargetPosition(player.renderData.Position);
             chaseTimer.Restart();
             currentState = AttackState.Melee;
@@ -106,20 +137,23 @@ namespace Cataclysmic
         {
             UpdateTimers();
             moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            HasSpear = spearCooldown.Done;
 
             #region Get Target Position
             if (currentState == AttackState.Wander || currentState == AttackState.Run)
             {
+                if (HasSpear)
+                    spear.renderData.rotation = 90;
                 if (IsAtTarget())
                 {
                     int chance = Game1.rand.Next(1, 11);
                     if (chance <= 8)
                     {
                         SetStateToWander();
-                        if (chance <= 6)
+                        if (chance <= 6 && HasSpear)
                             Snipe();
                     }
-                    else
+                    else if(HasSpear)
                     {
                         SetStateToMelee();
                     }
@@ -136,7 +170,7 @@ namespace Cataclysmic
             if (currentState == AttackState.Wander)
             {
                 base.Update(gameTime);
-                if (renderData.GetDistanceToTarget(player.renderData.Position) < 225)
+                if (renderData.GetDistanceToTarget(player.renderData.Position) < 225 && HasSpear)
                 {
                     SetStateToMelee();
                 }
@@ -145,6 +179,9 @@ namespace Cataclysmic
             else if (currentState == AttackState.Melee)
             {
                 base.Update(gameTime);
+
+                spear.renderData.rotation += 15;
+
                 if (chaseTimer.Done)
                 {
                     SetStateToRun();
@@ -178,23 +215,44 @@ namespace Cataclysmic
             //Update stuffs
             if (currentDash != null)
                 currentDash.Update(renderData, moveData);
+
+            if (spear != null)
+                spear.Update(gameTime);
+
+            if (HasSpear)
+            {
+                spear.renderData.SetX(renderData.Position.X + 20);
+                spear.renderData.SetY(renderData.Position.Y);
+            }
+
+            spear.collisionData.UpdateRotation(spear.renderData.rotation);
+            if (player.Hitbox.Intersects(spear.collisionData))
+                player.Damage(this, 8);
             
 
             foreach (Ability abil in abilities)
             {
                 abil.Update(gameTime);
             }
+            spearCooldown.Update();
             renderData.ResetHitBox();
         }
 
         public void Snipe()
         {
-            ////Shoot a thingy at player
-            //CrackleBurst temp = new CrackleBurst(renderData.Position, renderData.GetRotationToTarget(player.renderData.Position));
-            //temp.color = Color.Red;
-            //abilities.AddFirst(temp);
+            HasSpear = false;
+            spear = new WaveShot(
+                pos: renderData.Position,
+                direction: renderData.GetDirectionToTarget(player.renderData.Position),
+                speed: 1000f,
+                Game1.texture_player,
+                new Point(200, 20)
+                );
+            spear.renderData.rotation = MathHelper.ToDegrees(renderData.GetRotationToTarget(player.renderData.Position));
+            spear.renderData.rotation += 90;
+            spearCooldown.Restart();
         }
-
+            
 
     }
 }
