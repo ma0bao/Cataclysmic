@@ -52,6 +52,8 @@ namespace Cataclysmic
 
             staggerResistance = .30f;
 
+            bloodData.baseSize = 12;
+  
             CrackTimer = new EventTimer(2f);
             CrackTimer.Done = true;
             

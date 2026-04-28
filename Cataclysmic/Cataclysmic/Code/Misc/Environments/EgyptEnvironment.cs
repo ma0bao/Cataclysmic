@@ -109,7 +109,7 @@ namespace Cataclysmic
         };
 
         List<Enemy> currentEnemies;
-        public static List<Particle> particles;
+        public List<Particle> particles;
         public EgyptEnvironment() {
             cooldown = MAX_COOLDOWN_FRAMES;
             currentEnemies = new List<Enemy>();
@@ -195,6 +195,11 @@ namespace Cataclysmic
         // Draw Methodss
         override public void DrawBackground() {
             spriteBatch.Draw(background, Vector2.Zero, Color.White);
+        }
+        override public void DrawParticles() {
+            foreach (Particle p in particles) {
+                p.Draw();
+            }
         }
         override public void Draw() {
             foreach (Particle p in particles)

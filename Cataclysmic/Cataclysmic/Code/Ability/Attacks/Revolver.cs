@@ -20,6 +20,7 @@ namespace Cataclysmic
         public const float SPEED = 30f;
         public const float SPAWN_OFFSET = 20f; // distance from player center to spawn bullet
         public const int DAMAGE = 10;
+        public static readonly BloodHit BLOOD = BloodHit.Light;
         public const int MANA_COST = 0;
         Vector2 Position;
         public CollisionComponent Hitbox;
@@ -104,8 +105,10 @@ namespace Cataclysmic
                 Game1.sfx_hurtSound1.Play(Game1.volume, -0.3f + (float)Game1.rand.NextDouble() * 0.2f, 0);
                 Game1.player.timeEnergy.Add(energyGain);
             }
-            enemy.Damage(null, amount);
-            
+            // Bullet sprays blood roughly along its trajectory
+            Vector2 dir = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+            enemy.Damage(null, amount, BLOOD.WithDirection(dir));
+
             return;
         }
 

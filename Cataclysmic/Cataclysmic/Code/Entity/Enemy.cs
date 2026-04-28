@@ -13,6 +13,7 @@ namespace Cataclysmic
         public MoveComponent moveData;
         public HealthComponent healthData;
         public CollisionComponent collision;
+        public BloodComponent bloodData;
 
         //Wandering 
         public Vector2 targetPos;
@@ -45,6 +46,7 @@ namespace Cataclysmic
             healthData = new HealthComponent(50);
             collision = CollisionComponent.CreateRect(new Vector2(destRect.X, destRect.Y), width, height);
             staggerTimer = new EventTimer();
+            bloodData = new BloodComponent(() => collision.Center);
         }
 
         public virtual void Stagger(float secondsToStagger, bool UseResistance = true)
@@ -98,23 +100,9 @@ namespace Cataclysmic
 
         public void SpewBlood(int amount)
         {
-            Random rand = new Random();
-            for (int i = 0; i < amount; i++)
-            {
-                float angle = MathHelper.ToRadians(rand.Next(360));
-                float speed = rand.Next(10);
-                Vector2 velocity = new Vector2(speed * (float)Math.Cos(angle), speed * (float)Math.Sin(angle));
-
-                int size = Game1.rand.Next(4, 10);
-                Particle p = new Particle(collision.Center, Game1.texture_blank, new Rectangle(0, 0, 1, 1), size, size, Game1.rand.Next(15, 50));
-                p.Color = new Color(142, 27, 27);
-                //p.Angle = angle;
-                p.Velocity = velocity;
-                p.drag = 0.95f;
-                    //p.Angle = angle;
-                    Game1.self.currentEnvironment.GetParticles().Add(p);
-                
-            }
+            BloodHit hit = BloodHit.Medium;
+            hit.Count = amount;
+            bloodData.Spew(hit);
         }
 
         public void UpdateTimers()
@@ -138,11 +126,24 @@ namespace Cataclysmic
 
         public override void Damage(Entity cause, int amount)
         {
-            SpewBlood(5);
+            Damage(cause, amount, BloodHit.Medium);
+        }
 
-            
-            //healthData.isAlive = healthData.Damage(cause, amount);
+        public virtual void Damage(Entity cause, int amount, BloodHit hit)
+        {
+            bool wasAlive = healthData.isAlive;
+            int hpBefore = healthData.currentHealth;
+
             healthData.Damage(cause, amount);
+
+            bool tookDamage = healthData.currentHealth < hpBefore || (wasAlive && !healthData.isAlive);
+            if (!tookDamage)
+                return;
+
+            bloodData.Spew(hit);
+
+            if (wasAlive && !healthData.isAlive)
+                bloodData.Burst();
         }
 
         public virtual void IncreaseVelocity()

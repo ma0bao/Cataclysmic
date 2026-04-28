@@ -17,6 +17,7 @@ namespace Cataclysmic
         public HealthComponent healthData;
         public CollisionComponent Hitbox;
         public ManaComponent timeEnergy;
+        public BloodComponent bloodData;
         Texture2D Square;
 
         Rectangle staminaBarRect;
@@ -79,6 +80,17 @@ namespace Cataclysmic
             angle = 0.0f;
 
             Hitbox = CollisionComponent.CreateRect(renderData.Position, _destRect.Width - 10, _destRect.Height - 30);
+
+            bloodData = new BloodComponent(() => renderData.Position)
+            {
+                Tint = Color.Crimson,
+                baseSize = 6,
+                sizeVariance = 3,
+                chunkChance = 0.4f,
+                deathCountBonus = 80,
+                deathSpeedMult = 2.4f,
+                deathLifetimeMult = 2.2f
+            };
 
             abilities = new List<Ability>();
 
@@ -426,8 +438,19 @@ namespace Cataclysmic
         }
         public override void Damage(Entity cause, int amount)
         {
+            bool wasAlive = healthData.isAlive;
+            int hpBefore = healthData.currentHealth;
+
             healthData.Damage(cause, amount);
-            return;
+
+            bool tookDamage = healthData.currentHealth < hpBefore
+                              || (wasAlive && !healthData.isAlive);
+            if (!tookDamage)
+                return;
+
+            bloodData.Spew(BloodHit.Medium);
+            if (wasAlive && !healthData.isAlive)
+                bloodData.Burst();
         }
 
         public override Entity Clone()

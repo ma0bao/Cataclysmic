@@ -24,6 +24,14 @@ namespace Cataclysmic
         public const float SPAWN_OFFSET = 50f; // distance from player center to spawn
         public const int DAMAGE = 10;
         public const int PUSH = 2;
+        public static readonly BloodHit BLOOD = new BloodHit
+        {
+            Count = 12,
+            SpeedMin = 3f,
+            SpeedMax = 14f,
+            SizeMult = 1.1f,
+            LifetimeMult = 1.1f
+        };
 
         public float energyGain = 10;
         public CollisionComponent Hitbox;
@@ -100,8 +108,10 @@ namespace Cataclysmic
             {
                 Game1.player.timeEnergy.Add(energyGain);
             }
-            enemy.Damage(null, amount);
-            
+            // Spray blood along the swing direction
+            Vector2 dir = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+            enemy.Damage(null, amount, BLOOD.WithDirection(dir));
+
             return;
         }
         public override bool IsAlive()

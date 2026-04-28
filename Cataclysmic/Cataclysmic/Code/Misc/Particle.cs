@@ -75,7 +75,7 @@ namespace Cataclysmic
             else {
                 Game1.self.spriteBatch.Draw(Texture, DestRect, SourceRect, Color * Opacity, Angle, Origin, SpriteEffects.None, 1.0f);
             }
-            
+
         }
 
         public bool IsAlive() {
