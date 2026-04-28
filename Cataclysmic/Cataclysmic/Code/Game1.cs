@@ -38,6 +38,14 @@ namespace Cataclysmic
         public const int OPTION_COUNT = 4;
         public static bool debugMode = false;
         int pauseMenuPointer = 0;
+        int abilityRowPointer = 0;
+        int abilityColPointer = 0;
+        int dashColPointer = 0;
+        int topColPointer = 0;
+        AbilityPointerState pointerState = AbilityPointerState.TopRow;
+        enum AbilityPointerState { 
+            TopRow, SelectingAbility, SelectingDash
+        }
         
 
         GameState gameState;
@@ -65,6 +73,9 @@ namespace Cataclysmic
         int particleCooldown;
         bool paused;
 
+        // Ability Stuff
+        AbilityWrapper[][] AbilityPool;
+
         // Keyboard Controls
         #region
         public static Keys player1_moveRight = Keys.D;
@@ -81,6 +92,8 @@ namespace Cataclysmic
         // Fonts
         #region
         public static SpriteFont font_credits;
+        public static SpriteFont font_blackadder;
+        public static SpriteFont font_gabriola;
         #endregion
 
         // Textures
@@ -122,6 +135,17 @@ namespace Cataclysmic
         public static Texture2D texture_firePortal;
         public static Texture2D texture_pauseMenuText;
         public static Texture2D texture_abilitiesMenu;
+        public static Texture2D texture_revolverWrapper;
+        public static Texture2D texture_slashWrapper;
+        public static Texture2D texture_circleSlashWrapper;
+        public static Texture2D texture_crackleBurstWrapper;
+        public static Texture2D texture_swapWrapper;
+        public static Texture2D texture_emptyWrapper;
+        public static Texture2D texture_crack;
+        public static Texture2D texture_bulletString1;
+        public static Texture2D texture_apesh;
+        public static Texture2D texture_crackleBurstMissile;
+        public static Texture2D texture_crackleParticle;
 
         #endregion
 
@@ -194,7 +218,21 @@ namespace Cataclysmic
             sceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             sceneTargetCRT = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
-            
+            AbilityPool = new AbilityWrapper[3][];
+            for (int i = 0; i < AbilityPool.Length; i++) {
+                AbilityPool[i] = new AbilityWrapper[7];
+                for (int c = 0; c < AbilityPool[i].Length; c++)
+                {
+                    AbilityPool[i][c] = new EmptyWrapper();
+                }
+            }
+
+            AbilityPool[0][0] = new RevolverWrapper();
+            AbilityPool[0][1] = new SlashWrapper();
+            AbilityPool[0][2] = new CircleSlashWrapper();
+            AbilityPool[0][3] = new CrackleBurstWrapper();
+            AbilityPool[0][4] = new SwapWrapper();
+
             // Rectangles
             #region
             rect_screen = new Rectangle(0, 0, WIDTH, HEIGHT);
@@ -255,6 +293,17 @@ namespace Cataclysmic
             texture_pauseMenuText = Content.Load<Texture2D>("Sprites/GUI/PauseMenuText");
             texture_basicSlash = Content.Load<Texture2D>("Sprites/Abilities/swordSheet_64x47");
             texture_abilitiesMenu = Content.Load<Texture2D>("Sprites/GUI/AbilitiesMenu");
+            texture_revolverWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/RevolverImage");
+            texture_slashWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/SlashImage");
+            texture_circleSlashWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/CircleSlashImage");
+            texture_crackleBurstWrapper= Content.Load<Texture2D>("Sprites/Abilities/Wrappers/CrackleBurstImage");
+            texture_emptyWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/EmptyImage");
+            texture_crack = Content.Load<Texture2D>("Sprites/Abilities/cracks");
+            texture_bulletString1 = Content.Load<Texture2D>("Sprites/Abilities/Bullets/BulletTestOne");
+            texture_apesh = Content.Load<Texture2D>("Sprites/Enemies/ApeshV1");
+            texture_swapWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/SwapImage");
+            texture_crackleBurstMissile = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleBurstMissile");
+            texture_crackleParticle = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleParticle");
             #endregion
 
             //Sounds
@@ -296,6 +345,8 @@ namespace Cataclysmic
 
 
             font_credits = Content.Load<SpriteFont>("Fonts/CreditsFont");
+            font_blackadder = Content.Load<SpriteFont>("Fonts/BlackadderITC");
+            font_gabriola = Content.Load<SpriteFont>("Fonts/Fancy Font");
 
             player = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             environments = new Environment[]{ new EgyptEnvironment() };
@@ -345,7 +396,7 @@ namespace Cataclysmic
                         if (index != i)
                         {
                             index = i;
-                            sound_click.Play(volume, -0.25f + (float)rand.NextDouble() * 0.5f, 0);
+                            sound_click.Play(volume*0.4f, -0.25f + (float)rand.NextDouble() * 0.5f, 0);
                         }
 
                     }
@@ -359,7 +410,7 @@ namespace Cataclysmic
                     {
                         previousState = gameState;
                         gameState = GameState.Game;
-                        sound_HeavyStart.Play(volume, 0, 0);
+                        sound_HeavyStart.Play(volume*0.95f, 0, 0);
                         music_menu1.Stop();
                     }
                     else if (index == 1)
@@ -502,6 +553,7 @@ namespace Cataclysmic
                         }
                     }
                     music_menu1.Volume = volume;
+                    music_desert1.Volume = volume;
                 }
                 else if (optionPointer == 1)
                 {
@@ -600,7 +652,7 @@ namespace Cataclysmic
 
                     }
                 }
-                else
+                else // Not paused
                 {
                     if (currentEnvironment.IsComplete())
                     {
@@ -611,10 +663,12 @@ namespace Cataclysmic
                         }
                         currentEnvironment = environments[++environmentPointer];
                     }
-                JumpOut:
+                    JumpOut:
                     player.Update(gameTime);
                     currentEnvironment.Update(gameTime);
                 }
+
+
 
             }
             else if (gameState.Equals(GameState.Abilities)) {
@@ -624,7 +678,58 @@ namespace Cataclysmic
                     gameState = previousState;
                 }
 
-
+                if (pointerState == AbilityPointerState.TopRow) {
+                    if (KB.IsKeyDown(Keys.Right) && oldKB.IsKeyUp(Keys.Right))
+                    {
+                        topColPointer = (topColPointer + 1) % 5;
+                    }
+                    else if (KB.IsKeyDown(Keys.Left) && oldKB.IsKeyUp(Keys.Left))
+                    {
+                        topColPointer--;
+                        if (topColPointer < 0)
+                            topColPointer = 4;
+                    }
+                    else if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter)) {
+                        if (topColPointer == 4)
+                        {
+                            pointerState = AbilityPointerState.SelectingDash;
+                        }
+                        else {
+                            pointerState = AbilityPointerState.SelectingAbility;
+                        }
+                    }
+                }
+                else if (pointerState == AbilityPointerState.SelectingAbility) {
+                    if (KB.IsKeyDown(Keys.Right) && oldKB.IsKeyUp(Keys.Right))
+                    {
+                        abilityColPointer = (abilityColPointer + 1) % AbilityPool[abilityRowPointer].Length;
+                    }
+                    else if (KB.IsKeyDown(Keys.Left) && oldKB.IsKeyUp(Keys.Left))
+                    {
+                        abilityColPointer--;
+                        if (abilityColPointer < 0)
+                            abilityColPointer = AbilityPool[abilityRowPointer].Length - 1;
+                    }
+                    else if (KB.IsKeyDown(Keys.Up) && oldKB.IsKeyUp(Keys.Up))
+                    {
+                        abilityRowPointer--;
+                        if (abilityRowPointer < 0)
+                            abilityRowPointer = AbilityPool.Length - 1;
+                    }
+                    else if (KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down)) {
+                        abilityRowPointer = (abilityRowPointer + 1) % AbilityPool.Length;
+                    }
+                    else if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter))
+                    {
+                        if (!(AbilityPool[abilityRowPointer][abilityColPointer] is EmptyWrapper)) {
+                            pointerState = AbilityPointerState.TopRow;
+                            player.Abilities[topColPointer] = AbilityPool[abilityRowPointer][abilityColPointer];
+                        }
+                    }
+                }
+                else if (pointerState == AbilityPointerState.SelectingDash) { 
+                
+                }
             }
             else if (gameState.Equals(GameState.End))
             {
@@ -786,10 +891,10 @@ namespace Cataclysmic
             else if (gameState.Equals(GameState.Game))
             {
                 lightEffect.Parameters["LightPosition"].SetValue(new Vector2(player.renderData.Position.X + player.renderData.DestRect.Width / 2, player.renderData.Position.Y + player.renderData.DestRect.Height / 2)); // Center
-                lightEffect.Parameters["LightRadius"].SetValue(1300f);
+                lightEffect.Parameters["LightRadius"].SetValue(2000f);
                 lightEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
                 lightEffect.Parameters["LightColor"].SetValue(new Vector3(1.1f, 1.1f, 1.1f)); // Warm yellow
-                lightEffect.Parameters["Intensity"].SetValue(1.1f);
+                lightEffect.Parameters["Intensity"].SetValue(1.0f);
 
                 timeEffect.Parameters["LightPosition"].SetValue(new Vector2(player.renderData.Position.X + player.renderData.DestRect.Width / 2, player.renderData.Position.Y + player.renderData.DestRect.Height / 2)); // Center
                 timeEffect.Parameters["LightRadius"].SetValue(700f);
@@ -874,6 +979,38 @@ namespace Cataclysmic
                 spriteBatch.Draw(texture_star, newRectangle(1100, 50, starSize * 0.8f), null, Color.White, (float)Math.PI / 8 + (float)Math.Cos(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(texture_star, newRectangle(1100, 300, starSize * 0.5f), null, Color.White, (float)Math.PI / 8 + (float)Math.Sin(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
                 spriteBatch.Draw(texture_star, newRectangle(1850, 1000, starSize * 1.0f), null, Color.White, (float)Math.PI / 8 + (float)Math.Sin(timer / 60.0) * 0.2f, new Vector2(texture_star.Width / 2, texture_star.Height / 2), SpriteEffects.None, 1.0f);
+
+                int pointer = 0;
+                foreach (AbilityWrapper AbilWrap in player.Abilities) {
+                    Color temp = (pointer == topColPointer) ? Color.PaleGoldenrod : Color.Black;
+                    spriteBatch.Draw(texture_blank, new Rectangle(163 + 170 * pointer, 72, 160, 160), temp);
+                    spriteBatch.Draw(AbilWrap.GetTexture(), new Rectangle(168 + 170*pointer, 75, 150, 150), Color.White);
+
+                    //AbilWrap.DrawDescription(spriteBatch);
+                    pointer++;
+                }
+
+                if (pointerState == AbilityPointerState.TopRow)
+                {
+                    if (topColPointer != 4)
+                        player.Abilities[topColPointer].DrawDescription(spriteBatch);
+                }
+                else if (pointerState == AbilityPointerState.SelectingAbility)
+                {
+                    AbilityPool[abilityRowPointer][abilityColPointer].DrawDescription(spriteBatch);
+                }
+                else if (pointerState == AbilityPointerState.SelectingDash)
+                {
+                    // Implement Later
+                }
+
+                for (int r = 0; r < AbilityPool.Length; r++) {
+                    for (int c = 0; c < AbilityPool[r].Length; c++) {
+                        Color temp = (r == abilityRowPointer && c == abilityColPointer) ? Color.PaleGoldenrod : Color.Black;
+                        spriteBatch.Draw(texture_blank, new Rectangle(185 + (120 * c), 325 + (120 * r), 110, 110), temp);
+                        spriteBatch.Draw(AbilityPool[r][c].GetTexture(), new Rectangle(190 + (120 * c), 330 + (120 * r), 100, 100), Color.White);
+                    }
+                }
 
                 spriteBatch.End();
 

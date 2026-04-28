@@ -21,6 +21,7 @@ namespace Cataclysmic
         public const float SPAWN_OFFSET = 20f; // distance from player center to spawn bullet
         public const int DAMAGE = 10;
         public static readonly BloodHit BLOOD = BloodHit.Light;
+        public const int MANA_COST = 0;
         Vector2 Position;
         public CollisionComponent Hitbox;
         public float angle;
@@ -47,14 +48,39 @@ namespace Cataclysmic
             color = Color.Blue;
             timer = 0;
             Game1.sfx_weapon_singleshot2.Play(Game1.volume, 0, 0);
+
+            Vector2 direction = new Vector2((float)Math.Cos(angle - Math.PI * 0.5f), (float)Math.Sin(angle - Math.PI * 0.5f));
+
+            float maxDistance = 2000f;
+            float stepSize = 5f;
+            Vector2 current = Position;
+            int raySize = 4;
+            CollisionComponent col = CollisionComponent.CreateRect(current, raySize, raySize);
+            float depth;
+            Vector2 normal;
+            for (float point = 0; point < maxDistance; point += stepSize) {
+                current += direction * stepSize;
+
+                Particle p = new Particle(current, Game1.texture_blank, Rectangle.Empty, 2, 2, (int) (point / maxDistance * 30) + Game1.rand.Next(10));
+                //p.Color = Color.Black;
+                p.Color = Color.Lerp(Color.Black * 0.2f, Color.Black, point/maxDistance);
+                Game1.self.currentEnvironment.GetParticles().Add(p);
+                col.UpdatePosition(current);
+
+                foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies()) {
+                    if (col.Intersects(e.collision, out depth, out normal)) {
+                        Damage(e, DAMAGE);
+                    }
+                }
+            }
         }
         public override void Update(GameTime gameTime)
         {
-            Position.X += (float)Math.Cos(angle) * SPEED;
-            Position.Y += (float)Math.Sin(angle) * SPEED;
-            Hitbox.UpdatePosition(Position);
+            //Position.X += (float)Math.Cos(angle) * SPEED;
+            //Position.Y += (float)Math.Sin(angle) * SPEED;
+            //Hitbox.UpdatePosition(Position);
             timer++;
-            ScanDamage();
+            //ScanDamage();
         }
 
         public bool ScanDamage()
@@ -88,9 +114,9 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
-            int frameX = (int)((timer / 10) % 8 * 24);
+            int frameY = (int)((timer / 10) % 3 * 2);
 
-            Game1.self.spriteBatch.Draw(Game1.texture_bullets3C, Position, new Rectangle(frameX, 48, 24, 24), this.color, angle, new Vector2(12, 12), 1f, SpriteEffects.None, 1);
+            //Game1.self.spriteBatch.Draw(Game1.texture_bulletString1, Position, new Rectangle(0, frameY, 24, 2), this.color, angle, new Vector2(1, 12), 1f, SpriteEffects.None, 1);
 
             // Debug, draw rotated hitbox
             Hitbox.DrawDebug();
@@ -98,7 +124,7 @@ namespace Cataclysmic
 
         public override bool IsAlive()
         {
-            if (Position.X > Game1.WIDTH || Position.X < 0 || Position.Y < 0 || Position.Y > Game1.HEIGHT)
+            if (timer > 300 || Position.X > Game1.WIDTH || Position.X < 0 || Position.Y < 0 || Position.Y > Game1.HEIGHT)
             {
                 return false;
             }

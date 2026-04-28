@@ -14,8 +14,7 @@ namespace Cataclysmic
         }
         public static Vector2 GetRandomized(this Vector2 value)
         {
-            Point p = value.ToPoint();
-            return new Vector2(Game1.rand.Next(-p.X, p.X+1), Game1.rand.Next(-p.Y, p.Y+1));
+            return new Vector2(Game1.rand.NextFloat(-value.X, value.X), Game1.rand.NextFloat(-value.Y, value.Y));
         }
     }
 
@@ -24,6 +23,19 @@ namespace Cataclysmic
         public static Vector2 ToVector(this Point value)
         {
             return new Vector2(value.X, value.Y);
+        }
+    }
+
+    public static class RandomExtensions
+    {
+        public static float NextFloat(this Random rand, float upperBound = 1)
+        {
+            return (float)(rand.NextDouble() * upperBound);
+        }
+
+        public static float NextFloat(this Random rand, float lowerBound, float upperBound)
+        {
+            return (float)(rand.NextDouble() * (upperBound-lowerBound) + lowerBound);
         }
     }
 

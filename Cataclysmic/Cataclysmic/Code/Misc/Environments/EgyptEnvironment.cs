@@ -55,10 +55,14 @@ namespace Cataclysmic
         };
         Enemy[][] enemies = {
 
-            //Test wave DELETE AFTER
+            //Test waves DELETE AFTER
+            //new Enemy[]{
+            //    new Atum(new Vector2(Game1.BOUNDS.Center.X, Game1.BOUNDS.Center.Y)),
+            //    new Sun(new Vector2(100, 100))
+            //},
+
             new Enemy[]{
-                new Atum(new Vector2(Game1.BOUNDS.Center.X, Game1.BOUNDS.Center.Y)),
-                new Sun(new Vector2(100, 100))
+                new Speedster(new Vector2(-400, 400))
             },
 
             // Wave 1
@@ -74,8 +78,8 @@ namespace Cataclysmic
             new Enemy[]{ new Apesh(new Vector2(-400, 400)),
                 new Apesh(new Vector2(Game1.WIDTH + 400, 400)),
                 new Apesh(new Vector2(Game1.WIDTH/2, -1000)),
-                new Apesh(new Vector2(Game1.WIDTH + 400, 400)),
-                new Apesh(new Vector2(-400, -1000)),
+                new MagicLamp(new Vector2(Game1.WIDTH + 600, 400)),
+                new ShotgunLamp(new Vector2(-400, -1000)),
                 new Apesh(new Vector2(Game1.WIDTH + 400, -1000))
             },
 
@@ -181,7 +185,8 @@ namespace Cataclysmic
         public override bool IsComplete()
         {
             if (wavePointer == enemies.Length - 1 && currentEnemies.Count == 0) {
-                tracks[wavePointer].Stop();
+                if (tracks[wavePointer-1] != null)
+                    tracks[wavePointer-1].Stop();
                 return true;
             }
             return false;
@@ -197,6 +202,11 @@ namespace Cataclysmic
             }
         }
         override public void Draw() {
+            foreach (Particle p in particles)
+            {
+                p.Draw();
+            }
+
             foreach (Enemy e in currentEnemies) {
                 e.Draw(1.0f);
             }

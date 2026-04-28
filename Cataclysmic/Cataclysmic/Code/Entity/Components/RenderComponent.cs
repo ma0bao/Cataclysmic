@@ -50,6 +50,7 @@ namespace Cataclysmic
         }
         public Vector2 _position;
 
+
         public Rectangle sourceRect, hitBox;
 
         public Vector2 origin;
@@ -191,7 +192,7 @@ namespace Cataclysmic
 
         public void DefualtDraw()
         {
-            Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, MathHelper.ToRadians(rotation), origin, effects, layerDepth);
+            Game1.self.spriteBatch.Draw(texture, DestRect, sourceRect, color, rotation, origin, effects, layerDepth);
         }
 
         public void DrawAt(Point pos, byte opacity = 255)
@@ -203,7 +204,13 @@ namespace Cataclysmic
 
         public void DrawFlash()
         {
-            Game1.self.spriteBatch.Draw(Game1.texture_blank, DestRect, sourceRect, Color.White, rotation, origin, effects, layerDepth);
+            Color temp = color;
+            color = Color.Lerp(color, Color.Red, 0.5f);
+
+            DefualtDraw();
+
+            color = temp;
+            //Game1.self.spriteBatch.Draw(Game1.texture_blank, DestRect, sourceRect, Color.White, rotation, origin, effects, layerDepth);
         }
 
         
