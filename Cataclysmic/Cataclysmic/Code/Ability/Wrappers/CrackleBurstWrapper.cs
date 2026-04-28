@@ -33,7 +33,7 @@ namespace Cataclysmic
             return Game1.texture_crackleBurstWrapper;
         }
 
-        public override bool UseAbility()
+        public override bool CanUseAbility()
         {
             if (cooldownFrames <= 0)
             {

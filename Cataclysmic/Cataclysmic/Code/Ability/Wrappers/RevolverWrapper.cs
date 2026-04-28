@@ -9,6 +9,7 @@ namespace Cataclysmic
         const int SHOT_PARTICLES = 16;
 
 
+
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(Game1.font_blackadder, "The Colt", new Vector2(1500, 100), Color.Black);
@@ -81,7 +82,7 @@ namespace Cataclysmic
             return Game1.texture_revolverWrapper;
         }
 
-        public override bool UseAbility()
+        public override bool CanUseAbility()
         {
             if (cooldownFrames > 0)
                 return false;
@@ -92,18 +93,26 @@ namespace Cataclysmic
 
             /* How to make satisfying "6 shot revolver"?
              1. 
-
+            
 
              */
 
             //return false;
         }
 
+        public override bool CanUseAbility(EventTimer attackTimer, EventTimer comboTimer, Type comboClass)
+        {
+            if (comboClass.Equals(this.GetType()) && comboTimer.IsRunning())
+            {
+                return true;
+            }
+            else return attackTimer.Done;
+        }
+
         public override void Update()
         {
-
-            if (cooldownFrames > 0)
-                cooldownFrames--;
+            //empty for now
         }
+
     }
 }

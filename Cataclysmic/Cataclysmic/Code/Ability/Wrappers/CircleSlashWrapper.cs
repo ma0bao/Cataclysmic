@@ -32,7 +32,7 @@ namespace Cataclysmic
             return Game1.texture_circleSlashWrapper;
         }
 
-        public override bool UseAbility()
+        public override bool CanUseAbility()
         {
             if (cooldownFrames <= 0) {
                 cooldownFrames = (int)(CircleSlash.COOLDOWN * 60);

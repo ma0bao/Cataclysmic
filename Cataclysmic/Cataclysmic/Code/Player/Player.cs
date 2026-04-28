@@ -51,6 +51,9 @@ namespace Cataclysmic
 
         public float maxSpeed = 500;
 
+        public EventTimer attackCooldown;
+        public EventTimer comboTimer;
+
         public Player(Rectangle _destRect)
         {
             LoadContent();
@@ -177,25 +180,25 @@ namespace Cataclysmic
             // Attacks/Abilities
             if (Game1.MS.LeftButton == ButtonState.Pressed)
             {
-                if (Abilities[0].UseAbility())
+                if (Abilities[0].CanUseAbility())
                     abilities.Add(Abilities[0].GetAbilityInstance(renderData.Position, angle));
             }
 
             if (Game1.MS.RightButton == ButtonState.Pressed)
             {
-                if (Abilities[1].UseAbility())
+                if (Abilities[1].CanUseAbility())
                     abilities.Add(Abilities[1].GetAbilityInstance(renderData.Position, angle));
             }
             
             if (Game1.KB.IsKeyDown(Keys.Q) && !Game1.oldKB.IsKeyDown(Keys.Q))
             {
-                if (Abilities[2].UseAbility())
+                if (Abilities[2].CanUseAbility())
                     abilities.Add(Abilities[2].GetAbilityInstance(renderData.Position, angle));
             }
 
             if (Game1.KB.IsKeyDown(Keys.E) && !Game1.oldKB.IsKeyDown(Keys.E))
             {
-                if (Abilities[3].UseAbility())
+                if (Abilities[3].CanUseAbility())
                     abilities.Add(Abilities[3].GetAbilityInstance(renderData.Position, angle));
             }
             foreach (AbilityWrapper abilWrap in Abilities) {
