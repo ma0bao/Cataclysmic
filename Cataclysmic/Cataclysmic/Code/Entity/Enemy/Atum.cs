@@ -76,7 +76,7 @@ namespace Cataclysmic
             SetStateToCenter();
             staggerResistance = 0.0f;
 
-            bloodData.BaseSize = 16;
+            bloodData.baseSize = 16;
   
         }
 

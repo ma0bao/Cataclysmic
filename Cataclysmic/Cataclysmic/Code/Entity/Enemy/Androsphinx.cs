@@ -53,7 +53,7 @@ namespace Cataclysmic
             moveData.maxSpeed = 500f;
             SetNewTargetPosition(renderData.GetRandomPoint());
 
-            bloodData.BaseSize = 9;
+            bloodData.baseSize = 9;
  
         }
 

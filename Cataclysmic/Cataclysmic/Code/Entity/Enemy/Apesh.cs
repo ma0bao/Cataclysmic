@@ -47,7 +47,7 @@ namespace Cataclysmic
 
             staggerResistance = .30f;
 
-            bloodData.BaseSize = 12;
+            bloodData.baseSize = 12;
   
         }
 

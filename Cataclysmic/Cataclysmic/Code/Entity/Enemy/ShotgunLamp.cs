@@ -117,7 +117,7 @@ namespace Cataclysmic
             staggerResistance = 0.8f;
 
             bloodData.Tint = Color.SandyBrown;
-            bloodData.BaseSize = 5;
+            bloodData.baseSize = 5;
    
         }
 

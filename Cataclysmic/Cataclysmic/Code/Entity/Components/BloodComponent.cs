@@ -58,18 +58,18 @@ namespace Cataclysmic
         public Texture2D Texture;
         public Rectangle SourceRect = new Rectangle(5, 5, 5, 5);
         public Color Tint = Color.Red;
-        public int BaseSize = 4;
-        public int SizeVariance = 4;
-        public float Drag = 0.96f;
-        public int BaseLifetime = 50;
-        public float ChunkChance = 0.3f;
-        public int ChunkLifetimeMult = 8;
+        public int baseSize = 4;
+        public int sizeVariance = 4;
+        public float drag = 0.96f;
+        public int baseLifetime = 50;
+        public float chunkChance = 0.3f;
+        public int chunkLifetimeMult = 8;
 
         // tuning
-        public int DeathCountBonus = 40;
-        public float DeathSpeedMult = 1.5f;
-        public float DeathSizeMult = 1.5f;
-        public float DeathLifetimeMult = 1.8f;
+        public int deathCountBonus = 40;
+        public float deathSpeedMult = 1.5f;
+        public float deathSizeMult = 1.5f;
+        public float deathLifetimeMult = 1.8f;
 
         readonly Func<Vector2> getCenter;
 
@@ -94,15 +94,15 @@ namespace Cataclysmic
         // death explosion
         public void Burst()
         {
-            int count = DeathCountBonus;
-            float baseSpeed = Math.Max(BaseSize * 0.4f, 4f);
+            int count = deathCountBonus;
+            float baseSpeed = Math.Max(baseSize * 0.4f, 4f);
 
             SpawnParticles(
                 count: count,
                 speedMin: baseSpeed,
-                speedMax: baseSpeed * 2 * DeathSpeedMult,
-                sizeMult: DeathSizeMult,
-                lifetimeMult: DeathLifetimeMult,
+                speedMax: baseSpeed * 2 * deathSpeedMult,
+                sizeMult: deathSizeMult,
+                lifetimeMult: deathLifetimeMult,
                 dirBias: null);
 
         }
@@ -136,9 +136,9 @@ namespace Cataclysmic
                 }
 
                 float speed = MathHelper.Lerp(speedMin, speedMax, (float)rand.NextDouble());
-                int sizeJitter = (SizeVariance > 0) ? rand.Next(-SizeVariance, SizeVariance + 1) : 0;
-                int size = Math.Max(1, (int)((BaseSize + sizeJitter) * sizeMult));
-                int life = Math.Max(1, (int)(BaseLifetime * lifetimeMult));
+                int sizeJitter = (sizeVariance > 0) ? rand.Next(-sizeVariance, sizeVariance + 1) : 0;
+                int size = Math.Max(1, (int)((baseSize + sizeJitter) * sizeMult));
+                int life = Math.Max(1, (int)(baseLifetime * lifetimeMult));
 
                 Vector2 velocity = new Vector2(
                     speed * (float)Math.Cos(angle),
@@ -147,12 +147,12 @@ namespace Cataclysmic
                 Particle p = new Particle(center, Texture, SourceRect, size, size, life)
                 {
                     Velocity = velocity,
-                    drag = Drag,
+                    drag = drag,
                     Color = Tint
                 };
 
-                if (rand.NextDouble() < ChunkChance)
-                    p.Lifetime = life * ChunkLifetimeMult;
+                if (rand.NextDouble() < chunkChance)
+                    p.Lifetime = life * chunkLifetimeMult;
 
                 list.Add(p);
             }

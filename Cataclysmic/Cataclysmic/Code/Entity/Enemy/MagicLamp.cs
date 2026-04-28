@@ -131,7 +131,7 @@ namespace Cataclysmic
 
             // Bleeds sand instead of meat
             bloodData.Tint = Color.SandyBrown;
-            bloodData.BaseSize = 4;
+            bloodData.baseSize = 4;
 
         }
 

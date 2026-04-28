@@ -52,7 +52,7 @@ namespace Cataclysmic
             AttackCooldown = new EventTimer(6);
 
             bloodData.Tint = Color.Yellow;
-            bloodData.BaseSize = 14;
+            bloodData.baseSize = 14;
 
         }
 

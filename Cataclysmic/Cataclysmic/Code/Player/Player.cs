@@ -77,12 +77,12 @@ namespace Cataclysmic
             bloodData = new BloodComponent(() => renderData.Position)
             {
                 Tint = Color.Crimson,
-                BaseSize = 6,
-                SizeVariance = 3,
-                ChunkChance = 0.4f,
-                DeathCountBonus = 80,
-                DeathSpeedMult = 2.4f,
-                DeathLifetimeMult = 2.2f
+                baseSize = 6,
+                sizeVariance = 3,
+                chunkChance = 0.4f,
+                deathCountBonus = 80,
+                deathSpeedMult = 2.4f,
+                deathLifetimeMult = 2.2f
             };
 
             abilities = new List<Ability>();
