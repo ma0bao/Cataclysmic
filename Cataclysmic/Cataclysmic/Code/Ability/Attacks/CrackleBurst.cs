@@ -17,6 +17,7 @@ namespace Cataclysmic
     {
         private class Crackle
         {
+            static Color[] colors = { new Color(255, 251, 199), new Color(255, 247, 154), new Color(255, 196, 0), new Color(255, 166, 0) };
             public const int WIDTH = 20;
             public const float SPEED = 3.0f;
             public const int DAMAGE = 10;
@@ -36,12 +37,19 @@ namespace Cataclysmic
                 ScanDamage();
                 Position.X += (float)Math.Cos(angle) * SPEED;
                 Position.Y += (float)Math.Sin(angle) * SPEED;
+                if (Game1.rand.Next(5) == 1) {
+                    Particle p = new Particle(Position, Game1.texture_blank, new Rectangle(0, 0, 1, 1), 3, 3, Game1.rand.Next(50, 120));
+                    p.Color = colors[Game1.rand.Next(3)];
+                    float halfSpeed = 20.0f;
+                    p.Velocity = new Vector2(20, 20);// halfSpeed*((float)Game1.rand.NextDouble() - 0.5f);
+                    Game1.self.currentEnvironment.GetParticles().Add(p);
+                }
                 Hitbox.UpdatePosition(Position);
             }
 
-            public void Draw(float opacity, Color color, int frameX)
+            public void Draw(float opacity, Color color, int frameY)
             {
-                Game1.self.spriteBatch.Draw(Game1.texture_bullets5C, Position, new Rectangle(frameX, 240, 24, 24), color, angle, new Vector2(12, 12), 1f, SpriteEffects.None, 1);
+                Game1.self.spriteBatch.Draw(Game1.texture_crackleParticle, new Rectangle((int)Position.X, (int)Position.Y, WIDTH, WIDTH), new Rectangle(0, 12*frameY, 12, 12), color, angle+Game1.timer/10%360, new Vector2(6, 6), SpriteEffects.None, 1);
                 Hitbox.DrawDebug();
             }
 
@@ -157,11 +165,11 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
-            int frameX = (int)((timer / 10) % 8 * 24);
+            int frameX = (int)((timer / 10) % 4);
 
             if (timer <= FRAMES_TO_BURST)
             {
-                Game1.self.spriteBatch.Draw(Game1.texture_bullets3C, Position, new Rectangle(frameX, 288, 24, 24), this.color, Angle, new Vector2(12, 12), 1f, SpriteEffects.None, 1);
+                Game1.self.spriteBatch.Draw(Game1.texture_crackleBurstMissile, new Rectangle((int)Position.X, (int)Position.Y, 48, 26), new Rectangle(0, 0, 24, 13), this.color, Angle, new Vector2(12, 6.5f), SpriteEffects.None, 1.0f);
                 Hitbox.DrawDebug();
             }
             else
