@@ -107,7 +107,7 @@ namespace Cataclysmic
         public ShotgunLamp(Vector2 position) : base(Game1.texture_flyingLamp, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
             player = Game1.player;
-            
+
             SetNewTargetPosition(renderData.GetRandomPoint());
             moveData.maxSpeed = 500;
             moveData.acceleration = 4000f;
@@ -115,11 +115,20 @@ namespace Cataclysmic
             //slowRadius = 0;
             cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
             staggerResistance = 0.8f;
+
+            bloodData.Tint = Color.SandyBrown;
+            bloodData.BaseSize = 5;
+   
         }
 
         public override void Stagger(float secondsToStagger, bool UseResistance = true)
         {
-            if (currentState == AttackState.Charge || currentState == AttackState.Spray ) currentState = AttackState.Wander;
+            if (currentState == AttackState.Charge || currentState == AttackState.Spray)
+            {
+                currentState = AttackState.Wander;
+                shakeTimer = null;
+                frictionMultiplier = 5;
+            }
             base.Stagger(secondsToStagger, UseResistance);
         }
         public override void Update(GameTime gameTime)
@@ -290,7 +299,6 @@ namespace Cataclysmic
             if (healthData.invincible)
             {
                 renderData.DrawFlash();
-                base.SpewBlood(5);
             }
             // base.Draw(opacity);
             // Test for Rotation : Game1.self.spriteBatch.DrawString(Game1.font_credits, "" + renderData.rotation, renderData.Position, Color.White);

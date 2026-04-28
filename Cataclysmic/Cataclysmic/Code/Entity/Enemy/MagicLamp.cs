@@ -128,11 +128,21 @@ namespace Cataclysmic
             healthData = new HealthComponent(50);
             cooldown_frames = Game1.rand.Next(MIN_COOLDOWN_FRAMES, MAX_COOLDOWN_FRAMES);
             staggerResistance = .8f;
+
+            // Bleeds sand instead of meat
+            bloodData.Tint = Color.SandyBrown;
+            bloodData.BaseSize = 4;
+
         }
 
         public override void Stagger(float secondsToStagger, bool UseResistance = true)
         {
-            if (currentState == AttackState.Charge || currentState == AttackState.Spray ) currentState = AttackState.Wander;
+            if (currentState == AttackState.Charge || currentState == AttackState.Spray)
+            {
+                currentState = AttackState.Wander;
+                shakeTimer = null;
+                frictionMultiplier = 1;
+            }
             base.Stagger(secondsToStagger, UseResistance);
         }
         public override void Update(GameTime gameTime)
@@ -278,7 +288,6 @@ namespace Cataclysmic
             if (healthData.invincible)
             {
                 renderData.DrawFlash();
-                base.SpewBlood(5);
             }
             if (renderData.rotation > Math.PI || renderData.rotation < 0)
             {

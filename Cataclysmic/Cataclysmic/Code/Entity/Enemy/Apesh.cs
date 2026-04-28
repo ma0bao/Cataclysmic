@@ -46,6 +46,9 @@ namespace Cataclysmic
             spinTimer.Unpause();
 
             staggerResistance = .30f;
+
+            bloodData.BaseSize = 12;
+  
         }
 
         public override void Update(GameTime gameTime)

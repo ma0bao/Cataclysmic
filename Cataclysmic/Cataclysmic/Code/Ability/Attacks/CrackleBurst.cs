@@ -67,8 +67,9 @@ namespace Cataclysmic
                 {
                     Game1.sfx_hurtSound1.Play(Game1.volume, -0.1f + (float)Game1.rand.NextDouble() * 0.2f, 0);
                 }
-                enemy.Damage(null, amount);
-                
+                Vector2 dir = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+                enemy.Damage(null, amount, CRACKLE_BLOOD.WithDirection(dir));
+
                 return;
             }
 
@@ -92,6 +93,22 @@ namespace Cataclysmic
         public const float SPAWN_OFFSET = 20f;
         public const float COOLDOWN = 1.0f;
         public const int DAMAGE = 20;
+        public static readonly BloodHit BLOOD = new BloodHit
+        {
+            Count = 20,
+            SpeedMin = 8f,
+            SpeedMax = 22f,
+            SizeMult = 1.2f,
+            LifetimeMult = 0.9f
+        };
+        public static readonly BloodHit CRACKLE_BLOOD = new BloodHit
+        {
+            Count = 6,
+            SpeedMin = 3f,
+            SpeedMax = 10f,
+            SizeMult = 1f,
+            LifetimeMult = 0.8f
+        };
 
 
         public CollisionComponent Hitbox;
@@ -189,7 +206,7 @@ namespace Cataclysmic
 
         public void Damage(Enemy enemy, int amount)
         {
-            enemy.Damage(null, amount);
+            enemy.Damage(null, amount, BLOOD);
             return;
         }
         public override bool IsAlive()

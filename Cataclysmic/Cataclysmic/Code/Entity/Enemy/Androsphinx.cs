@@ -52,6 +52,9 @@ namespace Cataclysmic
             attackCooldown.Unpause();
             moveData.maxSpeed = 500f;
             SetNewTargetPosition(renderData.GetRandomPoint());
+
+            bloodData.BaseSize = 9;
+ 
         }
 
         public override void Update(GameTime gameTime)
@@ -143,7 +146,7 @@ namespace Cataclysmic
                 base.Update(gameTime);
                 if (targetedPlayer.renderData.hitBox.Intersects(Swipe()) && attackCooldown.Done)
                 {
-                    targetedPlayer.healthData.Damage(this, 5);
+                    targetedPlayer.Damage(this, 5);
                     attackCooldown.Restart();
                 }
 
@@ -169,7 +172,7 @@ namespace Cataclysmic
             else if (currentState == AttackState.Dash)
             {
                 if (lastTargetedPlayer.renderData.hitBox.Intersects(Swipe()))
-                    lastTargetedPlayer.healthData.Damage(this, 15);
+                    lastTargetedPlayer.Damage(this, 15);
                 base.Update(gameTime);
             }
             else if (currentState == AttackState.Shake)

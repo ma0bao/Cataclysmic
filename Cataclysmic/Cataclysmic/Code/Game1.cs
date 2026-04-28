@@ -809,7 +809,7 @@ namespace Cataclysmic
 
                 // Put all draw methods that are not exclusive from shaders here.
 
-
+                currentEnvironment.DrawParticles();   
                 player.Draw(1.0f);
                 currentEnvironment.Draw();
                 //foreach(Enemy e in enemies)

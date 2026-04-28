@@ -21,6 +21,7 @@ namespace Cataclysmic
         public const int DAMAGE = 20;
         public const int PUSH = 15;
         public const int LIFETIME = 60;
+        public static readonly BloodHit BLOOD = BloodHit.Heavy;
 
         public CollisionComponent Hitbox;
         public Color color;
@@ -81,7 +82,7 @@ namespace Cataclysmic
 
         public void Damage(Enemy enemy, int amount)
         {
-            enemy.Damage(null, amount);
+            enemy.Damage(null, amount, BLOOD);
             return;
         }
         public override bool IsAlive()

@@ -75,6 +75,9 @@ namespace Cataclysmic
 
             SetStateToCenter();
             staggerResistance = 0.0f;
+
+            bloodData.BaseSize = 16;
+  
         }
 
         public override void Stagger(float secondsToStagger, bool UseResistance = true)

@@ -24,6 +24,7 @@ namespace Cataclysmic
 
         // Draw Methodss
         abstract public void DrawBackground();
+        abstract public void DrawParticles();   // drawn between background and entities so blood/etc. sits behind them
         abstract public void Draw();
         abstract public void DrawEx();
 

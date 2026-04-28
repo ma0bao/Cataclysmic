@@ -50,6 +50,10 @@ namespace Cataclysmic
             healthData = new HealthComponent(200);
             target = Game1.player;
             AttackCooldown = new EventTimer(6);
+
+            bloodData.Tint = Color.Yellow;
+            bloodData.BaseSize = 14;
+
         }
 
         public void SetStateToWander()
