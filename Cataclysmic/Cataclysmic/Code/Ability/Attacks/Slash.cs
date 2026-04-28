@@ -22,7 +22,7 @@ namespace Cataclysmic
         public const int MANA_COST = 0;
         public const float COOLDOWN = .5f;
         public const float SPAWN_OFFSET = 50f; // distance from player center to spawn
-        public const int DAMAGE = 20;
+        public const int DAMAGE = 10;
         public const int PUSH = 2;
 
         public float energyGain = 10;

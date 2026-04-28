@@ -79,7 +79,7 @@ namespace Cataclysmic
         {
             if (enemyState == EnemyState.Staggered)
             {
-                renderData.Position += new Vector2(1, 1).GetRandomized();
+                renderData.Position += new Vector2(.5f, .5f).GetRandomized();
                 return;
             }
 

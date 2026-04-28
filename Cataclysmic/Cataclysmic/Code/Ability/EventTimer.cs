@@ -27,7 +27,7 @@ namespace Cataclysmic
 
         public EventTimer(float seconds)
         {
-            duration = (int)(seconds * 60);
+            duration = (int)(seconds * 60.0);
             countdown = duration;
             paused = false;
             if (duration <= 0)
