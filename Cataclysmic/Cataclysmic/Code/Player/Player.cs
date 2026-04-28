@@ -63,9 +63,10 @@ namespace Cataclysmic
             renderData.Play();
 
             Abilities = new AbilityWrapper[4];
-            for (int i = 0; i < Abilities.Length; i++) {
-                Abilities[i] = new RevolverWrapper();
-            }
+            Abilities[0] = new RevolverWrapper();
+            Abilities[1] = new SwapWrapper();
+            Abilities[2] = new CrackleBurstWrapper();
+            Abilities[3] = new SlashWrapper();
 
             dashCooldown = new EventTimer(.5f);
             staminaBarRect = new Rectangle(5, 5, 200, 15);

@@ -60,6 +60,10 @@ namespace Cataclysmic
         public override void Update(GameTime gameTime)
         {
             UpdateTimers();
+
+            
+            
+
             #region Set Target Based On State
             if (currentState == AttackState.Track || currentState == AttackState.Spin)
             {
@@ -106,7 +110,13 @@ namespace Cataclysmic
                 slowRadius = 150;
 
                 Game1.sfx_spin1.Play(Game1.volume, -0.1f + (float) Game1.rand.NextDouble() * 0.2f, 0);
-
+                if (Game1.timer % 3 == 0)
+                {
+                    Particle p = new Particle(renderData.Position, Game1.texture_apesh, renderData.sourceRect, WIDTH, HEIGHT, 60);
+                    p.Angle = renderData.rotation;
+                    p.Color = Color.Black * 0.1f;
+                    Game1.self.currentEnvironment.GetParticles().Add(p);
+                }
                 if (timeToSpin.Done)
                 {
                     SetNewTargetPosition(renderData.GetRandomPoint());

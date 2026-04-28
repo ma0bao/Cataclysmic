@@ -14,9 +14,9 @@ namespace Cataclysmic
             spriteBatch.DrawString(Game1.font_blackadder, "Swap" +
                 "", new Vector2(1500, 100), Color.Black);
             spriteBatch.DrawString(Game1.font_gabriola, "Cost:           " + Swap.MANA_COST, new Vector2(1500, 200), Color.Black);
-            spriteBatch.DrawString(Game1.font_gabriola, "Cooldown:  " + Swap.COOLDOWN, new Vector2(1500, 350), Color.Black);
+            spriteBatch.DrawString(Game1.font_gabriola, "Cooldown:  " + Swap.COOLDOWN, new Vector2(1500, 250), Color.Black);
 
-            String desc = "Swap";
+            String desc = "The bells of the Gion monastery solidify this world's only reality.\nThat all is impermanent.";
             spriteBatch.DrawString(Game1.font_gabriola, desc, new Vector2(1200, 400), Color.Black);
 
             spriteBatch.Draw(Game1.texture_blank, new Rectangle(1210, 90, 270, 270), new Color(64, 44, 28));
