@@ -26,15 +26,16 @@ namespace Cataclysmic
         public Rectangle DestRect;
         public Rectangle SourceRect;
 
-        public int Lifetime;
+        public float Lifetime;
         public float Opacity;
         public Color Color;
         public bool fadeInfadeOut = false;
-        public int startLifetime;
+        public bool fadeHalf = false;
+        public float startLifetime;
 
         public Vector2 Origin;
 
-        public Particle(Vector2 _Position, Texture2D _Texture, Rectangle _SourceRect, int Width, int Height, int _Lifetime) {
+        public Particle(Vector2 _Position, Texture2D _Texture, Rectangle _SourceRect, int Width, int Height, float _Lifetime) {
             Position = _Position;
             Angle = 0;
             Velocity = Vector2.Zero;
@@ -57,6 +58,11 @@ namespace Cataclysmic
         public void Update() {
             Angle = (Angle + AngularVelocity) % 360;
             AngularVelocity = (AngularVelocity + AngularAcceleration) % 360;
+
+            if (fadeHalf && Opacity > 0.2f)
+            {
+                Opacity -= Opacity/(startLifetime/2);
+            }
 
             //Position += Velocity;
             Velocity *= drag;

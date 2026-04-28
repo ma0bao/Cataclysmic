@@ -138,7 +138,12 @@ namespace Cataclysmic
                 float speed = MathHelper.Lerp(speedMin, speedMax, (float)rand.NextDouble());
                 int sizeJitter = (sizeVariance > 0) ? rand.Next(-sizeVariance, sizeVariance + 1) : 0;
                 int size = Math.Max(1, (int)((baseSize + sizeJitter) * sizeMult));
-                int life = Math.Max(1, (int)(baseLifetime * lifetimeMult));
+
+                float lifeRand = rand.Next(60, 101);
+                float life = Math.Max(1, (int)(baseLifetime * lifetimeMult));
+                life *= lifeRand/100f;
+
+                float rotation = rand.Next(0, 360);
 
                 Vector2 velocity = new Vector2(
                     speed * (float)Math.Cos(angle),
@@ -148,7 +153,10 @@ namespace Cataclysmic
                 {
                     Velocity = velocity,
                     drag = drag,
-                    Color = Tint
+                    Color = Tint,
+                    Opacity = 1f,
+                    fadeHalf = true,
+                    Angle = MathHelper.ToRadians(rotation)
                 };
 
                 if (rand.NextDouble() < chunkChance)
@@ -157,5 +165,7 @@ namespace Cataclysmic
                 list.Add(p);
             }
         }
+
+
     }
 }
