@@ -135,8 +135,7 @@ namespace Cataclysmic
             GamePadState gamePad = GamePad.GetState(PlayerIndex.One);
             moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             GetVelocity(gameTime, gamePad);
-
-
+            
             int MouseX = Game1.MS.X;
             int MouseY = Game1.MS.Y;
 

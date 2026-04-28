@@ -188,6 +188,13 @@ namespace Cataclysmic
         public SoundEffectInstance music_desert1;
         public SoundEffectInstance music_desert2;
 
+        public static EventTimer shakeDuration = new EventTimer();
+        public static float shakeIntensity;
+        public static float currentIntensity;
+        public static Vector2 cameraPos = Vector2.Zero;
+        public static Vector2 shakeOffset = Vector2.Zero;
+        public static float globalShakeMultiplier;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -245,6 +252,7 @@ namespace Cataclysmic
             #endregion
 
             menu_particles = new List<Particle>();
+            globalShakeMultiplier = 1;
             base.Initialize();
         }
 
@@ -355,6 +363,13 @@ namespace Cataclysmic
         protected override void UnloadContent()
         {
             
+        }
+
+        public static void Shake(float duration, float intensity)
+        {
+            shakeDuration = new EventTimer(duration);
+            shakeIntensity = intensity * globalShakeMultiplier;
+            currentIntensity = intensity * globalShakeMultiplier;
         }
 
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
@@ -612,6 +627,17 @@ namespace Cataclysmic
                 if (KB.IsKeyDown(menu_pause) && oldKB.IsKeyUp(menu_pause))
                 {
                     paused = !paused;
+                }
+
+                if (!shakeDuration.Done)
+                {
+                    shakeDuration.Update();
+
+                    shakeOffset = new Vector2(
+                        (float)(rand.NextDouble() * 2 - 1) * currentIntensity,
+                        (float)(rand.NextDouble() * 2 - 1) * currentIntensity);
+                    currentIntensity = MathHelper.Lerp(shakeIntensity, 0, shakeDuration.lerpValue);
+
                 }
 
                 if (paused)
@@ -907,7 +933,12 @@ namespace Cataclysmic
 
 
                 GraphicsDevice.SetRenderTarget(sceneTarget);
-                spriteBatch.Begin();
+
+                Vector2 finalCamPos = cameraPos + shakeOffset;
+
+                Matrix transform = Matrix.CreateTranslation(new Vector3(-finalCamPos, 0));
+
+                spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transform);
 
                 currentEnvironment.DrawBackground();
                 //spriteBatch.Draw(texture_environment1, new Vector2(0, 0), Color.White);
@@ -923,6 +954,7 @@ namespace Cataclysmic
 
                 // End of shader section
                 spriteBatch.End();
+
                 GraphicsDevice.SetRenderTarget(sceneTargetCRT);
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, lightEffect);
