@@ -7,8 +7,18 @@ namespace Cataclysmic
     class RevolverWrapper : AbilityWrapper
     {
         const int SHOT_PARTICLES = 16;
+        const float ATTACKTIME = .3f;
+        const float COMBOTIME = 0f;
 
+        public override float GetAttackDuration()
+        {
+            return ATTACKTIME;
+        }
 
+        public override float GetComboDuration()
+        {
+            return COMBOTIME;
+        }
 
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
@@ -82,36 +92,17 @@ namespace Cataclysmic
             return Game1.texture_revolverWrapper;
         }
 
-        public override bool CanUseAbility()
-        {
-            if (cooldownFrames > 0)
-                return false;
-
-            
-             cooldownFrames = (int)(Revolver.COOLDOWN * 60); 
-            return true;
-
-            /* How to make satisfying "6 shot revolver"?
-             1. 
-            
-
-             */
-
-            //return false;
-        }
-
         public override bool CanUseAbility(EventTimer attackTimer, EventTimer comboTimer, Type comboClass)
         {
-            if (comboClass.Equals(this.GetType()) && comboTimer.IsRunning())
-            {
-                return true;
-            }
-            else return attackTimer.Done;
+            if (Game1.player.timeEnergy.currentMana < Revolver.MANA_COST)
+                return false;
+
+            return attackTimer.Done;
         }
 
         public override void Update()
         {
-            //empty for now
+            
         }
 
     }

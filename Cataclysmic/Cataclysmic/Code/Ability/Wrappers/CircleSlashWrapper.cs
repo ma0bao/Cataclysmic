@@ -8,6 +8,13 @@ namespace Cataclysmic
 {
     class CircleSlashWrapper : AbilityWrapper
     {
+
+        const float ATTACKTIME = .5f;
+
+        public override float GetAttackDuration()
+        {
+            return ATTACKTIME;
+        }
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(Game1.font_blackadder, "The Sweep Hand", new Vector2(1500, 100), Color.Black);
@@ -32,13 +39,12 @@ namespace Cataclysmic
             return Game1.texture_circleSlashWrapper;
         }
 
-        public override bool CanUseAbility()
+        public override bool CanUseAbility(EventTimer attackTimer, EventTimer comboTimer, Type comboClass)
         {
-            if (cooldownFrames <= 0) {
-                cooldownFrames = (int)(CircleSlash.COOLDOWN * 60);
-                return true;
-            }
-            return false;
+            if (Game1.player.timeEnergy.currentMana < CircleSlash.MANA_COST)
+                return false;
+
+            return attackTimer.Done;
         }
 
         public override void Update()

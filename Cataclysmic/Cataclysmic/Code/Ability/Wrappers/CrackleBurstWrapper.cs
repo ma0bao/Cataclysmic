@@ -9,6 +9,11 @@ namespace Cataclysmic
 {
     class CrackleBurstWrapper : AbilityWrapper
     {
+        const float ATTACKTIME = .4f;
+        public override float GetAttackDuration()
+        {
+            return ATTACKTIME;
+        }
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(Game1.font_blackadder, "Crackle Burst", new Vector2(1500, 100), Color.Black);
@@ -33,14 +38,12 @@ namespace Cataclysmic
             return Game1.texture_crackleBurstWrapper;
         }
 
-        public override bool CanUseAbility()
+        public override bool CanUseAbility(EventTimer attackTimer, EventTimer comboTimer, Type comboClass)
         {
-            if (cooldownFrames <= 0)
-            {
-                cooldownFrames = (int)(CrackleBurst.COOLDOWN * 60);
-                return true;
-            }
-            return false;
+            if (Game1.player.timeEnergy.currentMana < CrackleBurst.MANA_COST)
+                return false;
+
+            return attackTimer.Done;
         }
 
         public override void Update()

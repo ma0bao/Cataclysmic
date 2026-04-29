@@ -9,6 +9,12 @@ namespace Cataclysmic
 {
     class SwapWrapper : AbilityWrapper
     {
+        const float ATTACKTIME = .1f;
+        public override float GetAttackDuration()
+        {
+            return ATTACKTIME;
+        }
+
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(Game1.font_blackadder, "Swap" +
@@ -33,14 +39,12 @@ namespace Cataclysmic
             return Game1.texture_swapWrapper;
         }
 
-        public override bool CanUseAbility()
+        public override bool CanUseAbility(EventTimer attackTimer, EventTimer comboTimer, Type comboClass)
         {
-            if (cooldownFrames <= 0)
-            {
-                cooldownFrames = (int)(Swap.COOLDOWN * 60);
-                return true;
-            }
-            return false;
+            if (Game1.player.timeEnergy.currentMana < CircleSlash.MANA_COST)
+                return false;
+
+            return attackTimer.Done;
         }
 
         public override void Update()

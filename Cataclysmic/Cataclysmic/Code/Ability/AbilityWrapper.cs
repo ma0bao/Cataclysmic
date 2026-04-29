@@ -16,7 +16,8 @@ namespace Cataclysmic
     {
         public int cooldownFrames = 0;
 
-        //Add getter methods for timers
+        public virtual float GetAttackDuration() {return 0; }
+        public virtual float GetComboDuration() {return 0; }
         public abstract Ability GetAbilityInstance(Vector2 Position, float angle);
 
         public abstract Texture2D GetTexture();
@@ -24,12 +25,7 @@ namespace Cataclysmic
         public abstract void Update();
 
         public abstract void DrawDescription(SpriteBatch spriteBatch);
-
-        public abstract bool CanUseAbility();
-
-        public virtual bool CanUseAbility(EventTimer attackTimer, EventTimer comboTimer, Type comboClass)
-        {
-            return CanUseAbility();
-        }
+        public abstract bool CanUseAbility(EventTimer attackTimer, EventTimer comboTimer, Type comboClass);
+        
     }
 }

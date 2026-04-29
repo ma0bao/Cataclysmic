@@ -68,17 +68,19 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
-            int frameX;
-            int frameY;
-            if (slashRight)
+            int frameIndexX = (int)((timer / 2) % 3);
+            int frameIndexY = (int)((timer / 6) % 3);
+            color = Color.Black;
+
+            if (!slashRight)
             {
-                frameX = (int)((timer / 2) % 3 * 64);
-                frameY = (int)((timer / 6) % 3 * 47);
-            } else
-            {
-                frameX = (int)((timer / 2) % 3);
-                frameY = (int)((timer / 6) % 3);
+                frameIndexX = 2 - frameIndexX;
+                frameIndexY = 2 - frameIndexY;
+                color = Color.Red;
             }
+
+            int frameX = frameIndexX * 64;
+            int frameY = frameIndexY * 47;
             Game1.self.spriteBatch.Draw(Game1.texture_basicSlash, Position, new Rectangle(frameX, frameY, 64, 47), color, angle, new Vector2(64/2, 47/2 - 5), new Vector2(2f, 2.5f), SpriteEffects.None, 0f);
             Hitbox.DrawDebug();
         }

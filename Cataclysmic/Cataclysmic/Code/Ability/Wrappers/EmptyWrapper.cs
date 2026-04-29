@@ -24,16 +24,9 @@ namespace Cataclysmic
             return Game1.texture_emptyWrapper;
         }
 
-        
-
-        public override bool CanUseAbility()
+        public override bool CanUseAbility(EventTimer attackTimer, EventTimer comboTimer, Type comboClass)
         {
-            if (cooldownFrames <= 0)
-            {
-                cooldownFrames = 0;
-                return true;
-            }
-            return false;
+            return attackTimer.Done;
         }
 
         public override void Update()

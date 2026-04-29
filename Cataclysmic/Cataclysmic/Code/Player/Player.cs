@@ -51,8 +51,10 @@ namespace Cataclysmic
 
         public float maxSpeed = 500;
 
+        //Input values
         public EventTimer attackCooldown;
         public EventTimer comboTimer;
+        public Type previousAttack;
 
         public Player(Rectangle _destRect)
         {
@@ -111,6 +113,9 @@ namespace Cataclysmic
             abilityCosts["CircleSlash"] = CircleSlash.MANA_COST;
             abilityCosts["Slash"] = 0;
 
+            attackCooldown = new EventTimer();
+            comboTimer = new EventTimer();
+            previousAttack = this.GetType();
         }
 
         // check if ability is off cooldown, if so, restart cooldown and return true
@@ -178,28 +183,48 @@ namespace Cataclysmic
             #endregion
 
             // Attacks/Abilities
-            if (Game1.MS.LeftButton == ButtonState.Pressed)
+            if (Game1.MS.LeftButton == ButtonState.Pressed && Game1.oldMS.LeftButton == ButtonState.Released)
             {
-                if (Abilities[0].CanUseAbility())
+                if (Abilities[0].CanUseAbility(attackCooldown, comboTimer, previousAttack))
+                {
+                    attackCooldown.Restart(Abilities[0].GetAttackDuration());
+                    comboTimer.Restart(Abilities[0].GetComboDuration());
+                    previousAttack = Abilities[0].GetType();
                     abilities.Add(Abilities[0].GetAbilityInstance(renderData.Position, angle));
+                }
             }
 
-            if (Game1.MS.RightButton == ButtonState.Pressed)
+            if (Game1.MS.RightButton == ButtonState.Pressed && Game1.oldMS.RightButton == ButtonState.Released)
             {
-                if (Abilities[1].CanUseAbility())
+                if (Abilities[1].CanUseAbility(attackCooldown, comboTimer, previousAttack))
+                {
+                    attackCooldown.Restart(Abilities[1].GetAttackDuration());
+                    comboTimer.Restart(Abilities[1].GetComboDuration());
+                    previousAttack = Abilities[1].GetType();
                     abilities.Add(Abilities[1].GetAbilityInstance(renderData.Position, angle));
+                }
             }
             
             if (Game1.KB.IsKeyDown(Keys.Q) && !Game1.oldKB.IsKeyDown(Keys.Q))
             {
-                if (Abilities[2].CanUseAbility())
+                if (Abilities[2].CanUseAbility(attackCooldown, comboTimer, previousAttack))
+                {
+                    attackCooldown.Restart(Abilities[2].GetAttackDuration());
+                    comboTimer.Restart(Abilities[2].GetComboDuration());
+                    previousAttack = Abilities[2].GetType();
                     abilities.Add(Abilities[2].GetAbilityInstance(renderData.Position, angle));
+                }
             }
 
             if (Game1.KB.IsKeyDown(Keys.E) && !Game1.oldKB.IsKeyDown(Keys.E))
             {
-                if (Abilities[3].CanUseAbility())
+                if (Abilities[3].CanUseAbility(attackCooldown, comboTimer, previousAttack))
+                {
+                    attackCooldown.Restart(Abilities[3].GetAttackDuration());
+                    comboTimer.Restart(Abilities[3].GetComboDuration());
+                    previousAttack = Abilities[3].GetType();
                     abilities.Add(Abilities[3].GetAbilityInstance(renderData.Position, angle));
+                }
             }
             foreach (AbilityWrapper abilWrap in Abilities) {
                 abilWrap.Update();
@@ -245,6 +270,9 @@ namespace Cataclysmic
             renderData.UpdateAnimation(gameTime);
             Hitbox.Update(renderData.Position, angle);
             healthData.Update();
+
+            attackCooldown.Update();
+            comboTimer.Update();
 
             ScanDamage();
         }
