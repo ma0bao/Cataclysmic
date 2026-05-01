@@ -307,18 +307,15 @@ namespace Cataclysmic
             {
                 renderData.effects = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
             }
-            Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation - MathHelper.ToRadians(90), renderData.origin, renderData.effects, renderData.layerDepth);
+            renderData.color *= opacity;
+            renderData.rotation -= MathHelper.ToRadians(90);
+
+            base.Draw(opacity);
+
             foreach (Sand s in sands)
                 s.Draw();
             collision.DrawDebug();
 
-            if (healthData.invincible)
-            {
-
-                renderData.rotation -= (float)Math.PI * 0.5f;
-                renderData.DrawFlash();
-                renderData.rotation += (float)Math.PI * 0.5f;
-            }
         }
 
         public override bool IsAlive()

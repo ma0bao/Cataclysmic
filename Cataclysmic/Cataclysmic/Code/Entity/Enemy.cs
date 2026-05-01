@@ -31,6 +31,9 @@ namespace Cataclysmic
         public float staggerResistance = 1.0f;
         EventTimer staggerTimer;
 
+        //Indicator
+        EventTimer flashTimer;
+
         public enum EnemyState
         {
             GoingOnScreen,
@@ -48,6 +51,8 @@ namespace Cataclysmic
             collision = CollisionComponent.CreateRect(new Vector2(destRect.X, destRect.Y), width, height);
             staggerTimer = new EventTimer();
             bloodData = new BloodComponent(() => collision.Center);
+            flashTimer = new EventTimer(.4f);
+            flashTimer.Loop(true);
         }
 
         public virtual void Stagger(float secondsToStagger, bool UseResistance = true)
@@ -66,40 +71,9 @@ namespace Cataclysmic
         }
         public override void Draw(float opacity)
         {
-            if (!renderData.IsOnScreen() && enemyState == EnemyState.GoingOnScreen)
-            {
-                Point closestPoint = renderData.GetPointClosestToScreen().ToPoint();
-                float distance = renderData.GetDistanceToTarget(closestPoint.ToVector());
-
-                float lerp = 1f - MathHelper.Clamp(distance / 1000, 0f, 1f);
-
-                float scale = MathHelper.Lerp(3, 7, lerp);
-                byte colorOpacity = (byte)MathHelper.Lerp(100, 255, lerp);
-
-                float width = 13 * scale;
-                float height = 10 * scale;
-
-                float halfW = width / 2f;
-                float halfH = height / 2f;
-
-                Vector2 pos = renderData.Position;
-
-                float x = MathHelper.Clamp(pos.X, Game1.BOUNDS.Left + halfW, Game1.BOUNDS.Right - halfW);
-                float y = MathHelper.Clamp(pos.Y, Game1.BOUNDS.Left + halfH, Game1.BOUNDS.Bottom - halfH);
-
-                Rectangle warningRect = new Rectangle((int)x, (int)y, (int)width, (int)height);
-
-                RenderComponent warningData = new RenderComponent(Game1.texture_WarningSign, warningRect);
-                warningData.color.A = colorOpacity;
-                warningData.DefualtDraw();
-            }
-            else if(enemyState == EnemyState.GoingOnScreen)
-            {
-                enemyState = EnemyState.Active;
-            }
-
             renderData.DefualtDraw();
             collision.DrawDebug();
+
 
             if (healthData.invincible)
             {
@@ -108,7 +82,36 @@ namespace Cataclysmic
         }
 
         public override void DrawEx(float opacity) {
+            if (!renderData.IsOnScreen() && enemyState == EnemyState.GoingOnScreen)
+            {
+                Point closestPoint = renderData.GetPointClosestToScreen().ToPoint();
+                float distance = renderData.GetDistanceToTarget(closestPoint.ToVector());
 
+                float lerp = 1f - MathHelper.Clamp(distance / 2000, 0f, 1f);
+
+                float scale = MathHelper.Lerp(3, 5, lerp);
+                byte colorOpacity = (byte)MathHelper.Lerp(25, 255, flashTimer.lerpValue);
+
+                float width = 13 * scale;
+                float height = 10 * scale;
+
+                Vector2 pos = renderData.Position;
+
+                float x = MathHelper.Clamp(pos.X, Game1.BOUNDS.Left + 45.5f, Game1.BOUNDS.Right - 45.5f);
+                float y = MathHelper.Clamp(pos.Y, Game1.BOUNDS.Left + 35f, Game1.BOUNDS.Bottom - 35f);
+
+                Rectangle warningRect = new Rectangle((int)x, (int)y, (int)width, (int)height);
+
+                RenderComponent warningData = new RenderComponent(Game1.texture_WarningSign, warningRect);
+                warningData.color.A = colorOpacity;
+                warningData.DefualtDraw();
+
+                flashTimer.Update();
+            }
+            else if (enemyState == EnemyState.GoingOnScreen)
+            {
+                enemyState = EnemyState.Active;
+            }
         } 
         public override void Update(GameTime gameTime)
         {
@@ -121,6 +124,7 @@ namespace Cataclysmic
             moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             IncreaseVelocity();
             renderData.Position += moveData.velocity * moveData.deltaTime * moveData.speedModifiers;
+
             if(enemyState != EnemyState.GoingOnScreen)
             renderData.SetX(MathHelper.Clamp(renderData.Position.X, Game1.BOUNDS.Left, Game1.BOUNDS.Right));
             renderData.SetY(MathHelper.Clamp(renderData.Position.Y, Game1.BOUNDS.Top, Game1.BOUNDS.Bottom));
@@ -218,6 +222,15 @@ namespace Cataclysmic
             {
                 moveData.velocity.Normalize();
                 moveData.velocity *= moveData.maxSpeed;
+            }
+
+            if (enemyState == EnemyState.GoingOnScreen)
+            {
+                if (moveData.velocity.Length() > 400f)
+                {
+                    moveData.velocity.Normalize();
+                    moveData.velocity *= 400f;
+                }
             }
         }
 
