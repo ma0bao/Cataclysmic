@@ -184,36 +184,38 @@ namespace Cataclysmic
 
             if (currentState == AttackState.Spin)
             {
-                Game1.self.spriteBatch.Draw(
-                Game1.texture_apeshSpriteSheet,
-                new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, WIDTH, HEIGHT),
-                new Rectangle(0, 0, 55, 47),
-                renderData.color * opacity,
-                renderData.rotation,
-                new Vector2(55 / 2.0f, 47 / 2.0f),
-                renderData.effects,
-                renderData.layerDepth
-                );
+                renderData.sourceRect = new Rectangle(0, 0, 55, 47);
+                renderData.origin = new Vector2(55 / 2.0f, 47 / 2.0f);
+
+                //Game1.self.spriteBatch.Draw(
+                //Game1.texture_apeshSpriteSheet,
+                //new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, WIDTH, HEIGHT),
+                //new Rectangle(0, 0, 55, 47),
+                //renderData.color * opacity,
+                //renderData.rotation,
+                //new Vector2(55 / 2.0f, 47 / 2.0f),
+                //renderData.effects,
+                //renderData.layerDepth
+                //);
             }
             else {
-                Game1.self.spriteBatch.Draw(
-                Game1.texture_apeshSpriteSheet,
-                new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, WIDTH, HEIGHT),
-                new Rectangle(0 + (int)(Game1.timer / 10 % 4) * 55, 48, 55, 47),
-                renderData.color * opacity,
-                renderData.rotation,
-                new Vector2(55 / 2.0f, 47 / 2.0f),
-                renderData.effects,
-                renderData.layerDepth
-                );
+                renderData.sourceRect = new Rectangle(0 + (int)(Game1.timer / 10 % 4) * 55, 48, 55, 47);
+                renderData.origin = new Vector2(55 / 2.0f, 47 / 2.0f);
+
+                //Game1.self.spriteBatch.Draw(
+                //Game1.texture_apeshSpriteSheet,
+                //new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, WIDTH, HEIGHT),
+                //new Rectangle(0 + (int)(Game1.timer / 10 % 4) * 55, 48, 55, 47),
+                //renderData.color * opacity,
+                //renderData.rotation,
+                //new Vector2(55 / 2.0f, 47 / 2.0f),
+                //renderData.effects,
+                //renderData.layerDepth
+                //);
             }
             
-            collision.DrawDebug();
+            base.Draw(opacity);
 
-            if (healthData.invincible)
-            {
-                renderData.DrawFlash();
-            }
             //base.Draw(opacity);
             //Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation, renderData.origin, renderData.effects, renderData.layerDepth);
         }
