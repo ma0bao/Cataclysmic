@@ -163,8 +163,16 @@ namespace Cataclysmic
 
         public Vector2 GetPointClosestToScreen()
         {
-            float x = MathHelper.Clamp(Position.X, 0, Game1.WIDTH - 50);
-            float y = MathHelper.Clamp(Position.Y, 0, Game1.HEIGHT - 50);
+            float x = MathHelper.Clamp(Position.X, Game1.BOUNDS.Left+DestRect.Width / 2, Game1.BOUNDS.Right - DestRect.Width/2);
+            float y = MathHelper.Clamp(Position.Y, Game1.BOUNDS.Top+DestRect.Height / 2, Game1.BOUNDS.Bottom - DestRect.Height/2);
+
+            return new Vector2(x, y);
+        }
+
+        public Vector2 GetTargetsPointClosestToScreen(Vector2 target)
+        {
+            float x = MathHelper.Clamp(target.X, Game1.BOUNDS.Left+DestRect.Width, Game1.BOUNDS.Right - DestRect.Width*2);
+            float y = MathHelper.Clamp(target.Y, Game1.BOUNDS.Top+DestRect.Height, Game1.BOUNDS.Bottom - DestRect.Height*2);
 
             return new Vector2(x, y);
         }
@@ -187,7 +195,7 @@ namespace Cataclysmic
 
         public bool IsOnScreen()
         {
-            return Position.X > 0 && Position.X < Game1.WIDTH - 20;
+            return Game1.BOUNDS.Contains(Position.ToPoint());
         }
 
         public void DefualtDraw()

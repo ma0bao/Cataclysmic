@@ -33,11 +33,12 @@ namespace Cataclysmic
 
         public enum EnemyState
         {
+            GoingOnScreen,
             Active,
             Staggered
         }
 
-        public EnemyState enemyState;
+        public EnemyState enemyState = EnemyState.GoingOnScreen;
 
         public Enemy(Texture2D texture, Rectangle destRect, float width, float height)
         {
@@ -65,7 +66,37 @@ namespace Cataclysmic
         }
         public override void Draw(float opacity)
         {
-            
+            if (!renderData.IsOnScreen() && enemyState == EnemyState.GoingOnScreen)
+            {
+                Point closestPoint = renderData.GetPointClosestToScreen().ToPoint();
+                float distance = renderData.GetDistanceToTarget(closestPoint.ToVector());
+
+                float lerp = 1f - MathHelper.Clamp(distance / 1000, 0f, 1f);
+
+                float scale = MathHelper.Lerp(3, 7, lerp);
+                byte colorOpacity = (byte)MathHelper.Lerp(100, 255, lerp);
+
+                float width = 13 * scale;
+                float height = 10 * scale;
+
+                float halfW = width / 2f;
+                float halfH = height / 2f;
+
+                Vector2 pos = renderData.Position;
+
+                float x = MathHelper.Clamp(pos.X, Game1.BOUNDS.Left + halfW, Game1.BOUNDS.Right - halfW);
+                float y = MathHelper.Clamp(pos.Y, Game1.BOUNDS.Left + halfH, Game1.BOUNDS.Bottom - halfH);
+
+                Rectangle warningRect = new Rectangle((int)x, (int)y, (int)width, (int)height);
+
+                RenderComponent warningData = new RenderComponent(Game1.texture_WarningSign, warningRect);
+                warningData.color.A = colorOpacity;
+                warningData.DefualtDraw();
+            }
+            else if(enemyState == EnemyState.GoingOnScreen)
+            {
+                enemyState = EnemyState.Active;
+            }
 
             renderData.DefualtDraw();
             collision.DrawDebug();
@@ -90,9 +121,10 @@ namespace Cataclysmic
             moveData.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             IncreaseVelocity();
             renderData.Position += moveData.velocity * moveData.deltaTime * moveData.speedModifiers;
-            //Clamp movement 
+            if(enemyState != EnemyState.GoingOnScreen)
             renderData.SetX(MathHelper.Clamp(renderData.Position.X, Game1.BOUNDS.Left, Game1.BOUNDS.Right));
             renderData.SetY(MathHelper.Clamp(renderData.Position.Y, Game1.BOUNDS.Top, Game1.BOUNDS.Bottom));
+
 
             renderData.ResetHitBox();
             collision.Update(renderData.Position, renderData.rotation);
