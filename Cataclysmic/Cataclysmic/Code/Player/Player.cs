@@ -12,6 +12,7 @@ namespace Cataclysmic
 {
     public class Player : Entity
     {
+
         public RenderComponent renderData;
         public MoveComponent moveData;
         public HealthComponent healthData;
@@ -34,7 +35,7 @@ namespace Cataclysmic
         int MANAWIDTH = 200;
 
 
-        float angle;
+        public float angle;
 
         //Movement Display 
         bool isVisible = true;
@@ -43,10 +44,6 @@ namespace Cataclysmic
         EventTimer dashCooldown;
 
         //Abilities
-        List<Ability> abilities;
-        Dictionary<string, EventTimer> abilityCooldowns;
-        Dictionary<string, float> abilityCosts;
-
         public AbilityWrapper[] Abilities;
 
         public float maxSpeed = 500;
@@ -68,6 +65,9 @@ namespace Cataclysmic
             Abilities[1] = new SwapWrapper();
             Abilities[2] = new CrackleBurstWrapper();
             Abilities[3] = new SlashWrapper();
+
+            for (int i = 0; i < Abilities.Length; i++)
+                Abilities[i].abilitySpot = i;
 
             dashCooldown = new EventTimer(.5f);
             staminaBarRect = new Rectangle(5, 5, 200, 15);
@@ -91,42 +91,6 @@ namespace Cataclysmic
                 deathSpeedMult = 2.4f,
                 deathLifetimeMult = 2.2f
             };
-
-            abilities = new List<Ability>();
-
-            // Add abilities here: (start ready to use)
-            abilityCooldowns = new Dictionary<string, EventTimer>();
-            abilityCooldowns["Revolver"] = new EventTimer(Revolver.COOLDOWN);
-            abilityCooldowns["CrackleBurst"] = new EventTimer(CrackleBurst.COOLDOWN);
-            abilityCooldowns["CircleSlash"] = new EventTimer(CircleSlash.COOLDOWN);
-            abilityCooldowns["Slash"] = new EventTimer(Slash.COOLDOWN);
-            foreach (EventTimer cd in abilityCooldowns.Values) cd.Done = true;
-
-            abilityCosts = new Dictionary<string, float>();
-            abilityCosts["Revolver"] = 0;
-            abilityCosts["CrackleBurst"] = CrackleBurst.MANA_COST;
-            abilityCosts["CircleSlash"] = CircleSlash.MANA_COST;
-            abilityCosts["Slash"] = 0;
-
-        }
-
-        // check if ability is off cooldown, if so, restart cooldown and return true
-        public bool TryUseAbility(string abilityName)
-        {
-            EventTimer timer = abilityCooldowns[abilityName];
-            float cost = abilityCosts[abilityName];
-            if (timer.Done && timeEnergy.currentMana >= cost)
-            {
-                timer.Restart();
-                return true;
-            }
-            return false;
-        }
-
-        // for upgrades later
-        public void SetAbilityCooldown(string abilityName, float seconds)
-        {
-            abilityCooldowns[abilityName].SetTime(seconds);
         }
 
         public override void Update(GameTime gameTime)
@@ -175,31 +139,8 @@ namespace Cataclysmic
             #endregion
 
             // Attacks/Abilities
-            if (Game1.MS.LeftButton == ButtonState.Pressed)
-            {
-                if (Abilities[0].UseAbility())
-                    abilities.Add(Abilities[0].GetAbilityInstance(renderData.Position, angle));
-            }
-
-            if (Game1.MS.RightButton == ButtonState.Pressed)
-            {
-                if (Abilities[1].UseAbility())
-                    abilities.Add(Abilities[1].GetAbilityInstance(renderData.Position, angle));
-            }
-            
-            if (Game1.KB.IsKeyDown(Keys.Q) && !Game1.oldKB.IsKeyDown(Keys.Q))
-            {
-                if (Abilities[2].UseAbility())
-                    abilities.Add(Abilities[2].GetAbilityInstance(renderData.Position, angle));
-            }
-
-            if (Game1.KB.IsKeyDown(Keys.E) && !Game1.oldKB.IsKeyDown(Keys.E))
-            {
-                if (Abilities[3].UseAbility())
-                    abilities.Add(Abilities[3].GetAbilityInstance(renderData.Position, angle));
-            }
             foreach (AbilityWrapper abilWrap in Abilities) {
-                abilWrap.Update();
+                abilWrap.Update(gameTime);
             }
 
             // Dashes
@@ -217,17 +158,7 @@ namespace Cataclysmic
                 }
             }
             dashCooldown.Update();
-            foreach (EventTimer cd in abilityCooldowns.Values) cd.Update();
-            foreach (Ability abil in abilities)
-            {
-                abil.Update(gameTime);
-            }
-
-            for (int i = abilities.Count - 1; i >= 0; i--)
-            {
-                if (!abilities[i].IsAlive())
-                    abilities.RemoveAt(i);
-            }
+            
 
             // switch to walk and idle
             if (moveData.velocity.Length() > 10f)
@@ -384,12 +315,9 @@ namespace Cataclysmic
             if (currentDash != null)
                 currentDash.Draw(renderData, moveData);
 
-            foreach (Ability abil in abilities)
-            {
-                if (abil != null)
-                    abil.Draw(1.0f);
+            foreach (AbilityWrapper abilWrap in Abilities) {
+                abilWrap.DrawAbilities();
             }
-
             
 
             Hitbox.DrawDebug();
@@ -410,6 +338,16 @@ namespace Cataclysmic
             manaBar.Width = (int)(timeEnergy.lerpValue * MANAWIDTH);
             Game1.self.spriteBatch.Draw(Square, manaBarRect, Color.OrangeRed* opacity);
             Game1.self.spriteBatch.Draw(Square, manaBar, Color.Orange * opacity);
+
+            int pointerAbil = 0;
+            foreach (AbilityWrapper abilWrap in Abilities) {
+                //
+                
+                Game1.self.spriteBatch.Draw(abilWrap.GetTexture(), new Rectangle(100 + 120 * pointerAbil, 920, 100, 100), Color.White);
+                Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(100 + 120 * pointerAbil, 920, 100, (int)((double)abilWrap.cooldownFrames/abilWrap.GetMaxCooldown()*100)), Color.White);
+                pointerAbil++;
+            }
+
 
         }
 
@@ -451,12 +389,6 @@ namespace Cataclysmic
             if (wasAlive && !healthData.isAlive)
                 bloodData.Burst();
         }
-
-        public override Entity Clone()
-        {
-            return this;
-        }
-
         public override void ApplyEffect(Effect effect)
         {
             return;
@@ -466,5 +398,84 @@ namespace Cataclysmic
         {
             throw new NotImplementedException();
         }
+
+
+        public bool IsAbilityPressed(int _AbilityPosition, bool _HeldOverPressed = false) {
+            /* 
+             Why did I code it like this?
+             Firstly, having the ability slot position being passed in as a parameter makes the bulk of the logic handled within this method, rather than the ability wrapper.
+
+            Secondly, this code is optimized enough. It will only ever check 1 of the ability slots, and will check 3 conditionals after another, return false immediately after rather than checking the other if (abil == x) statements.
+             
+            This also looks much prettier lol. If you think it is too clunky, collapse the method / region
+             */
+            if (_AbilityPosition == 0)
+            {
+                // Mouse Input
+                if (Game1.MS.LeftButton == ButtonState.Pressed && (_HeldOverPressed || Game1.oldMS.LeftButton == ButtonState.Released)) { 
+                    return true;
+                }
+
+                // Keyboard Input
+                if (Game1.KB.IsKeyDown(Keys.D1) && (_HeldOverPressed || Game1.oldKB.IsKeyUp(Keys.D1))) {
+                    return true;
+                }
+
+                // Gamepad Input
+                if (Game1.GS.IsButtonDown(Buttons.LeftTrigger) && (_HeldOverPressed || Game1.GS.IsButtonUp(Buttons.LeftTrigger))) {
+                    return true;
+                }
+            }
+            else if (_AbilityPosition == 1) {
+                // Mouse Input
+                if (Game1.MS.RightButton == ButtonState.Pressed && (_HeldOverPressed || Game1.oldMS.RightButton == ButtonState.Released))
+                {
+                    return true;
+                }
+
+                // Keyboard Input
+                if (Game1.KB.IsKeyDown(Keys.D2) && (_HeldOverPressed || Game1.oldKB.IsKeyUp(Keys.D2)))
+                {
+                    return true;
+                }
+
+                // Gamepad Input
+                if (Game1.GS.IsButtonDown(Buttons.RightStick) && (_HeldOverPressed || Game1.GS.IsButtonUp(Buttons.RightTrigger)))
+                {
+                    return true;
+                }
+            }
+            else if (_AbilityPosition == 2)
+            {
+                // Keyboard Input
+                if (Game1.KB.IsKeyDown(Keys.Q) && (_HeldOverPressed || Game1.oldKB.IsKeyUp(Keys.Q)))
+                {
+                    return true;
+                }
+
+                // Gamepad Input
+                if (Game1.GS.IsButtonDown(Buttons.X) && (_HeldOverPressed || Game1.GS.IsButtonUp(Buttons.X)))
+                {
+                    return true;
+                }
+            }
+            else if (_AbilityPosition == 3)
+            {
+                // Keyboard Input
+                if (Game1.KB.IsKeyDown(Keys.E) && (_HeldOverPressed || Game1.oldKB.IsKeyUp(Keys.E)))
+                {
+                    return true;
+                }
+
+                // Gamepad Input
+                if (Game1.GS.IsButtonDown(Buttons.A) && (_HeldOverPressed || Game1.GS.IsButtonUp(Buttons.A)))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        
     }
 }

@@ -40,6 +40,7 @@ namespace Cataclysmic
                 if (Game1.rand.Next(5) == 1) {
                     Particle p = new Particle(Position, Game1.texture_blank, new Rectangle(0, 0, 1, 1), 3, 3, Game1.rand.Next(50, 120));
                     p.Color = colors[Game1.rand.Next(3)];
+                    p.fadeHalf = true;
                     float speed = 1.0f;
                     p.Velocity = new Vector2(speed * ((float)Game1.rand.NextDouble() - 0.5f), speed * ((float)Game1.rand.NextDouble() - 0.5f));// halfSpeed*((float)Game1.rand.NextDouble() - 0.5f);
                     Game1.self.currentEnvironment.GetParticles().Add(p);
@@ -164,6 +165,7 @@ namespace Cataclysmic
                     Particle p = new Particle(Position, Game1.texture_blank, new Rectangle(0, 0, 1, 1), 3, 3, Game1.rand.Next(50, 120));
                     p.Color = trailColors[Game1.rand.Next(3)];
                     float speed = 1.0f;
+                    p.fadeHalf = true;
                     p.Velocity = new Vector2(speed * ((float)Game1.rand.NextDouble() - 0.5f), speed * ((float)Game1.rand.NextDouble() - 0.5f));// halfSpeed*((float)Game1.rand.NextDouble() - 0.5f);
                     Game1.self.currentEnvironment.GetParticles().Add(p);
                 }

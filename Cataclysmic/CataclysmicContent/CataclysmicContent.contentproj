@@ -186,58 +186,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Free Part 1C.png">
-      <Name>Bullet 24x24 Free Part 1C</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Free Part 2C.png">
-      <Name>Bullet 24x24 Free Part 2C</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Free Part 3C.png">
-      <Name>Bullet 24x24 Free Part 3C</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Free Part 4C.png">
-      <Name>Bullet 24x24 Free Part 4C</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 10C Free.png">
-      <Name>Bullet 24x24 Part 10C Free</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 5C Free.png">
-      <Name>Bullet 24x24 Part 5C Free</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 6C Free.png">
-      <Name>Bullet 24x24 Part 6C Free</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 7C Free.png">
-      <Name>Bullet 24x24 Part 7C Free</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 8C Free.png">
-      <Name>Bullet 24x24 Part 8C Free</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Abilities\Bullets\Bullet 24x24 Part 9C Free.png">
-      <Name>Bullet 24x24 Part 9C Free</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sounds\Abilities\Explosions\sfx_exp_short_soft1.wav">
       <Name>sfx_exp_short_soft1</Name>
       <Importer>WavImporter</Importer>
@@ -606,6 +554,48 @@
       <Name>CrackleParticle</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Abilities\RevolverExtension.png">
+      <Name>RevolverExtension</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\Abilities\Revolver\RevolverShot1.wav">
+      <Name>RevolverShot1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\Abilities\Revolver\RevolverDraw1.wav">
+      <Name>RevolverDraw1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\step.wav">
+      <Name>step</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\Abilities\Revolver\RevolverShot2.wav">
+      <Name>RevolverShot2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\Music\Egyptian song.wav">
+      <Name>Egyptian song</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
