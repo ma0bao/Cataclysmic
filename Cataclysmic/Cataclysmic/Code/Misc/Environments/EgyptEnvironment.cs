@@ -53,20 +53,21 @@ namespace Cataclysmic
             "Wave 9",
             "Wave 10"
         };
+        static Vector2 EnemyStartPos => new Vector2(
+            (float) (Game1.HEIGHT / 2 + Math.Cos(Game1.rand.Next(-Game1.HEIGHT*3, Game1.HEIGHT*3)) * Game1.HEIGHT*3),
+            (float)Math.Sin(Game1.rand.Next(-Game1.HEIGHT * 3, Game1.HEIGHT * 3) * Game1.HEIGHT * 3)
+            );
+
         Enemy[][] enemies = {
 
-            //Test waves DELETE AFTER
-            new Enemy[]{
-                new Speedster(new Vector2(-1000, 500))
-            },
 
             // Wave 1
-            new Enemy[]{ new ShotgunLamp(new Vector2(-400, 400)),
-                new ShotgunLamp(new Vector2(Game1.WIDTH + 400, 400)),
-                new MagicLamp(new Vector2(Game1.WIDTH/2, -1000)),
-                new Androsphinx(new Vector2(Game1.WIDTH + 400, 400)),
-                new Apesh(new Vector2(-400, -1000)),
-                new ShotgunLamp(new Vector2(Game1.WIDTH + 400, -1000))
+            new Enemy[]{ new ShotgunLamp(EnemyStartPos),
+                new ShotgunLamp(EnemyStartPos),
+                new MagicLamp(EnemyStartPos),
+                new Androsphinx(EnemyStartPos),
+                new Apesh(EnemyStartPos),
+                new ShotgunLamp(EnemyStartPos)
             },
 
             // Wave 2
