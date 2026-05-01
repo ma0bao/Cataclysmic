@@ -47,7 +47,9 @@ Thomas Liew
 
 These are some of the awesome people that have their art or sounds in our game!
 
-* [BDragon1727](https://bdragon1727.itch.io/)
+* [Keisha Sespene](https://www.instagram.com/jikuokka/) (Main Menu Art)
+* [Daniel Ray](https://www.instagram.com/whitetrashprincessneverdies/) (Egyptian Soundtrack and SFX)
+* [Jonathan Zhu](https://www.instagram.com/jonzoo_/) (Enemy Sprites)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
