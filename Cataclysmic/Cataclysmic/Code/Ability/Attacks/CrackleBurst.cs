@@ -181,7 +181,7 @@ namespace Cataclysmic
                     angleOfTraj += ((float)Game1.rand.NextDouble() - 0.5f) * angleOfTraj*2/n;
                     crackles.AddFirst(new Crackle(Position, angleOfTraj));
                 }
-                
+                Game1.Shake(0.5f, 2.0f);
                 Game1.sfx_explosion_short1.Play(Game1.volume, 0, 0);
 
             }

@@ -326,28 +326,26 @@ namespace Cataclysmic
 
         public override void DrawEx(float opacity)
         {
-            float percent = dashCooldown.lerpValue;
-            staminaRect.Width = (int)(staminaBarRect.Width * percent);
-            Game1.self.spriteBatch.Draw(Square, staminaBarRect, Color.DarkGray* opacity);
-            Game1.self.spriteBatch.Draw(Square, staminaRect, Color.LightGray * opacity);
+            // Health Bar
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 922, 350, 60), Color.DarkRed);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 922, 1+(int)(350 * healthData.lerpValue), 60), Color.Red);
 
-            healthBar.Width = (int) (healthData.lerpValue * HEALTHWIDTH);
-            Game1.self.spriteBatch.Draw(Square, healthBarRect, Color.Red * opacity);
-            Game1.self.spriteBatch.Draw(Square, healthBar, Color.Green * opacity);
+            // Mana Bar
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 1003, 350, 60), Color.Purple);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 1003, 1+(int)(timeEnergy.lerpValue * HEALTHWIDTH), 60), Color.Lavender);
 
-            manaBar.Width = (int)(timeEnergy.lerpValue * MANAWIDTH);
-            Game1.self.spriteBatch.Draw(Square, manaBarRect, Color.OrangeRed* opacity);
-            Game1.self.spriteBatch.Draw(Square, manaBar, Color.Orange * opacity);
-
-            int pointerAbil = 0;
-            foreach (AbilityWrapper abilWrap in Abilities) {
-                //
-                
-                Game1.self.spriteBatch.Draw(abilWrap.GetTexture(), new Rectangle(100 + 120 * pointerAbil, 920, 100, 100), Color.White);
-                Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(100 + 120 * pointerAbil, 920, 100, (int)((double)abilWrap.cooldownFrames/abilWrap.GetMaxCooldown()*100)), Color.White);
-                pointerAbil++;
-            }
-
+            //1
+            Game1.self.spriteBatch.Draw(Abilities[0].GetTexture(), new Rectangle(634, 950, 83, 83), Color.White);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(634, 950, 83, (int)((double)Abilities[0].cooldownFrames / Abilities[0].GetMaxCooldown() * 83)), Color.White);
+            //2
+            Game1.self.spriteBatch.Draw(Abilities[1].GetTexture(), new Rectangle(762, 950, 80, 80), Color.White);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(762, 950, 83, (int)((double)Abilities[1].cooldownFrames / Abilities[1].GetMaxCooldown() * 80)), Color.White);
+            //3
+            Game1.self.spriteBatch.Draw(Abilities[2].GetTexture(), new Rectangle(894, 950, 83, 83), Color.White);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(894, 950, 83, (int)((double)Abilities[2].cooldownFrames / Abilities[2].GetMaxCooldown() * 80)), Color.White);
+            //4
+            Game1.self.spriteBatch.Draw(Abilities[3].GetTexture(), new Rectangle(1026, 950, 83, 83), Color.White);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(1026, 950, 83, (int)((double)Abilities[3].cooldownFrames / Abilities[3].GetMaxCooldown() * 83)), Color.White);
 
         }
 
@@ -385,6 +383,7 @@ namespace Cataclysmic
             if (!tookDamage)
                 return;
 
+            Game1.Shake(0.5f, Math.Max(2.0f, amount/2.0f));
             bloodData.Spew(BloodHit.Medium);
             if (wasAlive && !healthData.isAlive)
                 bloodData.Burst();
