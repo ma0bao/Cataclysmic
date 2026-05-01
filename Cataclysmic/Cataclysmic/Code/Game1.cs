@@ -138,6 +138,7 @@ namespace Cataclysmic
         public static Texture2D texture_crackleBurstMissile;
         public static Texture2D texture_crackleParticle;
         public static Texture2D texture_revolverExtension;
+        public static Texture2D texture_WarningSign;
 
         public static Texture2D texture_clock;
         public static Texture2D texture_clockHandRotate;
@@ -301,6 +302,7 @@ namespace Cataclysmic
             texture_crackleBurstMissile = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleBurstMissile");
             texture_crackleParticle = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleParticle");
             texture_revolverExtension = Content.Load<Texture2D>("Sprites/Abilities/RevolverExtension");
+            texture_WarningSign = Content.Load<Texture2D>("Sprites/Enemies/WarningSign");
 
             texture_clock = Content.Load<Texture2D>("Sprites/GUI/Clock198x198");
             texture_clockHandRotate = Content.Load<Texture2D>("Sprites/GUI/ClockHand48x48");
@@ -965,7 +967,6 @@ namespace Cataclysmic
 
                 spriteBatch.Begin();
                 spriteBatch.Draw(texture_overlay1, new Vector2(0, 0), Color.White);
-                
                 player.DrawEx(1.0f);
                 spriteBatch.End();
 
