@@ -160,7 +160,6 @@ namespace Cataclysmic
                 CrackTimer.Update();
             }
 
-            collision.DrawDebug();
 
             base.Draw(opacity);
             //Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation, renderData.origin, renderData.effects, renderData.layerDepth);

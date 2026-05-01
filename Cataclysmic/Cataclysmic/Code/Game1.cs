@@ -137,6 +137,7 @@ namespace Cataclysmic
         public static Texture2D texture_crackleBurstMissile;
         public static Texture2D texture_crackleParticle;
         public static Texture2D texture_revolverExtension;
+        public static Texture2D texture_WarningSign;
 
         #endregion
 
@@ -296,6 +297,7 @@ namespace Cataclysmic
             texture_crackleBurstMissile = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleBurstMissile");
             texture_crackleParticle = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleParticle");
             texture_revolverExtension = Content.Load<Texture2D>("Sprites/Abilities/RevolverExtension");
+            texture_WarningSign = Content.Load<Texture2D>("Sprites/Enemies/WarningSign");
             #endregion
 
             //Sounds
@@ -954,7 +956,6 @@ namespace Cataclysmic
 
                 spriteBatch.Begin();
                 spriteBatch.Draw(texture_overlay1, new Vector2(0, 0), Color.White);
-                
                 player.DrawEx(1.0f);
                 spriteBatch.End();
 

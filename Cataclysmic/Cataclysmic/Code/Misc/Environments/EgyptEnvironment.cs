@@ -56,10 +56,9 @@ namespace Cataclysmic
         Enemy[][] enemies = {
 
             //Test waves DELETE AFTER
-            //new Enemy[]{
-            //    new Atum(new Vector2(Game1.BOUNDS.Center.X, Game1.BOUNDS.Center.Y)),
-            //    new Sun(new Vector2(100, 100))
-            //},
+            new Enemy[]{
+                new Speedster(new Vector2(-1000, 500))
+            },
 
             // Wave 1
             new Enemy[]{ new ShotgunLamp(new Vector2(-400, 400)),
@@ -149,7 +148,7 @@ namespace Cataclysmic
                 while (wavePointer < enemies.Length - 1 && enemies[wavePointer].Length == 0) {
                     wavePointer++;
                 }
-                if (tracks[wavePointer] != null) {
+                if (wavePointer < tracks.Length && tracks[wavePointer] != null) {
                     tracks[wavePointer - 1].Stop();
                     tracks[wavePointer].Play();
                 }
