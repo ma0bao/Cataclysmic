@@ -17,7 +17,7 @@ namespace Cataclysmic
     {
         public const int WIDTH = 20;   // bullet thickness (perpendicular to travel direction)
         public const int LENGTH = 40;  // bullet length (along travel direction)
-        public const float STEP = 5f;
+        public const float STEP = 3f;
         public const float SPAWN_OFFSET = 20f; // distance from player center to spawn bullet
         public const int DAMAGE = 10;
         public static readonly BloodHit BLOOD = BloodHit.Light;
@@ -25,7 +25,7 @@ namespace Cataclysmic
         Vector2 Position;
         public CollisionComponent Hitbox;
         public float angle;
-        public const float COOLDOWN = 0.5f;
+        public const float COOLDOWN = 2f;
 
 
         public Revolver(Vector2 position, float angle)
@@ -44,14 +44,14 @@ namespace Cataclysmic
 
             float maxDistance = 2000f;
             Vector2 current = Position;
-            int raySize = 4;
+            int raySize = 6;
             CollisionComponent col = CollisionComponent.CreateRect(current, raySize, raySize);
             float depth;
             Vector2 normal;
             for (float point = 0; point < maxDistance; point += STEP) {
                 current += direction * STEP;
 
-                Particle p = new Particle(current, Game1.texture_blank, Rectangle.Empty, 2, 2, (int) (point / maxDistance * 30) + Game1.rand.Next(10));
+                Particle p = new Particle(current, Game1.texture_blank, Rectangle.Empty, 2, 2, (int) (point / maxDistance * 60) + Game1.rand.Next(10));
 
                 p.Color = Color.Lerp(Color.Black * 0.2f, Color.Black, point/maxDistance);
                 Game1.self.currentEnvironment.GetParticles().Add(p);
@@ -63,7 +63,7 @@ namespace Cataclysmic
                     }
                 }
             }
-            Game1.sfx_weapon_singleshot2.Play(Game1.volume, 0, 0);
+            
         }
         public override void Update(GameTime gameTime)
         {

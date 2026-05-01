@@ -20,10 +20,6 @@ namespace Cataclysmic
         public const int GRACE_DISTANCE = 70;
         public const int PARTICLE_COUNT = 40;
 
-        float Angle;
-        long timer;
-        
-
         public Swap(Vector2 position, float angle)
         {
             foreach (Enemy e in Game1.self.currentEnvironment.GetEnemies()) {

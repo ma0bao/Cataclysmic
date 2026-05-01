@@ -25,8 +25,6 @@ namespace Cataclysmic
 
         public abstract Boolean IsAlive();
 
-        public abstract Entity Clone();
-
         public abstract void ApplyEffect(Effect effect);
 
         public abstract void OnCollision();

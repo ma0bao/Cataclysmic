@@ -77,15 +77,6 @@ namespace Cataclysmic
         }
 
         public override void DrawEx(float opacity) {
-            if (!Game1.BOUNDS.Contains(renderData.hitBox)) {
-                Rectangle rect = new Rectangle(
-                    (int)MathHelper.Clamp(renderData.Position.X, Game1.BOUNDS.Left, Game1.BOUNDS.Right),
-                    (int)MathHelper.Clamp(renderData.Position.Y, Game1.BOUNDS.Top, Game1.BOUNDS.Bottom),
-                    10,
-                    10
-                );
-                Game1.self.spriteBatch.Draw(Game1.texture_blank, rect, Color.Red);
-            }
 
         } 
         public override void Update(GameTime gameTime)
@@ -218,11 +209,6 @@ namespace Cataclysmic
         public override bool IsAlive()
         {
             return healthData.isAlive;
-        }
-
-        public override Entity Clone()
-        {
-            return this;
         }
 
         public override void ApplyEffect(Effect effect)

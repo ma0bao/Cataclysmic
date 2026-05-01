@@ -9,6 +9,13 @@ namespace Cataclysmic
 {
     class CrackleBurstWrapper : AbilityWrapper
     {
+        public List<Ability> abilities;
+
+        public CrackleBurstWrapper()
+        {
+            abilities = new List<Ability>();
+        }
+
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(Game1.font_blackadder, "Crackle Burst", new Vector2(1500, 100), Color.Black);
@@ -33,19 +40,44 @@ namespace Cataclysmic
             return Game1.texture_crackleBurstWrapper;
         }
 
-        public override bool UseAbility()
+        public override void Update(GameTime _gameTime)
         {
-            if (cooldownFrames <= 0)
+            if (cooldownFrames > 0)
+                cooldownFrames--;
+
+            foreach (Ability abil in abilities)
             {
-                cooldownFrames = (int)(CrackleBurst.COOLDOWN * 60);
-                return true;
+                abil.Update(_gameTime);
             }
-            return false;
+            for (int i = abilities.Count - 1; i >= 0; i--)
+            {
+                if (!abilities[i].IsAlive())
+                    abilities.RemoveAt(i);
+            }
+
+            if (Game1.player.IsAbilityPressed(abilitySpot))
+            {
+                if (cooldownFrames <= 0)
+                {
+                    cooldownFrames = (int)(CrackleBurst.COOLDOWN * 60);
+
+                    abilities.Add(GetAbilityInstance(Game1.player.renderData.Position, Game1.player.angle));
+                }
+            }
+
         }
 
-        public override void Update()
+        public override void DrawAbilities()
         {
-            cooldownFrames--;
+            foreach (Ability abil in abilities)
+            {
+                abil.Draw(1.0f);
+            }
+        }
+
+        public override int GetMaxCooldown()
+        {
+            return (int)(CrackleBurst.COOLDOWN * 60);
         }
     }
 }

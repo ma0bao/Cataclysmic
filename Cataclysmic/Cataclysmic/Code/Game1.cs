@@ -106,16 +106,6 @@ namespace Cataclysmic
         public static Texture2D texture_enochianChain_1;
         public static Texture2D texture_enochianChain_2;
         public static Texture2D texture_menuSpriteSheet;
-        public static Texture2D texture_bullets1C;
-        public static Texture2D texture_bullets2C;
-        public static Texture2D texture_bullets3C;
-        public static Texture2D texture_bullets4C;
-        public static Texture2D texture_bullets5C;
-        public static Texture2D texture_bullets6C;
-        public static Texture2D texture_bullets7C;
-        public static Texture2D texture_bullets8C;
-        public static Texture2D texture_bullets9C;
-        public static Texture2D texture_bullets10C;
         public static Texture2D texture_player;
         public static Texture2D texture_playerIdle;
         public static Texture2D texture_playerWalk;
@@ -146,6 +136,7 @@ namespace Cataclysmic
         public static Texture2D texture_apesh;
         public static Texture2D texture_crackleBurstMissile;
         public static Texture2D texture_crackleParticle;
+        public static Texture2D texture_revolverExtension;
 
         #endregion
 
@@ -165,6 +156,9 @@ namespace Cataclysmic
         public static SoundEffect sfx_sandBurst1;
         public static SoundEffect sfx_hurtSound1;
         public static SoundEffect sfx_spin1;
+        public static SoundEffect sfx_revolver_shot1;
+        public static SoundEffect sfx_revolver_shot2;
+        public static SoundEffect sfx_revolver_draw1;
         #endregion
 
         // Main Menu
@@ -282,17 +276,6 @@ namespace Cataclysmic
             texture_meatballEgypt = Content.Load<Texture2D>("Sprites/Enemies/meatballEgypt");
             texture_overlay1 = Content.Load<Texture2D>("Levels/Overlay1");
             texture_environment1 = Content.Load<Texture2D>("Levels/EgyptianEnvironmentBackground");
-            texture_bullets1C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 1C");
-            texture_bullets2C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 2C");
-            texture_bullets3C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 3C");
-            texture_bullets4C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 4C");
-            texture_bullets5C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Free Part 4C");
-            texture_bullets5C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 5C Free");
-            texture_bullets6C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 6C Free");
-            texture_bullets7C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 7C Free");
-            texture_bullets8C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 8C Free");
-            texture_bullets9C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 9C Free");
-            texture_bullets10C = Content.Load<Texture2D>("Sprites/Abilities/Bullets/Bullet 24x24 Part 10C Free");
             texture_clockHand = Content.Load<Texture2D>("Sprites/Abilities/clockHand");
             texture_firePortal = Content.Load<Texture2D>("Sprites/Abilities/firePortal");
             texture_seraphim = Content.Load<Texture2D>("Sprites/GUI/Seraphim");
@@ -312,6 +295,7 @@ namespace Cataclysmic
             texture_swapWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/SwapImage");
             texture_crackleBurstMissile = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleBurstMissile");
             texture_crackleParticle = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleParticle");
+            texture_revolverExtension = Content.Load<Texture2D>("Sprites/Abilities/RevolverExtension");
             #endregion
 
             //Sounds
@@ -326,6 +310,10 @@ namespace Cataclysmic
             sfx_hurtSound1 = Content.Load<SoundEffect>("Sounds/hitHurt");
             sfx_spin1 = Content.Load<SoundEffect>("Sounds/Abilities/Weapons/spin3");
 
+            sfx_revolver_shot1 = Content.Load<SoundEffect>("Sounds/Abilities/Revolver/RevolverShot1");
+            sfx_revolver_shot2 = Content.Load<SoundEffect>("Sounds/Abilities/Revolver/RevolverShot2");
+            sfx_revolver_draw1 = Content.Load<SoundEffect>("Sounds/Abilities/Revolver/RevolverDraw1");
+
             sound_Teleport = Content.Load<SoundEffect>("Sounds/Abilities/TeleportSound");
             sound_ChargeUp = Content.Load<SoundEffect>("Sounds/Abilities/Charge");
             sound_whooshDash = Content.Load<SoundEffect>("Sounds/Abilities/WooshDash");
@@ -335,6 +323,8 @@ namespace Cataclysmic
             #region
             music_menu1 = Content.Load<SoundEffect>("Sounds/Music/VampPiano").CreateInstance();
             music_desert1 = Content.Load<SoundEffect>("Sounds/Music/desert_loops_2").CreateInstance();
+            music_desert1 = Content.Load<SoundEffect>("Sounds/Music/Egyptian song").CreateInstance();
+            music_desert1.Volume = 0.15f;
             music_desert1.IsLooped = true;
             #endregion
 
@@ -568,7 +558,7 @@ namespace Cataclysmic
                         }
                     }
                     music_menu1.Volume = volume;
-                    music_desert1.Volume = volume;
+                    music_desert1.Volume = volume * 0.15f;
                 }
                 else if (optionPointer == 1)
                 {
@@ -750,6 +740,7 @@ namespace Cataclysmic
                         if (!(AbilityPool[abilityRowPointer][abilityColPointer] is EmptyWrapper)) {
                             pointerState = AbilityPointerState.TopRow;
                             player.Abilities[topColPointer] = AbilityPool[abilityRowPointer][abilityColPointer];
+                            player.Abilities[topColPointer].abilitySpot = topColPointer;
                         }
                     }
                 }
@@ -869,7 +860,6 @@ namespace Cataclysmic
                 spriteBatch.Draw(texture_credits, new Vector2(WIDTH / 2 - texture_credits.Width / 2, 10), Color.White);
                 spriteBatch.DrawString(font_credits, "Developers >>> Evan Tupper, Zackariya Aggour, & Thomas Liew" +
                     "\n\nCursor Sprites >>> Ivan Voirol" +
-                    "\nBullet 24x24 >>> BDragon1727" +
                     "\nMain Menu Assets >>> Keisha Sespene" +
                     "\nMenu Music >>> Tadon", new Vector2(10, 300), Color.White);
                 spriteBatch.DrawString(font_credits, "Press Back to return...", new Vector2(WIDTH / 2 - 120, HEIGHT - 50), Color.White);
@@ -939,7 +929,7 @@ namespace Cataclysmic
                 Matrix transform = Matrix.CreateTranslation(new Vector3(-finalCamPos, 0));
 
                 spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transform);
-
+                
                 currentEnvironment.DrawBackground();
                 //spriteBatch.Draw(texture_environment1, new Vector2(0, 0), Color.White);
 

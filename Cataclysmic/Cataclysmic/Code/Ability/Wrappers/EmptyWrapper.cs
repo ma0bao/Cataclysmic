@@ -24,21 +24,19 @@ namespace Cataclysmic
             return Game1.texture_emptyWrapper;
         }
 
-        
-
-        public override bool UseAbility()
+        public override void DrawAbilities()
         {
-            if (cooldownFrames <= 0)
-            {
-                cooldownFrames = 0;
-                return true;
-            }
-            return false;
+            throw new NotImplementedException();
         }
 
-        public override void Update()
+        public override void Update(GameTime _gameTime)
         {
             cooldownFrames--;
+        }
+
+        public override int GetMaxCooldown()
+        {
+            return 1;
         }
     }
 }
