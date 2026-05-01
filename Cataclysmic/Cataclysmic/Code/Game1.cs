@@ -134,10 +134,14 @@ namespace Cataclysmic
         public static Texture2D texture_crack;
         public static Texture2D texture_bulletString1;
         public static Texture2D texture_apesh;
+        public static Texture2D texture_apeshSpriteSheet;
         public static Texture2D texture_crackleBurstMissile;
         public static Texture2D texture_crackleParticle;
         public static Texture2D texture_revolverExtension;
 
+        public static Texture2D texture_clock;
+        public static Texture2D texture_clockHandRotate;
+        public static Texture2D texture_clockworkBorder;
         #endregion
 
         // SoundEffects
@@ -292,15 +296,20 @@ namespace Cataclysmic
             texture_crack = Content.Load<Texture2D>("Sprites/Abilities/cracks");
             texture_bulletString1 = Content.Load<Texture2D>("Sprites/Abilities/Bullets/BulletTestOne");
             texture_apesh = Content.Load<Texture2D>("Sprites/Enemies/ApeshV1");
+            texture_apeshSpriteSheet = Content.Load<Texture2D>("Sprites/Enemies/ApeshShells");
             texture_swapWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/SwapImage");
             texture_crackleBurstMissile = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleBurstMissile");
             texture_crackleParticle = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleParticle");
             texture_revolverExtension = Content.Load<Texture2D>("Sprites/Abilities/RevolverExtension");
-            #endregion
 
-            //Sounds
-            #region
-            sound_HeavyClick = Content.Load<SoundEffect>("Sounds/UI/HeavyClick");
+            texture_clock = Content.Load<Texture2D>("Sprites/GUI/Clock198x198");
+            texture_clockHandRotate = Content.Load<Texture2D>("Sprites/GUI/ClockHand48x48");
+            texture_clockworkBorder = Content.Load<Texture2D>("Sprites/GUI/ClockworkBorderTransparent");
+        #endregion
+
+        //Sounds
+        #region
+        sound_HeavyClick = Content.Load<SoundEffect>("Sounds/UI/HeavyClick");
             sound_HeavyStart = Content.Load<SoundEffect>("Sounds/UI/HeavyStart");
             sound_click = Content.Load<SoundEffect>("Sounds/UI/click");
             sfx_explosion_short1 = Content.Load<SoundEffect>("Sounds/Abilities/Explosions/sfx_exp_short_soft1");
@@ -909,7 +918,9 @@ namespace Cataclysmic
                 lightEffect.Parameters["LightPosition"].SetValue(new Vector2(player.renderData.Position.X + player.renderData.DestRect.Width / 2, player.renderData.Position.Y + player.renderData.DestRect.Height / 2)); // Center
                 lightEffect.Parameters["LightRadius"].SetValue(2000f);
                 lightEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
-                lightEffect.Parameters["LightColor"].SetValue(new Vector3(1.1f, 1.1f, 1.1f)); // Warm yellow
+                float factor = (1 - (float)Math.Max(player.healthData.frames, 0) / HealthComponent.MAXIFRAMES * 0.2f);
+                Vector3 LightColor = new Vector3(1.1f, 1.1f * factor, 1.1f * factor);
+                lightEffect.Parameters["LightColor"].SetValue(LightColor); // Warm yellow
                 lightEffect.Parameters["Intensity"].SetValue(1.0f);
 
                 timeEffect.Parameters["LightPosition"].SetValue(new Vector2(player.renderData.Position.X + player.renderData.DestRect.Width / 2, player.renderData.Position.Y + player.renderData.DestRect.Height / 2)); // Center
@@ -961,8 +972,10 @@ namespace Cataclysmic
                 // Overlays
                 GraphicsDevice.SetRenderTarget(null);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
-                spriteBatch.Draw(sceneTargetCRT, Vector2.Zero, Color.White);
+                spriteBatch.Draw(sceneTargetCRT, Vector2.Zero, Color.White); 
                 currentEnvironment.DrawEx();
+                spriteBatch.Draw(texture_clockworkBorder, Vector2.Zero, Color.White);
+                spriteBatch.Draw(texture_clock, new Vector2(10, HEIGHT-198), Color.White);
                 if (debugMode)
                 {
                     int incrementer = 0;

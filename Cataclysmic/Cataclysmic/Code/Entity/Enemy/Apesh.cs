@@ -30,14 +30,14 @@ namespace Cataclysmic
         EventTimer CrackTimer;
         Rectangle crackRect;
 
-        const int WIDTH = 64;
-        const int HEIGHT = 64;
+        const int WIDTH = 110;
+        const int HEIGHT = 94;
         const int HITBOX_WIDTH = 64;
         const int HITBOX_HEIGHT = 64;
 
         CollisionComponent SlamHitbox;
 
-        public Apesh(Vector2 position) : base(Game1.texture_apesh, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
+        public Apesh(Vector2 position) : base(Game1.texture_apeshSpriteSheet, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
             staggerResistance = 0.1f;
             player = Game1.player;
@@ -56,7 +56,9 @@ namespace Cataclysmic
   
             CrackTimer = new EventTimer(2f);
             CrackTimer.Done = true;
+
             
+            renderData.SetupAnimation(55, 47, 4, 0.1f);
         }
 
         public override void Update(GameTime gameTime)
@@ -112,12 +114,32 @@ namespace Cataclysmic
                 slowRadius = 150;
 
                 Game1.sfx_spin1.Play(Game1.volume, -0.1f + (float) Game1.rand.NextDouble() * 0.2f, 0);
-                if (Game1.timer % 3 == 0)
+                if (Game1.timer % 2 == 0)
                 {
-                    Particle p = new Particle(renderData.Position, Game1.texture_apesh, renderData.sourceRect, WIDTH, HEIGHT, 60);
+                    Particle p = new Particle(
+                        renderData.Position, 
+                        Game1.texture_apeshSpriteSheet,
+                        new Rectangle(0, 0, 55, 47), 
+                        WIDTH, 
+                        HEIGHT, 
+                        60);
                     p.Angle = renderData.rotation;
                     p.Color = Color.Black * 0.1f;
+                    p.Origin = new Vector2(55 / 2.0f, 47 / 2.0f);
                     Game1.self.currentEnvironment.GetParticles().Add(p);
+
+                    /* 
+                     Game1.self.spriteBatch.Draw(
+                Game1.texture_apeshSpriteSheet,
+                new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, WIDTH * 2, HEIGHT * 2),
+                new Rectangle(0, 0, 55, 47),
+                renderData.color * opacity,
+                renderData.rotation,
+                new Vector2(55 / 2.0f, 47 / 2.0f),
+                renderData.effects,
+                renderData.layerDepth
+                     
+                     */
                 }
                 if (timeToSpin.Done)
                 {
@@ -160,9 +182,39 @@ namespace Cataclysmic
                 CrackTimer.Update();
             }
 
+            if (currentState == AttackState.Spin)
+            {
+                Game1.self.spriteBatch.Draw(
+                Game1.texture_apeshSpriteSheet,
+                new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, WIDTH, HEIGHT),
+                new Rectangle(0, 0, 55, 47),
+                renderData.color * opacity,
+                renderData.rotation,
+                new Vector2(55 / 2.0f, 47 / 2.0f),
+                renderData.effects,
+                renderData.layerDepth
+                );
+            }
+            else {
+                Game1.self.spriteBatch.Draw(
+                Game1.texture_apeshSpriteSheet,
+                new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, WIDTH, HEIGHT),
+                new Rectangle(0 + (int)(Game1.timer / 10 % 4) * 55, 48, 55, 47),
+                renderData.color * opacity,
+                renderData.rotation,
+                new Vector2(55 / 2.0f, 47 / 2.0f),
+                renderData.effects,
+                renderData.layerDepth
+                );
+            }
+            
             collision.DrawDebug();
 
-            base.Draw(opacity);
+            if (healthData.invincible)
+            {
+                renderData.DrawFlash();
+            }
+            //base.Draw(opacity);
             //Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation, renderData.origin, renderData.effects, renderData.layerDepth);
         }
 

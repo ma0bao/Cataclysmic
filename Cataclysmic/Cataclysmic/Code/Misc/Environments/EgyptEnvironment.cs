@@ -62,7 +62,7 @@ namespace Cataclysmic
             //},
 
             // Wave 1
-            new Enemy[]{ new ShotgunLamp(new Vector2(-400, 400)),
+            new Enemy[]{ new Apesh(new Vector2(-400, 400)),
                 new ShotgunLamp(new Vector2(Game1.WIDTH + 400, 400)),
                 new MagicLamp(new Vector2(Game1.WIDTH/2, -1000)),
                 new Androsphinx(new Vector2(Game1.WIDTH + 400, 400)),
