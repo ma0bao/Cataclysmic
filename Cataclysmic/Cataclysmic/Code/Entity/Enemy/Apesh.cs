@@ -44,7 +44,7 @@ namespace Cataclysmic
             SetNewTargetPosition(player.renderData.Position);
             distanceToBeAtTarget = 100;
             spinTimer = new EventTimer(3);
-            cooldownTimer = new EventTimer(.4f);
+            cooldownTimer = new EventTimer(.6f);
             timeToSpin = new EventTimer(1.5f);
             turnSpeed = 1000;
             moveData.maxSpeed = 200;
@@ -186,43 +186,19 @@ namespace Cataclysmic
             {
                 renderData.sourceRect = new Rectangle(0, 0, 55, 47);
                 renderData.origin = new Vector2(55 / 2.0f, 47 / 2.0f);
-
-                //Game1.self.spriteBatch.Draw(
-                //Game1.texture_apeshSpriteSheet,
-                //new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, WIDTH, HEIGHT),
-                //new Rectangle(0, 0, 55, 47),
-                //renderData.color * opacity,
-                //renderData.rotation,
-                //new Vector2(55 / 2.0f, 47 / 2.0f),
-                //renderData.effects,
-                //renderData.layerDepth
-                //);
             }
             else {
                 renderData.sourceRect = new Rectangle(0 + (int)(Game1.timer / 10 % 4) * 55, 48, 55, 47);
                 renderData.origin = new Vector2(55 / 2.0f, 47 / 2.0f);
-
-                //Game1.self.spriteBatch.Draw(
-                //Game1.texture_apeshSpriteSheet,
-                //new Rectangle((int)renderData.Position.X, (int)renderData.Position.Y, WIDTH, HEIGHT),
-                //new Rectangle(0 + (int)(Game1.timer / 10 % 4) * 55, 48, 55, 47),
-                //renderData.color * opacity,
-                //renderData.rotation,
-                //new Vector2(55 / 2.0f, 47 / 2.0f),
-                //renderData.effects,
-                //renderData.layerDepth
-                //);
             }
             
             base.Draw(opacity);
-
-            //base.Draw(opacity);
-            //Game1.self.spriteBatch.Draw(renderData.texture, renderData.DestRect, renderData.sourceRect, renderData.color * opacity, renderData.rotation, renderData.origin, renderData.effects, renderData.layerDepth);
         }
 
         public void Slam()
         {
             SlamHitbox = CollisionComponent.CreateRect(renderData.Position, 200, 200);
+            Game1.Shake(.2f, 20f);
             CrackTimer.Restart();
             crackRect = new Rectangle(renderData.hitBox.X-75, renderData.hitBox.Y-75, 200, 200);
             

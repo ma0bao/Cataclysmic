@@ -83,6 +83,11 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
+    <Compile Include="Fonts\Score.spritefont">
+      <Name>Score</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <None Include="Sprites\GUI\CataclysmicIcon.ico">
       <Name>CataclysmicIcon</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

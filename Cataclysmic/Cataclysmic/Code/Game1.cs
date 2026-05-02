@@ -42,6 +42,7 @@ namespace Cataclysmic
         int abilityColPointer = 0;
         int dashColPointer = 0;
         int topColPointer = 0;
+        float clockRotationRadians = 0;
         AbilityPointerState pointerState = AbilityPointerState.TopRow;
         enum AbilityPointerState { 
             TopRow, SelectingAbility, SelectingDash
@@ -57,7 +58,7 @@ namespace Cataclysmic
         public static GamePadState oldGS;
         public static GamePadState GS;
         public static long timer;
-        long score;
+        public static long score;
         public static float volume;
         public static float intensityOfCRT;
         public const int MAX_INTENSITY = 50;
@@ -94,6 +95,7 @@ namespace Cataclysmic
         public static SpriteFont font_credits;
         public static SpriteFont font_blackadder;
         public static SpriteFont font_gabriola;
+        public static SpriteFont font_score;
         #endregion
 
         // Textures
@@ -356,6 +358,7 @@ namespace Cataclysmic
             font_credits = Content.Load<SpriteFont>("Fonts/CreditsFont");
             font_blackadder = Content.Load<SpriteFont>("Fonts/BlackadderITC");
             font_gabriola = Content.Load<SpriteFont>("Fonts/Fancy Font");
+            font_score = Content.Load<SpriteFont>("Fonts/Score");
 
             player = new Player(new Rectangle(WIDTH / 2, HEIGHT / 2, 60, 60));
             environments = new Environment[]{ new EgyptEnvironment() };
@@ -685,6 +688,7 @@ namespace Cataclysmic
                     {
                         if (environmentPointer + 1 >= environments.Length - 1)
                         {
+                            score += 1000;
                             gameState = GameState.End;
                             goto JumpOut;
                         }
@@ -976,7 +980,9 @@ namespace Cataclysmic
                 spriteBatch.Draw(sceneTargetCRT, Vector2.Zero, Color.White); 
                 currentEnvironment.DrawEx();
                 spriteBatch.Draw(texture_clockworkBorder, Vector2.Zero, Color.White);
+                spriteBatch.DrawString(font_score, "" + score, new Vector2(1380, 900), Color.White);
                 spriteBatch.Draw(texture_clock, new Vector2(10, HEIGHT-198), Color.White);
+                spriteBatch.Draw(texture_clockHandRotate, new Rectangle(107, HEIGHT - 93, 48, 48), null, Color.Black, 0+ 0.558505585033782f, new Vector2(40, 40), SpriteEffects.None, 0);
                 if (debugMode)
                 {
                     int incrementer = 0;
@@ -1069,6 +1075,11 @@ namespace Cataclysmic
 
 
             base.Draw(gameTime);
+        }
+
+        public void RotateClockHand(float radians)
+        {
+            clockRotationRadians += radians;
         }
 
         private Rectangle newRectangle(int x, int y, Vector2 size) {
