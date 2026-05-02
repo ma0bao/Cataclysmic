@@ -312,6 +312,8 @@ namespace Cataclysmic
 
             base.Draw(opacity);
 
+            renderData.rotation += MathHelper.ToRadians(90);
+
             foreach (Sand s in sands)
                 s.Draw();
             collision.DrawDebug();
