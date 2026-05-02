@@ -43,9 +43,10 @@ namespace Cataclysmic
                 pos: new Vector2(renderData.Position.X+20, renderData.Position.Y),
                 direction: Vector2.Zero,
                 speed: 0f,
-                texture: Game1.texture_player,
-                scale: new Point(200, 20)
+                texture: Game1.texture_spear,
+                scale: new Point(25, 185)
                 );
+            
 
             //Speeds
             turnSpeed = 1200;
@@ -79,10 +80,6 @@ namespace Cataclysmic
             //Draw
             base.Draw(opacity);
 
-            if (HasSpear)
-                renderData.color = Color.Red;
-            else
-                renderData.color = Color.Blue;
 
             //Draw abilities 
             foreach (Ability abil in abilities)
@@ -143,7 +140,7 @@ namespace Cataclysmic
             if (currentState == AttackState.Wander || currentState == AttackState.Run)
             {
                 if (HasSpear)
-                    spear.renderData.rotation = 90;
+                    spear.renderData.rotation = 0;
                 if (IsAtTarget())
                 {
                     int chance = Game1.rand.Next(1, 11);
@@ -245,11 +242,10 @@ namespace Cataclysmic
                 pos: renderData.Position,
                 direction: renderData.GetDirectionToTarget(player.renderData.Position),
                 speed: 1000f,
-                Game1.texture_player,
-                new Point(200, 20)
+                texture: Game1.texture_spear,
+                scale: new Point(Game1.texture_spear.Width, Game1.texture_spear.Height)
                 );
-            spear.renderData.rotation = MathHelper.ToDegrees(renderData.GetRotationToTarget(player.renderData.Position));
-            spear.renderData.rotation += 90;
+            spear.renderData.rotation = renderData.GetRotationToTarget(player.renderData.Position);
             spearCooldown.Restart();
         }
             
