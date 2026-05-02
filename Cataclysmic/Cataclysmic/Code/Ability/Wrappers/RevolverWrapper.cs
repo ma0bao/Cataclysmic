@@ -20,6 +20,8 @@ namespace Cataclysmic
 
         public List<Ability> abilities;
 
+        const float ATTACKTIME = .02f;
+
         public RevolverWrapper() {
             abilities = new List<Ability>();
             inCombo = false;

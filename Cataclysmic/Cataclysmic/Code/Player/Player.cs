@@ -45,6 +45,7 @@ namespace Cataclysmic
 
         //Abilities
         public AbilityWrapper[] Abilities;
+        public EventTimer abilityTimer;
 
         public float maxSpeed = 500;
 
@@ -91,6 +92,8 @@ namespace Cataclysmic
                 deathSpeedMult = 2.4f,
                 deathLifetimeMult = 2.2f
             };
+
+            abilityTimer = new EventTimer();
         }
 
         public override void Update(GameTime gameTime)
@@ -175,6 +178,7 @@ namespace Cataclysmic
             healthData.Update();
 
             ScanDamage();
+            abilityTimer.Update();
         }
 
         public void ScanForDash(GamePadState gamePad)

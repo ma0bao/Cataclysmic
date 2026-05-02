@@ -9,6 +9,8 @@ namespace Cataclysmic
 {
     class EmptyWrapper : AbilityWrapper
     {
+
+        const float ATTACKTIME = 0f;
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(Game1.font_blackadder, "This ability is not yet implemented.. \nsorry ):", new Vector2(1200, 100), Color.Black);
