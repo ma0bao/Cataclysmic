@@ -70,15 +70,21 @@ namespace Cataclysmic
         {
             int frameX;
             int frameY;
+
+            int frameIndexX = (int)((timer / 2) % 3);
+            int frameIndexY = (int)((timer / 6) % 3);
+
             if (slashRight)
             {
-                frameX = (int)((timer / 2) % 3 * 64);
-                frameY = (int)((timer / 6) % 3 * 47);
-            } else
-            {
-                frameX = (int)((timer / 2) % 3);
-                frameY = (int)((timer / 6) % 3);
+                frameX = frameIndexX * 64;
+                frameY = frameIndexY * 47;
             }
+            else
+            {
+                frameX = (2 - frameIndexX) * 64;
+                frameY = (2 - frameIndexY) * 47;
+            }
+
             Game1.self.spriteBatch.Draw(Game1.texture_basicSlash, Position, new Rectangle(frameX, frameY, 64, 47), color, angle, new Vector2(64/2, 47/2 - 5), new Vector2(2f, 2.5f), SpriteEffects.None, 0f);
             Hitbox.DrawDebug();
         }

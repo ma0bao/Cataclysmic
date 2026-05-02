@@ -178,10 +178,14 @@ namespace Cataclysmic
             if (!tookDamage)
                 return;
 
+            Game1.score += amount;
             bloodData.Spew(hit);
 
             if (wasAlive && !healthData.isAlive)
+            {
                 bloodData.Burst();
+                Game1.score += 500;
+            }
         }
 
         public virtual void IncreaseVelocity()
