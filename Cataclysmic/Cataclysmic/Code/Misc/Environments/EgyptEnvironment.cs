@@ -60,7 +60,6 @@ namespace Cataclysmic
 
         Enemy[][] enemies = {
 
-
             // Wave 1
             new Enemy[]{ new ShotgunLamp(EnemyStartPos),
                 new ShotgunLamp(EnemyStartPos),
