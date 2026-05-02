@@ -166,7 +166,8 @@ namespace Cataclysmic
 
         public override void Stagger(float secondsToStagger, bool UseResistance = true)
         {
-            if (currentState == AttackState.Cooldown || currentState == AttackState.Spin || currentState == AttackState.Slam) currentState = AttackState.Track;
+            if (currentState == AttackState.Spin)
+                return;
             base.Stagger(secondsToStagger, UseResistance);
         }
 

@@ -11,6 +11,7 @@ namespace Cataclysmic
     {
         public List<Ability> abilities;
 
+        const float ATTACKTIME = .02f;
         public SwapWrapper()
         {
             abilities = new List<Ability>();
@@ -61,8 +62,8 @@ namespace Cataclysmic
                 if (cooldownFrames <= 0)
                 {
                     cooldownFrames = (int)(Swap.COOLDOWN * 60);
-
                     abilities.Add(GetAbilityInstance(Game1.player.renderData.Position, Game1.player.angle));
+                    Game1.player.abilityTimer.Restart(ATTACKTIME);
                 }
             }
 

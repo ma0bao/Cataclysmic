@@ -9,11 +9,13 @@ namespace Cataclysmic
     class CircleSlashWrapper : AbilityWrapper
     {
         public List<Ability> abilities;
+        const float ATTACKTIME = 1f;
 
         public CircleSlashWrapper()
         {
             abilities = new List<Ability>();
         }
+
 
         public override void DrawDescription(SpriteBatch spriteBatch)
         {
@@ -54,13 +56,14 @@ namespace Cataclysmic
                     abilities.RemoveAt(i);
             }
 
-            if (Game1.player.IsAbilityPressed(abilitySpot))
+            if (Game1.player.IsAbilityPressed(abilitySpot) && CheckCrossAbilityCooldown())
             {
-                if (cooldownFrames <= 0)
+                if (cooldownFrames <= 0 && CheckCrossAbilityCooldown())
                 {
                     cooldownFrames = (int)(CircleSlash.COOLDOWN * 60);
 
                     abilities.Add(GetAbilityInstance(Game1.player.renderData.Position, Game1.player.angle));
+                    Game1.player.abilityTimer.Restart(ATTACKTIME);
                 }
             }
 
