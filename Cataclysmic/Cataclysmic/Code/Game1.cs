@@ -197,6 +197,8 @@ namespace Cataclysmic
         public static Vector2 shakeOffset = Vector2.Zero;
         public static float globalShakeMultiplier;
 
+        public static List<Visual> visuals;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -255,6 +257,8 @@ namespace Cataclysmic
 
             menu_particles = new List<Particle>();
             globalShakeMultiplier = 1;
+            visuals = new List<Visual>();
+
             base.Initialize();
         }
 
@@ -307,8 +311,8 @@ namespace Cataclysmic
             texture_revolverExtension = Content.Load<Texture2D>("Sprites/Abilities/RevolverExtension");
             texture_WarningSign = Content.Load<Texture2D>("Sprites/Enemies/WarningSign");
 
-            texture_clock = Content.Load<Texture2D>("Sprites/GUI/Clock198x198");
-            texture_clockHandRotate = Content.Load<Texture2D>("Sprites/GUI/ClockHand48x48");
+            texture_clock = Content.Load<Texture2D>("Sprites/GUI/clock");
+            texture_clockHandRotate = Content.Load<Texture2D>("Sprites/GUI/minuteHand");
             texture_clockworkBorder = Content.Load<Texture2D>("Sprites/GUI/ClockworkBorderTransparent");
             texture_spear = Content.Load<Texture2D>("Sprites/Enemies/spear");
         #endregion
@@ -699,6 +703,12 @@ namespace Cataclysmic
                     JumpOut:
                     player.Update(gameTime);
                     currentEnvironment.Update(gameTime);
+                    for (int i = visuals.Count - 1; i >= 0; i--)
+                    {
+                        visuals.ElementAt(i).Update();
+                        if (!visuals.ElementAt(i).IsAlive())
+                            visuals.RemoveAt(i);
+                    }
                 }
 
 
@@ -956,6 +966,8 @@ namespace Cataclysmic
 
                 currentEnvironment.DrawParticles();   
                 player.Draw(1.0f);
+                foreach (Visual v in visuals)
+                    v.Draw();
                 currentEnvironment.Draw();
                 //foreach(Enemy e in enemies)
                 //e.Draw(1.0f);
@@ -983,8 +995,9 @@ namespace Cataclysmic
                 currentEnvironment.DrawEx();
                 spriteBatch.Draw(texture_clockworkBorder, Vector2.Zero, Color.White);
                 spriteBatch.DrawString(font_score, "" + score, new Vector2(1380, 900), Color.White);
-                spriteBatch.Draw(texture_clock, new Vector2(10, HEIGHT-198), Color.White);
-                spriteBatch.Draw(texture_clockHandRotate, new Rectangle(107, HEIGHT - 93, 48, 48), null, Color.Black, 0+ 0.558505585033782f, new Vector2(40, 40), SpriteEffects.None, 0);
+                spriteBatch.Draw(texture_clock, new Rectangle(40, HEIGHT-170, 170, 170), Color.White);
+                spriteBatch.Draw(texture_clockHandRotate, new Rectangle(125, HEIGHT-80, 20, 60), null, Color.Black, clockRotationRadians, new Vector2(35, 160), SpriteEffects.None, 0);
+                //if (KB.IsKeyDown(Keys.K)) RotateClockHand(.1f);
                 if (debugMode)
                 {
                     int incrementer = 0;

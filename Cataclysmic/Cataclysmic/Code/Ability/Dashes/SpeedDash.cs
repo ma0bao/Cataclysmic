@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,11 +27,21 @@ namespace Cataclysmic
                 moveData.speedModifiers /= multiplier;
         }
 
-        public void Draw(RenderComponent renderData, MoveComponent moveData) 
+        public void Draw(RenderComponent renderData, MoveComponent moveData)
         {
             renderData.DrawAt(moveData.GetUpdatedPosition(renderData.Position, -1).ToPoint(), 150);
             renderData.DrawAt(moveData.GetUpdatedPosition(renderData.Position, -2).ToPoint(), 125);
             renderData.DrawAt(moveData.GetUpdatedPosition(renderData.Position, -3).ToPoint(), 100);
+        }
+
+        public void DrawDescription()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Texture2D GetTexture()
+        {
+            throw new NotImplementedException();
         }
     }
 }

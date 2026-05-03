@@ -49,5 +49,15 @@ namespace Cataclysmic
             Game1.self.spriteBatch.Draw(texture, destRect1, null, Color.DarkOrange, MathHelper.ToRadians(rotation), origin, SpriteEffects.None, 0f);
             Game1.self.spriteBatch.Draw(texture, destRect2, null, Color.Red, MathHelper.ToRadians(rotation), origin, SpriteEffects.None, 0f);
         }
+
+        public void DrawDescription()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Texture2D GetTexture()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
