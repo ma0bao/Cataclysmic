@@ -146,6 +146,8 @@ namespace Cataclysmic
         public static Texture2D texture_clockHandRotate;
         public static Texture2D texture_clockworkBorder;
         public static Texture2D texture_spear;
+        public static Texture2D texture_SunFire;
+        public static Texture2D texture_YellowCircle;
         #endregion
 
         // SoundEffects
@@ -315,6 +317,8 @@ namespace Cataclysmic
             texture_clockHandRotate = Content.Load<Texture2D>("Sprites/GUI/minuteHand");
             texture_clockworkBorder = Content.Load<Texture2D>("Sprites/GUI/ClockworkBorderTransparent");
             texture_spear = Content.Load<Texture2D>("Sprites/Enemies/spear");
+            texture_SunFire = Content.Load<Texture2D>("Sprites/Enemies/SunFire");
+            texture_YellowCircle = Content.Load<Texture2D>("Sprites/Enemies/YellowCircle");
         #endregion
 
         //Sounds

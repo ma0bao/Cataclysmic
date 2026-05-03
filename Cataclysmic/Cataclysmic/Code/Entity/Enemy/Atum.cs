@@ -173,6 +173,9 @@ namespace Cataclysmic
             #region Update Based On State
             if (currentState == AttackStates.Center || currentState == AttackStates.Geyser)
             {
+                if (Game1.KB.IsKeyDown(Keys.K) && !Game1.oldKB.IsKeyDown(Keys.K))
+                    Game1.visuals.Add(new Visual(Game1.texture_SunFire, new Rectangle(400, 400, 100, 100), 5f));
+
                 renderData.color = Color.Lerp(Color.White, Color.Red, (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 3f) * 0.5f + 0.5f);
 
                 base.Update(gameTime);
@@ -426,24 +429,46 @@ namespace Cataclysmic
         public CollisionComponent collisionData;
         int maxWidth;
         int maxHeight;
+        float damageTimeLerp = .8f;
+        bool isLight = true;
 
         public EventTimer life = new EventTimer(3);
 
         public Geyser(Rectangle destRect)
         {
-            renderData = new RenderComponent(Game1.texture_player, new Rectangle(destRect.X, destRect.Y, 2, 2));
-            collisionData = CollisionComponent.CreateCircle(renderData.Position, 30);
+            renderData = new RenderComponent(Game1.texture_YellowCircle, new Rectangle(destRect.X, destRect.Y, 2, 2));
+            collisionData = CollisionComponent.CreateCircle(renderData.Position, 20);
 
             maxWidth = destRect.Width;
             maxHeight = destRect.Height;
         }
 
-        public void Draw() { renderData.DefualtDraw(); collisionData.DrawDebug();  }
+        public void Draw() {
+            renderData.DefualtDraw(); 
+            collisionData.DrawDebug();  
+        }
 
         public void Update(GameTime gameTime) 
         {
-            renderData.SetWidth((int) (life.lerpValue * maxWidth));
-            renderData.SetHeight((int) (life.lerpValue * maxHeight));
+            if (isLight)
+            {
+                renderData.SetWidth((int)(life.lerpValue * maxWidth));
+                renderData.SetHeight((int)(life.lerpValue * maxHeight));
+                renderData.color.A = (byte)(255 * life.lerpValue);
+                if (life.lerpValue > damageTimeLerp)
+                {
+                    isLight = false;
+                    //renderData = new RenderComponent(Game1.texture_SunFire, new Rectangle(
+                    //    renderData.DestRect.X,
+                    //    renderData.DestRect.Y,
+                    //    (int)(maxWidth * damageTimeLerp),
+                    //    (int)(maxHeight * damageTimeLerp)
+                    //    ));
+                    renderData = new RenderComponent(Game1.texture_SunFire, renderData.DestRect);
+                }
+            }
+
+
             life.Update();
         }
 
