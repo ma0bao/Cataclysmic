@@ -174,7 +174,11 @@ namespace Cataclysmic
             if (currentState == AttackStates.Center || currentState == AttackStates.Geyser)
             {
                 if (Game1.KB.IsKeyDown(Keys.K) && !Game1.oldKB.IsKeyDown(Keys.K))
-                    Game1.visuals.Add(new Visual(Game1.texture_SunFire, new Rectangle(400, 400, 100, 100), 5f));
+                {
+                    RenderComponent render = new RenderComponent(Game1.texture_SunFire, new Rectangle(400, 400, 100, 100));
+                    render.color.A = 50;
+                    Game1.visuals.Add(new Visual(render, 5f));
+                }
 
                 renderData.color = Color.Lerp(Color.White, Color.Red, (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 3f) * 0.5f + 0.5f);
 
@@ -282,6 +286,7 @@ namespace Cataclysmic
 
         public void FireWave(float amt = 10)
         {
+            Game1.sfx_boom.Play(Game1.volume, Game1.rand.NextFloat(), 0);
             for (float i = 0; i < amt; i++)
             {
                 Vector2 direction = renderData.GetDirectionToTarget(target.renderData.Position);
@@ -301,12 +306,13 @@ namespace Cataclysmic
                     direction.X * cos - direction.Y * sin,
                     direction.X * sin + direction.Y * cos
                     );
-                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity));
+                projectiles.Add(new WaveShot(Game1.texture_SunFire, renderData.Position, rotatedVelocity));
             }
         }
 
         public void FireCircle(float amt = 50)
         {
+            Game1.sfx_boom.Play(Game1.volume, Game1.rand.NextFloat(), 0);
             for (float i = 0; i < amt; i++)
             {
                 Vector2 direction = renderData.GetDirectionToTarget(target.renderData.Position);
@@ -326,12 +332,13 @@ namespace Cataclysmic
                     direction.X * cos - direction.Y * sin,
                     direction.X * sin + direction.Y * cos
                     );
-                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity));
+                projectiles.Add(new WaveShot(Game1.texture_SunFire, renderData.Position, rotatedVelocity));
             }
         }
 
         public void FireSpread(float amt = 1)
         {
+            Game1.sfx_boom.Play(Game1.volume, Game1.rand.NextFloat(), 0);
             for (float i = 0; i < amt; i++)
             {
                 Vector2 direction = renderData.GetDirectionToTarget(target.renderData.Position);
@@ -351,7 +358,7 @@ namespace Cataclysmic
                     direction.X * cos - direction.Y * sin,
                     direction.X * sin + direction.Y * cos
                     );
-                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity));
+                projectiles.Add(new WaveShot(Game1.texture_SunFire, renderData.Position, rotatedVelocity));
             }
         }
 
@@ -458,12 +465,7 @@ namespace Cataclysmic
                 if (life.lerpValue > damageTimeLerp)
                 {
                     isLight = false;
-                    //renderData = new RenderComponent(Game1.texture_SunFire, new Rectangle(
-                    //    renderData.DestRect.X,
-                    //    renderData.DestRect.Y,
-                    //    (int)(maxWidth * damageTimeLerp),
-                    //    (int)(maxHeight * damageTimeLerp)
-                    //    ));
+                    Game1.sfx_fireIgnite.Play(Game1.volume*0.5f, (float)Game1.rand.NextDouble(), 0);
                     renderData = new RenderComponent(Game1.texture_SunFire, renderData.DestRect);
                 }
             }
@@ -534,6 +536,15 @@ namespace Cataclysmic
         public CollisionComponent collisionData;
 
         float SPEED = 400;
+
+
+        public WaveShot(Texture2D texture, Vector2 pos, Vector2 direction)
+        {
+            moveData = new MoveComponent();
+            moveData.velocity = direction * SPEED;
+            renderData = new RenderComponent(texture, new Rectangle((int)pos.X, (int)pos.Y, 50, 50));
+            collisionData = CollisionComponent.CreateRect(pos, 30, 30);
+        }
 
         public WaveShot(Vector2 pos, Vector2 direction)
         {

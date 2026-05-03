@@ -60,9 +60,8 @@ namespace Cataclysmic
 
         Enemy[][] enemies = {
 
-            new Enemy[]{ 
-                new Atum(EnemyStartPos),
-                new Sun(EnemyStartPos)
+            new Enemy[]{
+                new Atum(new Vector2(-2000, 500))
             },
 
             // Wave 1

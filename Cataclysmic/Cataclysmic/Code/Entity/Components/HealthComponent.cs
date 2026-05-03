@@ -37,7 +37,6 @@ namespace Cataclysmic
 
         public void Update()
         {
-            
             frames--;
         }
         //Entity has a damge thing. do you want to do it here?
