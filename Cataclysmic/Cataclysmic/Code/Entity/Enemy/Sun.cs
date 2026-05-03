@@ -171,7 +171,7 @@ namespace Cataclysmic
                     direction.X * cos - direction.Y * sin,
                     direction.X * sin + direction.Y * cos
                     );
-                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity, 20));
+                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity, 200));
             }
         }
 
