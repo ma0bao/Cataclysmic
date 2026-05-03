@@ -148,6 +148,7 @@ namespace Cataclysmic
         public static Texture2D texture_spear;
         public static Texture2D texture_SunFire;
         public static Texture2D texture_YellowCircle;
+        public static Texture2D texture_Sun;
         #endregion
 
         // SoundEffects
@@ -169,6 +170,8 @@ namespace Cataclysmic
         public static SoundEffect sfx_revolver_shot1;
         public static SoundEffect sfx_revolver_shot2;
         public static SoundEffect sfx_revolver_draw1;
+        public static SoundEffect sfx_fireIgnite;
+        public static SoundEffect sfx_boom;
         #endregion
 
         // Main Menu
@@ -319,6 +322,7 @@ namespace Cataclysmic
             texture_spear = Content.Load<Texture2D>("Sprites/Enemies/spear");
             texture_SunFire = Content.Load<Texture2D>("Sprites/Enemies/SunFire");
             texture_YellowCircle = Content.Load<Texture2D>("Sprites/Enemies/YellowCircle");
+            texture_Sun = Content.Load<Texture2D>("Sprites/Enemies/Sun");
         #endregion
 
         //Sounds
@@ -336,10 +340,12 @@ namespace Cataclysmic
             sfx_revolver_shot1 = Content.Load<SoundEffect>("Sounds/Abilities/Revolver/RevolverShot1");
             sfx_revolver_shot2 = Content.Load<SoundEffect>("Sounds/Abilities/Revolver/RevolverShot2");
             sfx_revolver_draw1 = Content.Load<SoundEffect>("Sounds/Abilities/Revolver/RevolverDraw1");
+            sfx_fireIgnite = Content.Load<SoundEffect>("Sounds/Abilities/Explosions/Ignite");
 
             sound_Teleport = Content.Load<SoundEffect>("Sounds/Abilities/TeleportSound");
             sound_ChargeUp = Content.Load<SoundEffect>("Sounds/Abilities/Charge");
             sound_whooshDash = Content.Load<SoundEffect>("Sounds/Abilities/WooshDash");
+            sfx_boom = Content.Load<SoundEffect>("Sounds/Abilities/Explosions/Boom");
             #endregion
 
             // Music
@@ -990,13 +996,13 @@ namespace Cataclysmic
                 spriteBatch.Begin();
                 spriteBatch.Draw(texture_overlay1, new Vector2(0, 0), Color.White);
                 player.DrawEx(1.0f);
+                currentEnvironment.DrawEx();
                 spriteBatch.End();
 
                 // Overlays
                 GraphicsDevice.SetRenderTarget(null);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
                 spriteBatch.Draw(sceneTargetCRT, Vector2.Zero, Color.White); 
-                currentEnvironment.DrawEx();
                 spriteBatch.Draw(texture_clockworkBorder, Vector2.Zero, Color.White);
                 spriteBatch.DrawString(font_score, "" + score, new Vector2(1380, 900), Color.White);
                 spriteBatch.Draw(texture_clock, new Rectangle(40, HEIGHT-170, 170, 170), Color.White);
