@@ -24,6 +24,8 @@ namespace Cataclysmic
         public static Rectangle BOUNDS = new Rectangle(60, 60, 1800, 850);
         public const int FADE_IN_START_FRAME = 0;
         public const int FADE_IN_TIME = 240;
+
+
         public SoundEffectInstance music_menu1;
 
         public static Color ambientColor = new Color(241, 220, 170);
@@ -58,8 +60,12 @@ namespace Cataclysmic
         public static GamePadState oldGS;
         public static GamePadState GS;
         public static long timer;
+        public static long pauseTimer;
+        public const int START_PLACE = -1000;
+        public const int GOAL_PLACE = -300;
         public static long score;
         public static float volume;
+        public bool pausing;
         public static float intensityOfCRT;
         public const int MAX_INTENSITY = 50;
         public const int INTENSITY_INCREMENTER = 1;
@@ -126,6 +132,7 @@ namespace Cataclysmic
         public static Texture2D texture_star;
         public static Texture2D texture_firePortal;
         public static Texture2D texture_pauseMenuText;
+        public static Texture2D texture_pauseMenu;
         public static Texture2D texture_abilitiesMenu;
         public static Texture2D texture_revolverWrapper;
         public static Texture2D texture_slashWrapper;
@@ -141,6 +148,7 @@ namespace Cataclysmic
         public static Texture2D texture_crackleParticle;
         public static Texture2D texture_revolverExtension;
         public static Texture2D texture_WarningSign;
+        public static Texture2D texture_creditsScreen;
 
         public static Texture2D texture_clock;
         public static Texture2D texture_clockHandRotate;
@@ -187,7 +195,6 @@ namespace Cataclysmic
         public Microsoft.Xna.Framework.Graphics.Effect crtEffect;
 
         public SoundEffectInstance music_desert1;
-        public SoundEffectInstance music_desert2;
 
         public static EventTimer shakeDuration = new EventTimer();
         public static float shakeIntensity;
@@ -208,6 +215,7 @@ namespace Cataclysmic
             graphics.ApplyChanges();
             self = this;
             paused = false;
+            pauseTimer = 0;
         }
 
         protected override void Initialize()
@@ -222,6 +230,7 @@ namespace Cataclysmic
             optionPointer = 0;
             particleCooldown = 0;
             intensityOfCRT = 4;
+            pausing = true;
             cursor = new Cursor(Content);
             sceneTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             sceneTargetCRT = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
@@ -288,7 +297,8 @@ namespace Cataclysmic
             texture_seraphim = Content.Load<Texture2D>("Sprites/GUI/Seraphim");
             texture_star = Content.Load<Texture2D>("Sprites/GUI/Star");
             texture_border = Content.Load<Texture2D>("Sprites/GUI/Border");
-            texture_pauseMenuText = Content.Load<Texture2D>("Sprites/GUI/PauseMenuText");
+            texture_pauseMenuText = Content.Load<Texture2D>("Sprites/GUI/PauseMenuText2");
+            texture_pauseMenu = Content.Load<Texture2D>("Sprites/GUI/PauseMenu");
             texture_basicSlash = Content.Load<Texture2D>("Sprites/Abilities/swordSheet_64x47");
             texture_abilitiesMenu = Content.Load<Texture2D>("Sprites/GUI/AbilitiesMenu");
             texture_revolverWrapper = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/RevolverImage");
@@ -305,6 +315,7 @@ namespace Cataclysmic
             texture_crackleParticle = Content.Load<Texture2D>("Sprites/Abilities/Bullets/CrackleParticle");
             texture_revolverExtension = Content.Load<Texture2D>("Sprites/Abilities/RevolverExtension");
             texture_WarningSign = Content.Load<Texture2D>("Sprites/Enemies/WarningSign");
+            texture_creditsScreen = Content.Load<Texture2D>("Sprites/GUI/CreditsScreen");
 
             texture_clock = Content.Load<Texture2D>("Sprites/GUI/Clock198x198");
             texture_clockHandRotate = Content.Load<Texture2D>("Sprites/GUI/ClockHand48x48");
@@ -335,7 +346,6 @@ namespace Cataclysmic
             // Music
             #region
             music_menu1 = Content.Load<SoundEffect>("Sounds/Music/VampPiano").CreateInstance();
-            music_desert1 = Content.Load<SoundEffect>("Sounds/Music/desert_loops_2").CreateInstance();
             music_desert1 = Content.Load<SoundEffect>("Sounds/Music/Egyptian song").CreateInstance();
             music_desert1.Volume = 0.15f;
             music_desert1.IsLooped = true;
@@ -630,7 +640,16 @@ namespace Cataclysmic
             {
                 if (KB.IsKeyDown(menu_pause) && oldKB.IsKeyUp(menu_pause))
                 {
-                    paused = !paused;
+                    if (!paused)
+                    {
+                        paused = true;
+                        pauseTimer = 0;
+                        pausing = true;
+                    }
+                    else
+                    {
+                        pausing = false;
+                    }
                 }
 
                 if (!shakeDuration.Done)
@@ -646,6 +665,14 @@ namespace Cataclysmic
 
                 if (paused)
                 {
+                    if (pausing && pauseTimer < 60)
+                        pauseTimer++;
+                    else if (!pausing && pauseTimer > 0) {
+                        pauseTimer--;
+                    }
+                    if (pauseTimer == 0) {
+                        paused = false;
+                    }
                     if (KB.IsKeyDown(Keys.Down) && oldKB.IsKeyUp(Keys.Down))
                     {
                         pauseMenuPointer = (pauseMenuPointer + 1) % 5;
@@ -658,7 +685,7 @@ namespace Cataclysmic
                     if (KB.IsKeyDown(Keys.Enter) && oldKB.IsKeyUp(Keys.Enter))
                     {
                         if (pauseMenuPointer == 0)
-                            paused = false;
+                            pausing = false;
                         else if (pauseMenuPointer == 1)
                         {
                             previousState = gameState;
@@ -877,8 +904,8 @@ namespace Cataclysmic
                     "\n\nCursor Sprites >>> Ivan Voirol" +
                     "\nMain Menu Assets >>> Keisha Sespene" +
                     "\nMenu Music >>> Tadon", new Vector2(10, 300), Color.White);
-                spriteBatch.DrawString(font_credits, "Press Back to return...", new Vector2(WIDTH / 2 - 120, HEIGHT - 50), Color.White);
 
+                spriteBatch.Draw(texture_creditsScreen, Vector2.Zero, Color.White);
                 spriteBatch.End();
 
                 GraphicsDevice.SetRenderTarget(null);
@@ -997,9 +1024,13 @@ namespace Cataclysmic
 
                 if (paused)
                 {
+                    double input = Math.Min(pauseTimer/60.0, 1);
+                    double y = GOAL_PLACE + 1 / (15.0f * input) * Math.Sin(Math.PI*Math.PI*0.95*input) * (START_PLACE-500);
+                    float fy = (float)y;
+                    spriteBatch.Draw(texture_pauseMenu, new Vector2(100, fy), Color.White);
                     for (int i = 0; i < 5; i++)
                     {
-                        spriteBatch.Draw(texture_pauseMenuText, new Vector2(100, 100 + 132 * i), new Rectangle(((pauseMenuPointer == i) ? 268 : 0), 132 * i, 268, 132), Color.White);
+                        spriteBatch.Draw(texture_pauseMenuText, new Vector2(150, 430 + fy + 132 * i), new Rectangle(((pauseMenuPointer == i) ? 268 : 0), 132 * i, 268, 132), Color.White);
                     }
                 }
 

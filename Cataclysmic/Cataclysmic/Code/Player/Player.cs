@@ -340,16 +340,16 @@ namespace Cataclysmic
 
             //1
             Game1.self.spriteBatch.Draw(Abilities[0].GetTexture(), new Rectangle(634, 950, 83, 83), Color.White);
-            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(634, 950, 83, (int)((double)Abilities[0].cooldownFrames / Abilities[0].GetMaxCooldown() * 83)), Color.White);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(634, 950, 83, (int)((double)Abilities[0].cooldownFrames / Abilities[0].GetMaxCooldown() * 83)), Color.White * 0.5f);
             //2
             Game1.self.spriteBatch.Draw(Abilities[1].GetTexture(), new Rectangle(762, 950, 80, 80), Color.White);
-            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(762, 950, 83, (int)((double)Abilities[1].cooldownFrames / Abilities[1].GetMaxCooldown() * 80)), Color.White);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(762, 950, 83, (int)((double)Abilities[1].cooldownFrames / Abilities[1].GetMaxCooldown() * 80)), Color.White * 0.5f);
             //3
             Game1.self.spriteBatch.Draw(Abilities[2].GetTexture(), new Rectangle(894, 950, 83, 83), Color.White);
-            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(894, 950, 83, (int)((double)Abilities[2].cooldownFrames / Abilities[2].GetMaxCooldown() * 80)), Color.White);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(894, 950, 83, (int)((double)Abilities[2].cooldownFrames / Abilities[2].GetMaxCooldown() * 80)), Color.White * 0.5f);
             //4
             Game1.self.spriteBatch.Draw(Abilities[3].GetTexture(), new Rectangle(1026, 950, 83, 83), Color.White);
-            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(1026, 950, 83, (int)((double)Abilities[3].cooldownFrames / Abilities[3].GetMaxCooldown() * 83)), Color.White);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(1026, 950, 83, (int)((double)Abilities[3].cooldownFrames / Abilities[3].GetMaxCooldown() * 83)), Color.White * 0.5f);
 
         }
 
