@@ -44,7 +44,7 @@ namespace Cataclysmic
 
         EventTimer shootTimer = new EventTimer(3);
 
-        public Sun(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), WIDTH, HEIGHT)
+        public Sun(Vector2 position) : base(Game1.texture_Sun, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), WIDTH, HEIGHT)
         {
             staggerResistance = 0.0f;
             healthData = new HealthComponent(200);
@@ -120,7 +120,6 @@ namespace Cataclysmic
             }
             if (currentState == AttackState.Spray)
             {
-                renderData.color = Color.Red;
                 base.Update(gameTime);
 
                 if (IsAtTarget())
@@ -144,8 +143,6 @@ namespace Cataclysmic
                 if (s.collisionData.Intersects(target.Hitbox, out _, out _))
                     target.Damage(this, 3);
             }
-
-
 
             projectiles.RemoveAll(p => !p.IsAlive());
         }
@@ -171,7 +168,7 @@ namespace Cataclysmic
                     direction.X * cos - direction.Y * sin,
                     direction.X * sin + direction.Y * cos
                     );
-                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity, 20));
+                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity, 500, Game1.texture_SunFire, new Point(50, 50)));
             }
         }
 

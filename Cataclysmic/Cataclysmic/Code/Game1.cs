@@ -153,6 +153,10 @@ namespace Cataclysmic
         public static Texture2D texture_clock;
         public static Texture2D texture_clockHandRotate;
         public static Texture2D texture_clockworkBorder;
+        public static Texture2D texture_spear;
+        public static Texture2D texture_SunFire;
+        public static Texture2D texture_YellowCircle;
+        public static Texture2D texture_Sun;
         #endregion
 
         // SoundEffects
@@ -174,6 +178,8 @@ namespace Cataclysmic
         public static SoundEffect sfx_revolver_shot1;
         public static SoundEffect sfx_revolver_shot2;
         public static SoundEffect sfx_revolver_draw1;
+        public static SoundEffect sfx_fireIgnite;
+        public static SoundEffect sfx_boom;
         #endregion
 
         // Main Menu
@@ -202,6 +208,8 @@ namespace Cataclysmic
         public static Vector2 cameraPos = Vector2.Zero;
         public static Vector2 shakeOffset = Vector2.Zero;
         public static float globalShakeMultiplier;
+
+        public static List<Visual> visuals;
 
         public Game1()
         {
@@ -263,6 +271,8 @@ namespace Cataclysmic
 
             menu_particles = new List<Particle>();
             globalShakeMultiplier = 1;
+            visuals = new List<Visual>();
+
             base.Initialize();
         }
 
@@ -317,9 +327,13 @@ namespace Cataclysmic
             texture_WarningSign = Content.Load<Texture2D>("Sprites/Enemies/WarningSign");
             texture_creditsScreen = Content.Load<Texture2D>("Sprites/GUI/CreditsScreen");
 
-            texture_clock = Content.Load<Texture2D>("Sprites/GUI/Clock198x198");
-            texture_clockHandRotate = Content.Load<Texture2D>("Sprites/GUI/ClockHand48x48");
+            texture_clock = Content.Load<Texture2D>("Sprites/GUI/clock");
+            texture_clockHandRotate = Content.Load<Texture2D>("Sprites/GUI/minuteHand");
             texture_clockworkBorder = Content.Load<Texture2D>("Sprites/GUI/ClockworkBorderTransparent");
+            texture_spear = Content.Load<Texture2D>("Sprites/Enemies/spear");
+            texture_SunFire = Content.Load<Texture2D>("Sprites/Enemies/SunFire");
+            texture_YellowCircle = Content.Load<Texture2D>("Sprites/Enemies/YellowCircle");
+            texture_Sun = Content.Load<Texture2D>("Sprites/Enemies/Sun");
         #endregion
 
         //Sounds
@@ -337,10 +351,12 @@ namespace Cataclysmic
             sfx_revolver_shot1 = Content.Load<SoundEffect>("Sounds/Abilities/Revolver/RevolverShot1");
             sfx_revolver_shot2 = Content.Load<SoundEffect>("Sounds/Abilities/Revolver/RevolverShot2");
             sfx_revolver_draw1 = Content.Load<SoundEffect>("Sounds/Abilities/Revolver/RevolverDraw1");
+            sfx_fireIgnite = Content.Load<SoundEffect>("Sounds/Abilities/Explosions/Ignite");
 
             sound_Teleport = Content.Load<SoundEffect>("Sounds/Abilities/TeleportSound");
             sound_ChargeUp = Content.Load<SoundEffect>("Sounds/Abilities/Charge");
             sound_whooshDash = Content.Load<SoundEffect>("Sounds/Abilities/WooshDash");
+            sfx_boom = Content.Load<SoundEffect>("Sounds/Abilities/Explosions/Boom");
             #endregion
 
             // Music
@@ -724,6 +740,12 @@ namespace Cataclysmic
                     JumpOut:
                     player.Update(gameTime);
                     currentEnvironment.Update(gameTime);
+                    for (int i = visuals.Count - 1; i >= 0; i--)
+                    {
+                        visuals.ElementAt(i).Update();
+                        if (!visuals.ElementAt(i).IsAlive())
+                            visuals.RemoveAt(i);
+                    }
                 }
 
 
@@ -981,6 +1003,8 @@ namespace Cataclysmic
 
                 currentEnvironment.DrawParticles();   
                 player.Draw(1.0f);
+                foreach (Visual v in visuals)
+                    v.Draw();
                 currentEnvironment.Draw();
                 //foreach(Enemy e in enemies)
                 //e.Draw(1.0f);
@@ -999,17 +1023,18 @@ namespace Cataclysmic
                 spriteBatch.Begin();
                 spriteBatch.Draw(texture_overlay1, new Vector2(0, 0), Color.White);
                 player.DrawEx(1.0f);
+                currentEnvironment.DrawEx();
                 spriteBatch.End();
 
                 // Overlays
                 GraphicsDevice.SetRenderTarget(null);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
                 spriteBatch.Draw(sceneTargetCRT, Vector2.Zero, Color.White); 
-                currentEnvironment.DrawEx();
                 spriteBatch.Draw(texture_clockworkBorder, Vector2.Zero, Color.White);
                 spriteBatch.DrawString(font_score, "" + score, new Vector2(1380, 900), Color.White);
-                spriteBatch.Draw(texture_clock, new Vector2(10, HEIGHT-198), Color.White);
-                spriteBatch.Draw(texture_clockHandRotate, new Rectangle(107, HEIGHT - 93, 48, 48), null, Color.Black, 0+ 0.558505585033782f, new Vector2(40, 40), SpriteEffects.None, 0);
+                spriteBatch.Draw(texture_clock, new Rectangle(40, HEIGHT-170, 170, 170), Color.White);
+                spriteBatch.Draw(texture_clockHandRotate, new Rectangle(125, HEIGHT-80, 20, 60), null, Color.Black, clockRotationRadians, new Vector2(35, 160), SpriteEffects.None, 0);
+                //if (KB.IsKeyDown(Keys.K)) RotateClockHand(.1f);
                 if (debugMode)
                 {
                     int incrementer = 0;

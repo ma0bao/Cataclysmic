@@ -51,7 +51,7 @@ namespace Cataclysmic
             collision = CollisionComponent.CreateRect(new Vector2(destRect.X, destRect.Y), width, height);
             staggerTimer = new EventTimer();
             bloodData = new BloodComponent(() => collision.Center);
-            flashTimer = new EventTimer(.4f);
+            flashTimer = new EventTimer(.6f);
             flashTimer.Loop(true);
         }
 
@@ -90,7 +90,6 @@ namespace Cataclysmic
                 float lerp = 1f - MathHelper.Clamp(distance / 2000, 0f, 1f);
 
                 float scale = MathHelper.Lerp(3, 5, lerp);
-                byte colorOpacity = (byte)MathHelper.Lerp(25, 255, flashTimer.lerpValue);
 
                 float width = 13 * scale;
                 float height = 10 * scale;
@@ -103,8 +102,7 @@ namespace Cataclysmic
                 Rectangle warningRect = new Rectangle((int)x, (int)y, (int)width, (int)height);
 
                 RenderComponent warningData = new RenderComponent(Game1.texture_WarningSign, warningRect);
-                warningData.color.A = colorOpacity;
-                warningData.DefualtDraw();
+                warningData.DefualtDraw((float)((1/2.0f)*Math.Sin(flashTimer.GetInput(3.70397f))+.5f));
 
                 flashTimer.Update();
             }
@@ -132,8 +130,6 @@ namespace Cataclysmic
 
             renderData.ResetHitBox();
             collision.Update(renderData.Position, renderData.rotation);
-            healthData.Update();
-            
         }
 
         public void SpewBlood(int amount)
@@ -145,6 +141,8 @@ namespace Cataclysmic
 
         public void UpdateTimers()
         {
+            healthData.Update();
+            
             if (staggerTimer.Done && enemyState == EnemyState.Staggered)
                 enemyState = EnemyState.Active;
             staggerTimer.Update();
@@ -162,7 +160,7 @@ namespace Cataclysmic
             collision.Update(renderData.Position, renderData.rotation);
         }
 
-        public override void Damage(Entity cause, int amount)
+        public override sealed void Damage(Entity cause, int amount)
         {
             Damage(cause, amount, BloodHit.Medium);
         }
@@ -180,6 +178,7 @@ namespace Cataclysmic
 
             Game1.score += amount;
             bloodData.Spew(hit);
+            Game1.sfx_hurtSound1.Play(Game1.volume, -0.1f + (float)Game1.rand.NextDouble() * 0.2f, 0);
 
             if (wasAlive && !healthData.isAlive)
             {

@@ -72,7 +72,6 @@ namespace Cataclysmic
         public void Damage(Enemy enemy, int amount)
         {
             if (!enemy.healthData.invincible) {
-                Game1.sfx_hurtSound1.Play(Game1.volume, -0.3f + (float)Game1.rand.NextDouble() * 0.2f, 0);
                 Game1.player.timeEnergy.Add(MANA_COST);
             }
             // Bullet sprays blood roughly along its trajectory

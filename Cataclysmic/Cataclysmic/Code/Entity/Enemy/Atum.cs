@@ -52,6 +52,20 @@ namespace Cataclysmic
         List<IProjectile> projectiles = new List<IProjectile>();
         EventTimer fireTimer;
 
+        //Bossbar
+        const float TIME_TO_DAMAGE = 1.5f;
+        const float TIME_TO_APPLY_DAMAGE = 1f;
+        int damageToApply;
+        int highestDamageToApply;
+        EventTimer damageWindow;
+        EventTimer applyDamage;
+        Rectangle HealthbarRect;
+        Rectangle currentHealthRect => new Rectangle(
+                                        HealthbarRect.X, 
+                                        HealthbarRect.Y, 
+                                        (int)(HealthbarRect.Width * healthData.lerpValue),
+                                        HealthbarRect.Height);  
+
         AttackStates nextAttackState;
 
         
@@ -78,7 +92,39 @@ namespace Cataclysmic
             staggerResistance = 0.0f;
 
             bloodData.baseSize = 16;
-  
+
+            //Health Bar
+            HealthbarRect = new Rectangle(Game1.BOUNDS.X, 50, Game1.BOUNDS.Width, 50);
+            damageWindow = new EventTimer(TIME_TO_DAMAGE);
+            applyDamage = new EventTimer(TIME_TO_APPLY_DAMAGE);
+        }
+
+        public override void DrawEx(float opacity)
+        {
+            Game1.self.spriteBatch.Draw(Game1.texture_square, HealthbarRect, Color.Red);
+            Game1.self.spriteBatch.Draw(Game1.texture_square, currentHealthRect, Color.Green);
+            if (damageToApply > 0)
+                Game1.self.spriteBatch.Draw(Game1.texture_square, GetCurrentDamageRect(), Color.White);
+
+            base.DrawEx(opacity);
+        }
+
+        public Rectangle GetCurrentDamageRect()
+        {
+            Rectangle rect = new Rectangle(currentHealthRect.Right, HealthbarRect.Y, 0, HealthbarRect.Height);
+            rect.Width = (int) ((damageToApply / (float)healthData.maxHealth) * HealthbarRect.Width);
+            return rect;
+        }
+
+        public override void Damage(Entity cause, int amount, BloodHit bloodHit)
+        {
+            if (!healthData.invincible)
+            {
+                damageWindow.Restart();
+                damageToApply += amount;
+                highestDamageToApply = damageToApply;
+            }
+            base.Damage(cause, amount, bloodHit);
         }
 
         public override void Stagger(float secondsToStagger, bool UseResistance = true)
@@ -139,6 +185,25 @@ namespace Cataclysmic
         public override void Update(GameTime gameTime)
         {
             UpdateTimers();
+            damageWindow.Update();
+
+            //if (damageWindow.Done && damageToApply > 0)
+            //    damageToApply--;
+
+            if (damageWindow.Done && damageToApply > 0)
+            {
+                applyDamage.Update();
+
+
+                damageToApply = (int)(highestDamageToApply * (1f - applyDamage.lerpValue * applyDamage.lerpValue));
+
+                if (applyDamage.Done)
+                {
+                    damageToApply = 0;
+                    highestDamageToApply = 0;
+                    applyDamage.Restart();
+                }
+            }
 
             //if (Keyboard.GetState().IsKeyDown(Keys.K))
             //{
@@ -173,6 +238,13 @@ namespace Cataclysmic
             #region Update Based On State
             if (currentState == AttackStates.Center || currentState == AttackStates.Geyser)
             {
+                if (Game1.KB.IsKeyDown(Keys.K) && !Game1.oldKB.IsKeyDown(Keys.K))
+                {
+                    RenderComponent render = new RenderComponent(Game1.texture_SunFire, new Rectangle(400, 400, 100, 100));
+                    render.color.A = 50;
+                    Game1.visuals.Add(new Visual(render, 5f));
+                }
+
                 renderData.color = Color.Lerp(Color.White, Color.Red, (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 3f) * 0.5f + 0.5f);
 
                 base.Update(gameTime);
@@ -185,7 +257,7 @@ namespace Cataclysmic
                     if (randChoice == 0)
                         SetStateToGeyser();
                     else if (randChoice == 1)
-                        Teleport();
+                        SetStateToGeyser(50, 0.02f);
                     else if (randChoice == 2)
                         SetStateToGeyser(100);
                     else if (randChoice == 3)
@@ -279,6 +351,7 @@ namespace Cataclysmic
 
         public void FireWave(float amt = 10)
         {
+            Game1.sfx_boom.Play(Game1.volume, Game1.rand.NextFloat(), 0);
             for (float i = 0; i < amt; i++)
             {
                 Vector2 direction = renderData.GetDirectionToTarget(target.renderData.Position);
@@ -298,12 +371,13 @@ namespace Cataclysmic
                     direction.X * cos - direction.Y * sin,
                     direction.X * sin + direction.Y * cos
                     );
-                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity));
+                projectiles.Add(new WaveShot(Game1.texture_SunFire, renderData.Position, rotatedVelocity));
             }
         }
 
         public void FireCircle(float amt = 50)
         {
+            Game1.sfx_boom.Play(Game1.volume, Game1.rand.NextFloat(), 0);
             for (float i = 0; i < amt; i++)
             {
                 Vector2 direction = renderData.GetDirectionToTarget(target.renderData.Position);
@@ -323,12 +397,13 @@ namespace Cataclysmic
                     direction.X * cos - direction.Y * sin,
                     direction.X * sin + direction.Y * cos
                     );
-                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity));
+                projectiles.Add(new WaveShot(Game1.texture_SunFire, renderData.Position, rotatedVelocity));
             }
         }
 
         public void FireSpread(float amt = 1)
         {
+            Game1.sfx_boom.Play(Game1.volume, Game1.rand.NextFloat(), 0);
             for (float i = 0; i < amt; i++)
             {
                 Vector2 direction = renderData.GetDirectionToTarget(target.renderData.Position);
@@ -348,7 +423,7 @@ namespace Cataclysmic
                     direction.X * cos - direction.Y * sin,
                     direction.X * sin + direction.Y * cos
                     );
-                projectiles.Add(new WaveShot(renderData.Position, rotatedVelocity));
+                projectiles.Add(new WaveShot(Game1.texture_SunFire, renderData.Position, rotatedVelocity));
             }
         }
 
@@ -426,24 +501,41 @@ namespace Cataclysmic
         public CollisionComponent collisionData;
         int maxWidth;
         int maxHeight;
+        float damageTimeLerp = .8f;
+        bool isLight = true;
 
         public EventTimer life = new EventTimer(3);
 
         public Geyser(Rectangle destRect)
         {
-            renderData = new RenderComponent(Game1.texture_player, new Rectangle(destRect.X, destRect.Y, 2, 2));
-            collisionData = CollisionComponent.CreateCircle(renderData.Position, 30);
+            renderData = new RenderComponent(Game1.texture_YellowCircle, new Rectangle(destRect.X, destRect.Y, 2, 2));
+            collisionData = CollisionComponent.CreateCircle(renderData.Position, 20);
 
             maxWidth = destRect.Width;
             maxHeight = destRect.Height;
         }
 
-        public void Draw() { renderData.DefualtDraw(); collisionData.DrawDebug();  }
+        public void Draw() {
+            renderData.DefualtDraw(); 
+            collisionData.DrawDebug();  
+        }
 
         public void Update(GameTime gameTime) 
         {
-            renderData.SetWidth((int) (life.lerpValue * maxWidth));
-            renderData.SetHeight((int) (life.lerpValue * maxHeight));
+            if (isLight)
+            {
+                renderData.SetWidth((int)(life.lerpValue * maxWidth));
+                renderData.SetHeight((int)(life.lerpValue * maxHeight));
+                renderData.color.A = (byte)(255 * life.lerpValue);
+                if (life.lerpValue > damageTimeLerp)
+                {
+                    isLight = false;
+                    Game1.sfx_fireIgnite.Play(Game1.volume*0.5f, (float)Game1.rand.NextDouble(), 0);
+                    renderData = new RenderComponent(Game1.texture_SunFire, renderData.DestRect);
+                }
+            }
+
+
             life.Update();
         }
 
@@ -509,6 +601,15 @@ namespace Cataclysmic
         public CollisionComponent collisionData;
 
         float SPEED = 400;
+
+
+        public WaveShot(Texture2D texture, Vector2 pos, Vector2 direction)
+        {
+            moveData = new MoveComponent();
+            moveData.velocity = direction * SPEED;
+            renderData = new RenderComponent(texture, new Rectangle((int)pos.X, (int)pos.Y, 50, 50));
+            collisionData = CollisionComponent.CreateRect(pos, 30, 30);
+        }
 
         public WaveShot(Vector2 pos, Vector2 direction)
         {

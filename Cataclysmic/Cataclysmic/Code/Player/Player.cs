@@ -53,7 +53,7 @@ namespace Cataclysmic
         {
             LoadContent();
             renderData = new RenderComponent(Game1.texture_playerIdle, _destRect);
-            moveData = new MoveComponent(maxSpeed, 2000f, 3000f);
+            moveData = new MoveComponent(_maxSpeed: maxSpeed, _acceleration: 2000f, _friction: 3000f);
             healthData = new HealthComponent(50);
             timeEnergy = new ManaComponent(100);
 
@@ -298,7 +298,7 @@ namespace Cataclysmic
             float directionX = MouseX - renderData.Position.X;
             float directionY = MouseY - renderData.Position.Y;
 
-            return MathHelper.ToDegrees((float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f)));
+            return (float)(Math.Atan2(directionY, directionX) + (Math.PI * 0.5f));
         }
 
 
@@ -311,10 +311,10 @@ namespace Cataclysmic
             
 
              renderData.rotation = GetAngleToMouse();
-            
 
-            
-            Game1.self.spriteBatch.Draw(renderData.texture, renderData._destRect, renderData.sourceRect, renderData.color * opacity, MathHelper.ToRadians(renderData.rotation), renderData.origin, SpriteEffects.None, 0f);
+
+
+            renderData.DefualtDraw();
 
             if (currentDash != null)
                 currentDash.Draw(renderData, moveData);

@@ -12,8 +12,11 @@ namespace Cataclysmic
         private int countdown;
         private bool paused;
 
-
+        /// <summary>
+        /// Gets a value that smoothly goes from 0.0 - 1.0f
+        /// </summary>
         public float lerpValue => 1f - (countdown / (float)duration);
+
 
         public bool Done;
 
@@ -34,6 +37,26 @@ namespace Cataclysmic
                 Done = true;
         }
 
+        /// <summary>
+        /// Gets a number that smoothly goes from 0 to maxValue
+        /// </summary>
+        /// <param name="maxValue"> The maximum value that can be returned </param>
+        /// <returns>Value from 0 to maxValue based on the timer</returns>
+        public float GetInput(float maxValue)
+        {
+            return (1f - (countdown / (float)duration)) * maxValue;
+        }
+
+        public int GetTime()
+        {
+            return countdown;
+        }
+
+        public int GetDuration()
+        {
+            return duration;
+        }
+
         public void Update()
         {
             if (paused)
@@ -48,6 +71,8 @@ namespace Cataclysmic
                 Done = true;
                 if (!loop)
                     paused = true;
+                else
+                    countdown = duration;
             }
         }
 
@@ -68,7 +93,7 @@ namespace Cataclysmic
 
         public bool IsRunning()
         {
-            return !paused;
+            return !paused && countdown > 0;
         }
 
         public void Reset()
