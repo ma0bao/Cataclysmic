@@ -27,6 +27,8 @@ namespace Cataclysmic
         public float angle;
         public const float COOLDOWN = 2f;
 
+        public float energyGain = 3;
+
 
         public Revolver(Vector2 position, float angle)
         {
@@ -72,7 +74,7 @@ namespace Cataclysmic
         public void Damage(Enemy enemy, int amount)
         {
             if (!enemy.healthData.invincible) {
-                Game1.player.timeEnergy.Add(MANA_COST);
+                Game1.player.timeEnergy.Add(energyGain);
             }
             // Bullet sprays blood roughly along its trajectory
             Vector2 dir = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));

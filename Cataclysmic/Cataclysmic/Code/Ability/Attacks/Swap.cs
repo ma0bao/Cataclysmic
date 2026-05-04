@@ -85,7 +85,7 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
-
+            Game1.player.healthData.frames = 100;
         }
 
         public override void Draw(float opacity)

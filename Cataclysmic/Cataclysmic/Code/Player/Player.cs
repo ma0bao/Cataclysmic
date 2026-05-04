@@ -63,9 +63,9 @@ namespace Cataclysmic
 
             Abilities = new AbilityWrapper[4];
             Abilities[0] = new RevolverWrapper();
-            Abilities[1] = new SwapWrapper();
+            Abilities[1] = new SlashWrapper();
             Abilities[2] = new CrackleBurstWrapper();
-            Abilities[3] = new SlashWrapper();
+            Abilities[3] = new SwapWrapper();
 
             for (int i = 0; i < Abilities.Length; i++)
                 Abilities[i].abilitySpot = i;
@@ -332,11 +332,11 @@ namespace Cataclysmic
         {
             // Health Bar
             Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 922, 350, 60), Color.DarkRed);
-            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 922, 1+(int)(350 * healthData.lerpValue), 60), Color.Red);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 922, 1+(int)(350 * healthData.lerpValue), 60), Color.Green);
 
             // Mana Bar
-            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 1003, 350, 60), Color.Purple);
-            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 1003, 1+(int)(timeEnergy.lerpValue * HEALTHWIDTH), 60), Color.Lavender);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 1003, 350, 60), Color.Lavender);
+            Game1.self.spriteBatch.Draw(Game1.texture_blank, new Rectangle(219, 1003, 1+(int)(timeEnergy.lerpValue * 350), 60), Color.Purple);
 
             //1
             Game1.self.spriteBatch.Draw(Abilities[0].GetTexture(), new Rectangle(634, 950, 83, 83), Color.White);
