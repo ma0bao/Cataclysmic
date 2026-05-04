@@ -36,6 +36,10 @@ namespace Cataclysmic
             cooldownFrames--;
         }
 
+        public override bool CheckManaCost()
+        {
+            throw new NotImplementedException();
+        }
         public override int GetMaxCooldown()
         {
             return 1;

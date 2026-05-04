@@ -16,8 +16,8 @@ namespace Cataclysmic
     public class Slash : Ability
     {
         // 1 = height * 2, width * 2.  2 = height * 3, width * 2.  3 = height * 3, width * 2.5
-        public const float HEIGHT = 47 * 3;
-        public const float WIDTH = 64 * 2.5f;
+        public const float HEIGHT = 47 * 2.5f;
+        public const float WIDTH = 64 * 2f;
         public const int RADIUS = 120;
         public const int MANA_COST = 0;
         public const float COOLDOWN = .5f;

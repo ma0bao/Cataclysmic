@@ -11,6 +11,7 @@ namespace Cataclysmic
         public List<Ability> abilities;
         const float ATTACKTIME = 1f;
 
+
         public CircleSlashWrapper()
         {
             abilities = new List<Ability>();
@@ -56,7 +57,7 @@ namespace Cataclysmic
                     abilities.RemoveAt(i);
             }
 
-            if (Game1.player.IsAbilityPressed(abilitySpot) && CheckCrossAbilityCooldown())
+            if (Game1.player.IsAbilityPressed(abilitySpot) && CheckCrossAbilityCooldown() && CheckManaCost())
             {
                 if (cooldownFrames <= 0 && CheckCrossAbilityCooldown())
                 {
@@ -75,6 +76,11 @@ namespace Cataclysmic
             {
                 abil.Draw(1.0f);
             }
+        }
+
+        public override bool CheckManaCost()
+        {
+            return GetMana() - CircleSlash.MANA_COST >= 0;
         }
 
         public override int GetMaxCooldown()

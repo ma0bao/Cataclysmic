@@ -73,7 +73,7 @@ namespace Cataclysmic
         
 
         
-        public Atum(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), WIDTH, HEIGHT)
+        public Atum(Vector2 position) : base(Game1.texture_Atum, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), WIDTH, HEIGHT)
         {
             target = Game1.player;
             healthData = new HealthComponent(250);
@@ -105,10 +105,10 @@ namespace Cataclysmic
 
         public override void DrawEx(float opacity)
         {
-            Game1.self.spriteBatch.Draw(Game1.texture_square, HealthbarRect, Color.Red);
-            Game1.self.spriteBatch.Draw(Game1.texture_square, currentHealthRect, Color.Green);
+            Game1.self.spriteBatch.Draw(Game1.texture_square, HealthbarRect, Color.DarkRed);
+            Game1.self.spriteBatch.Draw(Game1.texture_square, currentHealthRect, Color.Orange);
             if (damageToApply > 0)
-                Game1.self.spriteBatch.Draw(Game1.texture_square, GetCurrentDamageRect(), Color.White);
+                Game1.self.spriteBatch.Draw(Game1.texture_blank, GetCurrentDamageRect(), Color.White);
 
             base.DrawEx(opacity);
         }
@@ -384,7 +384,7 @@ namespace Cataclysmic
             }
         }
 
-        public void FireCircle(float amt = 50)
+        public void FireCircle(float amt = 40)
         {
             Game1.sfx_boom.Play(Game1.volume, Game1.rand.NextFloat(), 0);
             for (float i = 0; i < amt; i++)
@@ -406,7 +406,7 @@ namespace Cataclysmic
                     direction.X * cos - direction.Y * sin,
                     direction.X * sin + direction.Y * cos
                     );
-                projectiles.Add(new WaveShot(Game1.texture_SunFire, renderData.Position, rotatedVelocity));
+                projectiles.Add(new WaveShot(Game1.texture_SunFire, renderData.Position, rotatedVelocity, new Point(40, 40)));
             }
         }
 
@@ -645,6 +645,16 @@ namespace Cataclysmic
             collisionData = CollisionComponent.CreateRect(pos, scale.X, scale.Y);
             SPEED = speed;
         }
+
+        public WaveShot(Texture2D texture, Vector2 pos, Vector2 direction, Point scale)
+        {
+            moveData = new MoveComponent();
+            moveData.velocity = direction * SPEED;
+            renderData = new RenderComponent(texture, new Rectangle((int)pos.X, (int)pos.Y, scale.X, scale.Y));
+            collisionData = CollisionComponent.CreateRect(pos, scale.X, scale.Y);
+        }
+
+
 
         public bool IsAlive()
         {

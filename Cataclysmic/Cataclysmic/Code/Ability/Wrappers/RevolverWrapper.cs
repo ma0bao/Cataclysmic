@@ -86,7 +86,7 @@ namespace Cataclysmic
                     abilities.RemoveAt(i);
             }
 
-            if (cooldownFrames <= 0) {
+            if (cooldownFrames <= 0 && CheckManaCost()) {
                 if (inCombo)
                     timer++;
 
@@ -229,6 +229,11 @@ namespace Cataclysmic
 
                 Game1.self.currentEnvironment.GetParticles().Add(p);
             }
+        }
+
+        public override bool CheckManaCost()
+        {
+            return GetMana() - Revolver.MANA_COST >= 0;
         }
 
         public override int GetMaxCooldown()
