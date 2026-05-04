@@ -128,7 +128,7 @@ namespace Cataclysmic
                 //Game1.self.spriteBatch.Draw(renderData.texture, renderData._destRect, renderData.sourceRect, renderData.color * opacity, MathHelper.ToRadians(renderData.rotation), renderData.origin, SpriteEffects.None, 0f);
                 Player temp = Game1.player;
                 RenderComponent rc = temp.renderData;
-                Game1.self.spriteBatch.Draw(Game1.texture_revolverExtension, rc._destRect, null, rc.color, MathHelper.ToRadians(rc.rotation), new Vector2(16, 16), SpriteEffects.None, 0f);
+                Game1.self.spriteBatch.Draw(Game1.texture_revolverExtension, rc._destRect, null, rc.color, rc.rotation, new Vector2(16, 16), SpriteEffects.None, 0f);
             }
             foreach (Ability abil in abilities) {
                 abil.Draw(1.0f);
