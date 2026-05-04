@@ -41,7 +41,7 @@ namespace Cataclysmic
 
         public override void Update(GameTime gameTime)
         {
-            //Game1.player.healthData.frames = 100;
+            Game1.player.healthData.frames = 100;
             Game1.player.moveData.maxSpeed += 10;
             Position = Game1.player.renderData.Position;
             Hitbox.Update(Position, angle);

@@ -149,6 +149,7 @@ namespace Cataclysmic
         public static Texture2D texture_SunFire;
         public static Texture2D texture_YellowCircle;
         public static Texture2D texture_Sun;
+        public static Texture2D texture_Atum;
         #endregion
 
         // SoundEffects
@@ -323,6 +324,7 @@ namespace Cataclysmic
             texture_SunFire = Content.Load<Texture2D>("Sprites/Enemies/SunFire");
             texture_YellowCircle = Content.Load<Texture2D>("Sprites/Enemies/YellowCircle");
             texture_Sun = Content.Load<Texture2D>("Sprites/Enemies/Sun");
+            texture_Atum = Content.Load<Texture2D>("Sprites/Enemies/Atum");
         #endregion
 
         //Sounds

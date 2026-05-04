@@ -20,6 +20,12 @@ namespace Cataclysmic
 
         public abstract int GetMaxCooldown();
 
+        public abstract bool CheckManaCost();
+        public virtual float GetMana()
+        {
+            return Game1.player.timeEnergy.currentMana;
+        }
+
         protected virtual bool CheckCrossAbilityCooldown()
         {
             return Game1.player.abilityTimer.Done;

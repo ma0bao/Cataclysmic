@@ -57,7 +57,7 @@ namespace Cataclysmic
                     abilities.RemoveAt(i);
             }
 
-            if (Game1.player.IsAbilityPressed(abilitySpot) && CheckCrossAbilityCooldown())
+            if (Game1.player.IsAbilityPressed(abilitySpot) && CheckCrossAbilityCooldown() && CheckManaCost())
             {
                 if (cooldownFrames <= 0)
                 {
@@ -76,6 +76,11 @@ namespace Cataclysmic
             {
                 abil.Draw(1.0f);
             }
+        }
+
+        public override bool CheckManaCost()
+        {
+            return GetMana() - CrackleBurst.MANA_COST >= 0;
         }
 
         public override int GetMaxCooldown()
