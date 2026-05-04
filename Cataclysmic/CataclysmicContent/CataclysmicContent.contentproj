@@ -149,13 +149,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sounds\Abilities\TeleportSound.wav">
-      <Name>TeleportSound</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sounds\Abilities\Charge.wav">
       <Name>Charge</Name>
       <Importer>WavImporter</Importer>
@@ -660,6 +653,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sprites\GUI\PauseMenu.png">
+      <Name>PauseMenu</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Sprites\Enemies\SunFire.png">
       <Name>SunFire</Name>
       <Importer>TextureImporter</Importer>
@@ -667,6 +665,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sprites\GUI\PauseMenuText2.png">
+      <Name>PauseMenuText2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Sprites\Enemies\YellowCircle.png">
       <Name>YellowCircle</Name>
       <Importer>TextureImporter</Importer>
@@ -674,6 +677,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sounds\Abilities\TeleportSound.wav">
+      <Name>TeleportSound</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Sprites\Enemies\Sun.png">
       <Name>Sun</Name>
       <Importer>TextureImporter</Importer>
@@ -688,6 +696,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sprites\GUI\CreditsScreen.png">
+      <Name>CreditsScreen</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      </Compile>
     <Compile Include="Sounds\Abilities\Explosions\Boom.wav">
       <Name>Boom</Name>
       <Importer>WavImporter</Importer>
