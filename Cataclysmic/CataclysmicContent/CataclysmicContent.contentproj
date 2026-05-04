@@ -677,11 +677,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sounds\Abilities\TeleportSound.wav">
-      <Name>TeleportSound</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Sprites\Enemies\Sun.png">
       <Name>Sun</Name>
       <Importer>TextureImporter</Importer>
@@ -700,9 +695,16 @@
       <Name>CreditsScreen</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
-      </Compile>
+    </Compile>
     <Compile Include="Sounds\Abilities\Explosions\Boom.wav">
       <Name>Boom</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\Abilities\TeleportSound.wav">
+      <Name>TeleportSound</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
