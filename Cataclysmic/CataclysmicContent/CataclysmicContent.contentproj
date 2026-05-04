@@ -702,6 +702,7 @@
       <Name>square</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+	</Compile>
     <Compile Include="Sounds\Abilities\TeleportSound.wav">
       <Name>TeleportSound</Name>
       <Importer>WavImporter</Importer>
