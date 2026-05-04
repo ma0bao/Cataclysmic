@@ -319,5 +319,31 @@ namespace Cataclysmic
             return true;
         }
 
+        /// <summary>
+        /// Clone the component
+        /// </summary>
+        /// <returns>Returns a memberwise copy of the component</returns>
+        public RenderComponent Clone()
+        {
+            RenderComponent newRender = new RenderComponent(texture, _destRect);
+            newRender.sourceRect = sourceRect;
+            newRender.origin = origin;
+            newRender.rotation = rotation;
+            newRender.layerDepth = layerDepth;
+            newRender.color = color;
+            newRender.effects = effects;
+            newRender.currentState = currentState;
+            newRender.currentFrame = currentFrame;
+            newRender.totalFrames = totalFrames;
+            newRender.frameHeight = frameHeight;
+            newRender.frameWidth = frameWidth;
+            newRender.frameTime = frameTime;
+            newRender.elapsedTime = elapsedTime;
+            newRender.isAnimating = isAnimating;
+            newRender.loop = loop;
+
+            return newRender;
+        }
+
     }
 }
