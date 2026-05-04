@@ -53,20 +53,24 @@ namespace Cataclysmic
         EventTimer fireTimer;
 
         //Bossbar
-        const float TIME_TO_DAMAGE = 1.5f;
-        const float TIME_TO_APPLY_DAMAGE = 1f;
+        const float TIME_TO_DAMAGE = 1.75f;
         int damageToApply;
-        int highestDamageToApply;
+        float damageIncrement = 1;
         EventTimer damageWindow;
-        EventTimer applyDamage;
+        Rectangle staticBarRect;
         Rectangle HealthbarRect;
         Rectangle currentHealthRect => new Rectangle(
                                         HealthbarRect.X, 
                                         HealthbarRect.Y, 
                                         (int)(HealthbarRect.Width * healthData.lerpValue),
-                                        HealthbarRect.Height);  
+                                        HealthbarRect.Height);
+        Vector2 barShake = new Vector2(1.5f, 1.5f);
+        EventTimer shakeTimer = new EventTimer(.2f);
+        float currentIntensity;
+        float shakeIntensity = 10f;
 
         AttackStates nextAttackState;
+        
 
         
         public Atum(Vector2 position) : base(Game1.texture_player, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), WIDTH, HEIGHT)
@@ -96,7 +100,7 @@ namespace Cataclysmic
             //Health Bar
             HealthbarRect = new Rectangle(Game1.BOUNDS.X, 50, Game1.BOUNDS.Width, 50);
             damageWindow = new EventTimer(TIME_TO_DAMAGE);
-            applyDamage = new EventTimer(TIME_TO_APPLY_DAMAGE);
+            staticBarRect = HealthbarRect;
         }
 
         public override void DrawEx(float opacity)
@@ -122,7 +126,8 @@ namespace Cataclysmic
             {
                 damageWindow.Restart();
                 damageToApply += amount;
-                highestDamageToApply = damageToApply;
+                shakeTimer.Restart();
+                currentIntensity = shakeIntensity;
             }
             base.Damage(cause, amount, bloodHit);
         }
@@ -187,28 +192,32 @@ namespace Cataclysmic
             UpdateTimers();
             damageWindow.Update();
 
-            //if (damageWindow.Done && damageToApply > 0)
-            //    damageToApply--;
-
             if (damageWindow.Done && damageToApply > 0)
             {
-                applyDamage.Update();
+                damageIncrement += 0.5f;
+                damageToApply -= (int)damageIncrement;
+            }
+            else
+                damageIncrement = 1;
 
+            if (shakeTimer.IsRunning())
+            {
+                shakeTimer.Update();
 
-                damageToApply = (int)(highestDamageToApply * (1f - applyDamage.lerpValue * applyDamage.lerpValue));
+                barShake = new Vector2(
+                    (float)(Game1.rand.NextDouble() * 2 - 1) * currentIntensity,
+                    (float)(Game1.rand.NextDouble() * 2 - 1) * currentIntensity);
+                currentIntensity = MathHelper.Lerp(shakeIntensity, 0, shakeTimer.lerpValue);
 
-                if (applyDamage.Done)
-                {
-                    damageToApply = 0;
-                    highestDamageToApply = 0;
-                    applyDamage.Restart();
-                }
+                HealthbarRect.X += (int)barShake.X;
+                HealthbarRect.Y += (int)barShake.Y;
+
+                if (shakeTimer.Done)
+                    HealthbarRect = staticBarRect;
             }
 
-            //if (Keyboard.GetState().IsKeyDown(Keys.K))
-            //{
-            //    FireWave();
-            //}
+
+
 
             #region Get Target Based On State
             if (currentState == AttackStates.Center)

@@ -118,11 +118,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="square.png">
-      <Name>square</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Effects\ChainFade.fx">
@@ -703,6 +698,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="square.png">
+      <Name>square</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     <Compile Include="Sounds\Abilities\TeleportSound.wav">
       <Name>TeleportSound</Name>
       <Importer>WavImporter</Importer>
