@@ -142,7 +142,7 @@ namespace Cataclysmic
         public void UpdateTimers()
         {
             healthData.Update();
-            healthData.Update();
+            
             if (staggerTimer.Done && enemyState == EnemyState.Staggered)
                 enemyState = EnemyState.Active;
             staggerTimer.Update();
@@ -160,7 +160,7 @@ namespace Cataclysmic
             collision.Update(renderData.Position, renderData.rotation);
         }
 
-        public override void Damage(Entity cause, int amount)
+        public override sealed void Damage(Entity cause, int amount)
         {
             Damage(cause, amount, BloodHit.Medium);
         }
@@ -178,6 +178,7 @@ namespace Cataclysmic
 
             Game1.score += amount;
             bloodData.Spew(hit);
+            Game1.sfx_hurtSound1.Play(Game1.volume, -0.1f + (float)Game1.rand.NextDouble() * 0.2f, 0);
 
             if (wasAlive && !healthData.isAlive)
             {

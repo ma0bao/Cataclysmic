@@ -14,7 +14,7 @@ namespace Cataclysmic
         public bool IsFinished => done;
 
         bool done;
-        float distance = 200f;
+        float distance = 150f;
 
         //Charge player
         float chargeFactor;
@@ -39,6 +39,7 @@ namespace Cataclysmic
             done = false;
             shakeOffset = Vector2.Zero;
             slowDownMultiplier = 0.7f;
+            chargeFactor = 1;
             originalSpeedModifier = moveData.speedModifiers;
             Rectangle ghostRect = new Rectangle((int)renderData.Position.X,
                                                 (int)renderData.Position.Y,
@@ -59,7 +60,7 @@ namespace Cataclysmic
 
             if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X))
             {
-                chargeFactor += moveData.deltaTime * 1.75f; //How fast the charge increases
+                chargeFactor += moveData.deltaTime * 8f; //How fast the charge increases
                 chargeFactor = MathHelper.Clamp(chargeFactor, 0, maxCharge);
                 slowDownMultiplier -= (float)(moveData.deltaTime * 0.7);
                 slowDownMultiplier = MathHelper.Clamp(slowDownMultiplier, 0, 0.7f);
@@ -74,7 +75,7 @@ namespace Cataclysmic
 
                 renderData.Position += shakeOffset;
 
-                ghostPortal.renderData.Position = renderData.Position + direction * Math.Min(distance * chargeFactor, 700);
+                ghostPortal.renderData.Position = renderData.Position + (direction * Math.Min(distance * chargeFactor, 700));
                 
 
                 if (!ghostPortal.renderData.IsOnScreen())
@@ -103,8 +104,8 @@ namespace Cataclysmic
                 Game1.visuals.Add(new Visual(playerPortal, .5f, Visual.RotateEveryFrame));
                 //Game1.sound_Teleport.Play();
                 Game1.sound_Teleport.Play(Game1.volume, 0, 0);
-
                 renderData.Position = ghostPortal.renderData.Position;
+
                 Game1.Shake(.2f, 10f);
             }
         }

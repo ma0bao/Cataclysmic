@@ -20,7 +20,7 @@ namespace Cataclysmic
             static Color[] colors = { new Color(255, 251, 199), new Color(255, 247, 154), new Color(255, 196, 0), new Color(255, 166, 0) };
             public const int WIDTH = 20;
             public const float SPEED = 3.0f;
-            public const int DAMAGE = 10;
+            public const int DAMAGE = 3;
             public Vector2 Position;
             public CollisionComponent Hitbox;
             float angle;
@@ -72,10 +72,6 @@ namespace Cataclysmic
 
             public void Damage(Enemy enemy, int amount)
             {
-                if (!enemy.healthData.invincible)
-                {
-                    Game1.sfx_hurtSound1.Play(Game1.volume, -0.1f + (float)Game1.rand.NextDouble() * 0.2f, 0);
-                }
                 Vector2 dir = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
                 enemy.Damage(null, amount, CRACKLE_BLOOD.WithDirection(dir));
 
