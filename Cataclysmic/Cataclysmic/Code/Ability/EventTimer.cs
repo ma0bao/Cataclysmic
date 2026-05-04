@@ -93,7 +93,7 @@ namespace Cataclysmic
 
         public bool IsRunning()
         {
-            return !paused;
+            return !paused && countdown > 0;
         }
 
         public void Reset()

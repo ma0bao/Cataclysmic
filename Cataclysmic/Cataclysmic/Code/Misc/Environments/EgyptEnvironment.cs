@@ -60,10 +60,6 @@ namespace Cataclysmic
 
         Enemy[][] enemies = {
 
-            new Enemy[]{
-                new Atum(new Vector2(-2000, 500))
-            },
-
             // Wave 1
             new Enemy[]{ new ShotgunLamp(EnemyStartPos),
                 new ShotgunLamp(EnemyStartPos),
@@ -79,7 +75,7 @@ namespace Cataclysmic
                 new Apesh(new Vector2(Game1.WIDTH/2, -1000)),
                 new MagicLamp(new Vector2(Game1.WIDTH + 600, 400)),
                 new ShotgunLamp(new Vector2(-400, -1000)),
-                new Apesh(new Vector2(Game1.WIDTH + 400, -1000))
+                new ShotgunLamp(new Vector2(Game1.WIDTH + 400, -1000))
             },
 
             // Wave 3

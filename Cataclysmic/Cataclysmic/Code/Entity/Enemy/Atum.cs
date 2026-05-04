@@ -52,6 +52,20 @@ namespace Cataclysmic
         List<IProjectile> projectiles = new List<IProjectile>();
         EventTimer fireTimer;
 
+        //Bossbar
+        const float TIME_TO_DAMAGE = 1.5f;
+        const float TIME_TO_APPLY_DAMAGE = 1f;
+        int damageToApply;
+        int highestDamageToApply;
+        EventTimer damageWindow;
+        EventTimer applyDamage;
+        Rectangle HealthbarRect;
+        Rectangle currentHealthRect => new Rectangle(
+                                        HealthbarRect.X, 
+                                        HealthbarRect.Y, 
+                                        (int)(HealthbarRect.Width * healthData.lerpValue),
+                                        HealthbarRect.Height);  
+
         AttackStates nextAttackState;
 
         
@@ -78,7 +92,39 @@ namespace Cataclysmic
             staggerResistance = 0.0f;
 
             bloodData.baseSize = 16;
-  
+
+            //Health Bar
+            HealthbarRect = new Rectangle(Game1.BOUNDS.X, 50, Game1.BOUNDS.Width, 50);
+            damageWindow = new EventTimer(TIME_TO_DAMAGE);
+            applyDamage = new EventTimer(TIME_TO_APPLY_DAMAGE);
+        }
+
+        public override void DrawEx(float opacity)
+        {
+            Game1.self.spriteBatch.Draw(Game1.texture_square, HealthbarRect, Color.Red);
+            Game1.self.spriteBatch.Draw(Game1.texture_square, currentHealthRect, Color.Green);
+            if (damageToApply > 0)
+                Game1.self.spriteBatch.Draw(Game1.texture_square, GetCurrentDamageRect(), Color.White);
+
+            base.DrawEx(opacity);
+        }
+
+        public Rectangle GetCurrentDamageRect()
+        {
+            Rectangle rect = new Rectangle(currentHealthRect.Right, HealthbarRect.Y, 0, HealthbarRect.Height);
+            rect.Width = (int) ((damageToApply / (float)healthData.maxHealth) * HealthbarRect.Width);
+            return rect;
+        }
+
+        public override void Damage(Entity cause, int amount, BloodHit bloodHit)
+        {
+            if (!healthData.invincible)
+            {
+                damageWindow.Restart();
+                damageToApply += amount;
+                highestDamageToApply = damageToApply;
+            }
+            base.Damage(cause, amount, bloodHit);
         }
 
         public override void Stagger(float secondsToStagger, bool UseResistance = true)
@@ -139,6 +185,25 @@ namespace Cataclysmic
         public override void Update(GameTime gameTime)
         {
             UpdateTimers();
+            damageWindow.Update();
+
+            //if (damageWindow.Done && damageToApply > 0)
+            //    damageToApply--;
+
+            if (damageWindow.Done && damageToApply > 0)
+            {
+                applyDamage.Update();
+
+
+                damageToApply = (int)(highestDamageToApply * (1f - applyDamage.lerpValue * applyDamage.lerpValue));
+
+                if (applyDamage.Done)
+                {
+                    damageToApply = 0;
+                    highestDamageToApply = 0;
+                    applyDamage.Restart();
+                }
+            }
 
             //if (Keyboard.GetState().IsKeyDown(Keys.K))
             //{
@@ -192,7 +257,7 @@ namespace Cataclysmic
                     if (randChoice == 0)
                         SetStateToGeyser();
                     else if (randChoice == 1)
-                        Teleport();
+                        SetStateToGeyser(50, 0.02f);
                     else if (randChoice == 2)
                         SetStateToGeyser(100);
                     else if (randChoice == 3)
