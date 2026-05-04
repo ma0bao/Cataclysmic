@@ -30,6 +30,10 @@ namespace Cataclysmic
         Rectangle currentRegion;
         Rectangle oppisiteRegion;
 
+        Point clawLocation;
+        Point clawLocationTwo;
+        EventTimer newClaw;
+
         Player player;
         Player targetedPlayer;
         Player lastTargetedPlayer;
@@ -54,7 +58,9 @@ namespace Cataclysmic
             SetNewTargetPosition(renderData.GetRandomPoint());
 
             bloodData.baseSize = 9;
- 
+            newClaw = new EventTimer(1.8f);
+            clawLocation = renderData.GetRandomPoint(Swipe()).ToPoint();
+            clawLocationTwo = renderData.GetRandomPoint(Swipe()).ToPoint();
         }
 
         public override void Update(GameTime gameTime)
@@ -207,8 +213,19 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
-            if(currentState == AttackState.Swipe)
-                Game1.self.spriteBatch.Draw(Game1.texture_blank, Swipe(), Color.Red); //REPLACE WITH ATTACK ANIMATION WHEN WE HAVE ART
+            if (currentState == AttackState.Swipe)
+            {
+                newClaw.Update();
+                if (newClaw.Done)
+                {
+                    clawLocation = renderData.GetRandomPoint(Swipe()).ToPoint();
+                    clawLocationTwo = renderData.GetRandomPoint(Swipe()).ToPoint();
+                }
+
+                Game1.self.spriteBatch.Draw(Game1.texture_claw, new Rectangle(clawLocation.X, clawLocation.Y, 40, 40), Color.Red);
+                Game1.self.spriteBatch.Draw(Game1.texture_claw, new Rectangle(clawLocationTwo.X, clawLocationTwo.Y, 40, 40), Color.Red);
+
+            }
             base.Draw(opacity);
         }
 
@@ -216,6 +233,7 @@ namespace Cataclysmic
         {
             return new Rectangle(renderData.hitBox.X-25, renderData.hitBox.Y-25, renderData.hitBox.Width+45, renderData.hitBox.Height + 45 );
         }
+
     }
 
 }
