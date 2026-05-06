@@ -38,7 +38,10 @@ namespace Cataclysmic
         public static Random rand = new Random();
 
         public const int OPTION_COUNT = 4;
+        public const int FLASH_TIME = 30;
+        public int flash;
         public static bool debugMode = false;
+        public bool timeTraveling;
         int pauseMenuPointer = 0;
         int abilityRowPointer = 0;
         int abilityColPointer = 0;
@@ -159,6 +162,9 @@ namespace Cataclysmic
         public static Texture2D texture_Sun;
         public static Texture2D texture_claw;
         public static Texture2D texture_Atum;
+        public static Texture2D texture_androsphinx;
+        public static Texture2D texture_wave;
+        public static Texture2D texture_timeManip;
         #endregion
 
         // SoundEffects
@@ -236,7 +242,7 @@ namespace Cataclysmic
             timer = 0;
             index = 0;
             volume = 1.0f;
-
+            timeTraveling = false;
             optionPointer = 0;
             particleCooldown = 0;
             intensityOfCRT = 4;
@@ -259,6 +265,8 @@ namespace Cataclysmic
             AbilityPool[0][2] = new CircleSlashWrapper();
             AbilityPool[0][3] = new CrackleBurstWrapper();
             AbilityPool[0][4] = new SwapWrapper();
+            AbilityPool[0][5] = new TimeWrapper();
+            flash = 0;
 
             // Rectangles
             #region
@@ -338,10 +346,13 @@ namespace Cataclysmic
             texture_Sun = Content.Load<Texture2D>("Sprites/Enemies/Sun");
             texture_claw = Content.Load<Texture2D>("Sprites/Enemies/claw");
             texture_Atum = Content.Load<Texture2D>("Sprites/Enemies/Atum");
-        #endregion
+            texture_androsphinx = Content.Load<Texture2D>("Sprites/Enemies/AndrosphinxSprite");
+            texture_wave = Content.Load<Texture2D>("Sprites/GUI/Wave");
+            texture_timeManip = Content.Load<Texture2D>("Sprites/Abilities/Wrappers/BasicTimeManipulationImage");
+            #endregion
 
         //Sounds
-        #region
+            #region
         sound_HeavyClick = Content.Load<SoundEffect>("Sounds/UI/HeavyClick");
             sound_HeavyStart = Content.Load<SoundEffect>("Sounds/UI/HeavyStart");
             sound_click = Content.Load<SoundEffect>("Sounds/UI/click");
@@ -741,15 +752,18 @@ namespace Cataclysmic
                         }
                         currentEnvironment = environments[++environmentPointer];
                     }
-                    JumpOut:
+                JumpOut:
                     player.Update(gameTime);
-                    currentEnvironment.Update(gameTime);
-                    for (int i = visuals.Count - 1; i >= 0; i--)
-                    {
-                        visuals.ElementAt(i).Update();
-                        if (!visuals.ElementAt(i).IsAlive())
-                            visuals.RemoveAt(i);
+                    if (!timeTraveling) {
+                        currentEnvironment.Update(gameTime);
+                        for (int i = visuals.Count - 1; i >= 0; i--)
+                        {
+                            visuals.ElementAt(i).Update();
+                            if (!visuals.ElementAt(i).IsAlive())
+                                visuals.RemoveAt(i);
+                        }
                     }
+                    
                 }
 
 
@@ -978,15 +992,19 @@ namespace Cataclysmic
                 lightEffect.Parameters["LightRadius"].SetValue(2000f);
                 lightEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
                 float factor = (1 - (float)Math.Max(player.healthData.frames, 0) / HealthComponent.MAXIFRAMES * 0.2f);
+                factor = 1.0f;
+                if (timer - player.lastDamage < FLASH_TIME) {
+                    factor = 1.0f - (timer - player.lastDamage) / (float)FLASH_TIME * 0.2f;
+                }
                 Vector3 LightColor = new Vector3(1.1f, 1.1f * factor, 1.1f * factor);
                 lightEffect.Parameters["LightColor"].SetValue(LightColor); // Warm yellow
                 lightEffect.Parameters["Intensity"].SetValue(1.0f);
 
                 timeEffect.Parameters["LightPosition"].SetValue(new Vector2(player.renderData.Position.X + player.renderData.DestRect.Width / 2, player.renderData.Position.Y + player.renderData.DestRect.Height / 2)); // Center
-                timeEffect.Parameters["LightRadius"].SetValue(700f);
+                timeEffect.Parameters["LightRadius"].SetValue(1700f);
                 timeEffect.Parameters["ScreenSize"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
                 timeEffect.Parameters["LightColor"].SetValue(new Vector3(1f, 0.8f, 1.0f)); // Purple
-                timeEffect.Parameters["Intensity"].SetValue(1.0f);
+                timeEffect.Parameters["Intensity"].SetValue(0.7f);
                 timeEffect.Parameters["timer"].SetValue(timer);
 
 
@@ -998,7 +1016,7 @@ namespace Cataclysmic
 
                 Matrix transform = Matrix.CreateTranslation(new Vector3(-finalCamPos, 0));
 
-                spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transform);
+                spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, transform);
                 
                 currentEnvironment.DrawBackground();
                 //spriteBatch.Draw(texture_environment1, new Vector2(0, 0), Color.White);
@@ -1019,26 +1037,39 @@ namespace Cataclysmic
 
                 GraphicsDevice.SetRenderTarget(sceneTargetCRT);
 
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, lightEffect);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, timeTraveling?timeEffect:lightEffect);
                 spriteBatch.Draw(sceneTarget, Vector2.Zero, Color.White);
                 spriteBatch.End();
 
 
-                spriteBatch.Begin();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
                 spriteBatch.Draw(texture_overlay1, new Vector2(0, 0), Color.White);
                 player.DrawEx(1.0f);
                 currentEnvironment.DrawEx();
+
+                clockRotationRadians = MathHelper.ToRadians(timer);
+                spriteBatch.Draw(texture_clockworkBorder, Vector2.Zero, Color.White);
+                spriteBatch.DrawString(font_score, "" + score, new Vector2(1380, 900), Color.White);
+                spriteBatch.Draw(texture_clock, new Rectangle(0, HEIGHT - 200, 200, 200), Color.White);
+                spriteBatch.Draw(texture_clockHandRotate, new Rectangle(97, HEIGHT - 95, 20, 60), null, Color.Black, clockRotationRadians, new Vector2(35, 160), SpriteEffects.None, 0);
+                if (paused)
+                {
+                    double input = Math.Min(pauseTimer / 60.0, 1);
+                    double y = GOAL_PLACE + 1 / (15.0f * input) * Math.Sin(Math.PI * Math.PI * 0.95 * input) * (START_PLACE - 500);
+                    float fy = (float)y;
+                    spriteBatch.Draw(texture_pauseMenu, new Vector2(100, fy), Color.White);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        spriteBatch.Draw(texture_pauseMenuText, new Vector2(150, 430 + fy + 132 * i), new Rectangle(((pauseMenuPointer == i) ? 268 : 0), 132 * i, 268, 132), Color.White);
+                    }
+                }
                 spriteBatch.End();
 
                 // Overlays
                 GraphicsDevice.SetRenderTarget(null);
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, crtEffect);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, crtEffect);
                 spriteBatch.Draw(sceneTargetCRT, Vector2.Zero, Color.White); 
-                spriteBatch.Draw(texture_clockworkBorder, Vector2.Zero, Color.White);
-                spriteBatch.DrawString(font_score, "" + score, new Vector2(1380, 900), Color.White);
-                spriteBatch.Draw(texture_clock, new Rectangle(40, HEIGHT-170, 170, 170), Color.White);
-                spriteBatch.Draw(texture_clockHandRotate, new Rectangle(125, HEIGHT-80, 20, 60), null, Color.Black, clockRotationRadians, new Vector2(35, 160), SpriteEffects.None, 0);
-                //if (KB.IsKeyDown(Keys.K)) RotateClockHand(.1f);
+                
                 if (debugMode)
                 {
                     int incrementer = 0;
@@ -1051,17 +1082,7 @@ namespace Cataclysmic
                 }
 
 
-                if (paused)
-                {
-                    double input = Math.Min(pauseTimer/60.0, 1);
-                    double y = GOAL_PLACE + 1 / (15.0f * input) * Math.Sin(Math.PI*Math.PI*0.95*input) * (START_PLACE-500);
-                    float fy = (float)y;
-                    spriteBatch.Draw(texture_pauseMenu, new Vector2(100, fy), Color.White);
-                    for (int i = 0; i < 5; i++)
-                    {
-                        spriteBatch.Draw(texture_pauseMenuText, new Vector2(150, 430 + fy + 132 * i), new Rectangle(((pauseMenuPointer == i) ? 268 : 0), 132 * i, 268, 132), Color.White);
-                    }
-                }
+                
 
                 spriteBatch.End();
             }

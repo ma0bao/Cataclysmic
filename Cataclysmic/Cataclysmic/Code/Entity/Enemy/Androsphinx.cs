@@ -42,12 +42,12 @@ namespace Cataclysmic
 
         const int MAX_SHAKE_AMT = 2;
 
-        const int WIDTH = 48;
-        const int HEIGHT = 64;
-        const int HITBOX_WIDTH = 48;
-        const int HITBOX_HEIGHT = 64;
+        const int WIDTH = 128;
+        const int HEIGHT = 128;
+        const int HITBOX_WIDTH = 96;
+        const int HITBOX_HEIGHT = 128;
 
-        public Androsphinx(Vector2 position) : base(Game1.texture_meatballEgypt, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
+        public Androsphinx(Vector2 position) : base(Game1.texture_androsphinx, new Rectangle((int)position.X, (int)position.Y, WIDTH, HEIGHT), HITBOX_WIDTH, HITBOX_HEIGHT)
         {
             staggerResistance = .8f;
             currentRegion = top;

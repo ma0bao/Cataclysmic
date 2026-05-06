@@ -76,6 +76,8 @@ namespace Cataclysmic
             #endregion
 
             #region Update Based On State
+            if (currentState != AttackState.Spin)
+                renderData.rotation = renderData.GetRotationToTarget(player.renderData.Position);
             if (currentState == AttackState.Track)
             {
                 base.Update(gameTime);
@@ -150,6 +152,7 @@ namespace Cataclysmic
                 }
 
                 timeToSpin.Update();
+                
             }
             else if (currentState == AttackState.Run)
             {
@@ -173,8 +176,7 @@ namespace Cataclysmic
 
         public override void Draw(float opacity)
         {
-            if(currentState != AttackState.Spin)
-                renderData.rotation = renderData.GetRotationToTarget(player.renderData.Position);
+            
 
             if (!CrackTimer.Done)
             {
